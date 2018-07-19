@@ -11,38 +11,52 @@
 \section{Motivation}
 In the last twenty years, the number of mobile devices in use has tremendously increased. In the first quater of 2018 more than 380 Million smartphones have been sold worldwide \cite{Gartner}. However, in the past few years, not only smartphones have been sold, but also a new market of mobile gadgets and connected devices, summed up as Internet of Things, has evolved. In 2017, more than 20 Billion devices were connected to the internet. Forecasts predict 30 Billion devices in 2020 and already more than 70 Billion in 2025. \cite{Statista}
 
-This increase in mobile computing has also increased the demand of accurate real-time positioning systems which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning. 
+This increase in mobile computing has also increased the demand of accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning. 
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Indoor difficulties vs Outdoor}
 
-For outdoor applications, primarily the Global Positioning System (GPS) is in use. For indoor application in the other hand, GPS has limitations that make it almost useless. Due to the environmental conditions indoors, with heavy walls armoured with steel and other distractions, additional signal loss is encountered which makes it hard to detect and decode GPS signals. \cite{GPSforIndoor} In addition, higher buildings in the neighborhood can reflect transmitted signals, which leads to false position estimations. As GPS is mainy applied as 2D positioning system, it will not provide 3D indoor information such as the current floor level.
-For this purposes we are forced to use alternative technologies. There are many different approaches to do indoor positioning, which made it an attractive and active research field. 
+For outdoor applications, primarily the Global Positioning System (GPS) is in use. For indoor application in the other hand, GPS has limitations that make it almost useless. Due to the environmental conditions indoors, with heavy walls armoured with steel and other distractions, additional signal loss is encountered which makes it hard to detect and decode GPS signals. \cite{GPSforIndoor} In addition, higher buildings in the neighborhood can reflect transmitted signals, which leads to false position estimations. As GPS is mainy applied as 2D positioning system, it will not provide 3D indoor information such as the current floor level
+For this purposes we are forced to use alternative technologies that provide even higher accurracy indoors than GPS would achieve outdoors. There are many different approaches to do indoor positioning, which made it an attractive and active research field. 
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
 
 \subsection{Important Applications}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+There are various possible use cases for devices that track their indoor position. These use cases can be grouped into two groups. On the one hand applications for pedestrians with a smartphone and on the other hand real machine to machine (M2M) applications. 
+
+Some examples for Smartphones:
+\begin{description}
+\item [Location of person in need] For emergency services every second counts to get to the position of persons in need. An accurate positioning system that indicates additional information such as the floor level could save lifes.
+\item [Security Guards] Real time tracking of security guards on their patrol. A security system can check autonomous if all security guards are on the right tracks.
+\item [Museum guidance] Tourists visiting a museum could easily be guided through the museum with customized location based information.
+\end{description}
+
+Examples for Machine to machine (M2M):
+\begin{description}
+\item [Logistic] An autonomous storage system can find articles in a big storehouse according to the exact position of the carrier vehicle. Numerous vehicles can be in use at the same time.
+\item [Cleaning] An autonomous cleaning machine keeps track of its position, such that the floor can efficiently be cleaned.
+\item [Indoor post roboter] An autonomous roboter can collect letters in the building and bring them to the internal post office.
+\end{description}
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Ideas}
-
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
-
+\section{Idea}
+For an object in space, there are several basic ideas to keep track of its current location. We can define a starting position and keep track of every move the device registers. E.g. every visitor in the museum starts at the entrance and will then walk through the building.
+Alternatively the object can be tracked by defining at least three triangulation points and periodically measure the distance from these points to the device. There are various ways to measure this distance, some with higher and some with lower accuracy.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Ranging Positioning System with different Inputs}
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+Our idea was to not only use one of the mentioned approaches, but to combine them to in one alorithm. We would use a range positon system based on Ultra Wide Band (UWB) combined with motion detection and even integrate environmental restrictions, such as walls given from floorplans. 
 
 
 %----------------------------------------------------------------------------------------
