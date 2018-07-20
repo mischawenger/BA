@@ -56,7 +56,7 @@ Alternatively the object can be tracked by defining at least three triangulation
 %-----------------------------------
 \subsection{Ranging Positioning System with different Inputs}
 
-Our idea was to not only use one of the mentioned approaches, but to combine them to in one alorithm. We would use a range positon system based on Ultra Wide Band (UWB) combined with motion detection and even integrate environmental restrictions, such as walls given from floorplans. 
+Our idea was to not only use one of the mentioned approaches, but to combine them to in one alorithm. We would use a range positoning system combined with motion detection of the device and even integrate environmental restrictions, given by floor topologies like walls. By combining different methods we hope to compensate measurement errors and thus minimize the overall errors.
 
 
 %----------------------------------------------------------------------------------------
@@ -65,14 +65,16 @@ Our idea was to not only use one of the mentioned approaches, but to combine the
 
 \section{Contributions}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+In this thesis we present a real-time indoor positioning system on Raspberry Pi based on a particle filter implementation in smartphones, developed in previous works of the University of Bern. \cite{Carrera} We adapted the inputs of the particle filter to range-based localization using ultra wideband (UWB) instead of Wi-Fi and added motions measured by inertial measurement units (IMU) of the target.
+We expound results of our experiments, where we tested different variants of our implementation and other algorithms in a real test scenario and compared the accuracy of the estimated position.
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Implementation of the System}
+Our main contributions are:
+\begin{itemize}
+\item We implemented a real-time localization system on raspberry pi using UWB and IMU sensors. 
+\item We compared our implementation to an UWB based localization system provided by Uniset Company on complex indoor trajectories.
+\end{itemize}
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+
 
 
 
