@@ -16,8 +16,31 @@ First a short overview of range based localization with the mean principles of R
 Range based localization systems are depending on an infrastructure in the area of the localization:
 \begin{itemize} 
 \item \textbf{Target Node (TAG)} which is the device that is localized. 
-\item \textbf{Anchor Nodes (AN)}that are placed on carefully chosen points in the building, to cover the whole area the best.
+\item \textbf{Anchor Nodes (AN)}that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
 \end{itemize}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/ranging_process}
+\decoRule
+\caption[Ranging process]{A simple ranging process.}
+\label{fig:ranging_process}
+\end{figure}
+
+As shown in figure \ref{fig:ranging_process}, a simplified localization system work as follows:
+Either the TAG, the anchor or both of them collect data used for localization. The data can be a signal strength, a round trip time or IMU measurement.
+In a processing unit - on the TAG or on a seperate server - the data is processed and converted into a distance. This is repeated for every anchor node.
+The last step contains trilateration of the position using the ranges of every AN to the TAG.
+
+In this abridged scenario, some difficulties are left out. Full indoor localization systems are more complex, as they use ingenious algorithms to improve the accuracy of the estimated ranges or improve the system by adding weighting to deal with incorrect range measures.
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+\subsection{RSSI and Fingerprinting}
+
+
+
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -29,9 +52,20 @@ Range based localization systems are depending on an infrastructure in the area 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
-\subsection{Triangulation, Trilateration}
+\subsection{Triangulation and Trilateration}
+Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids. \cite{thales} It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
+Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
+As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+Figure \ref{fig:trilateration} shows how trilateration is used for positioning. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.6\textwidth]{Figures/trilateration}
+\decoRule
+\caption[Trilateration]{Graphical illustration of the trilateration concept.}
+\label{fig:trilateration}
+\end{figure}
 
 %-----------------------------------
 %	SUBSECTION 3
