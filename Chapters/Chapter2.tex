@@ -5,7 +5,7 @@
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 In this section we explain the different types of range measuring in range-based localization systems. For comparison reasons, we shortly introduce variants of received signal strength indication (RSSI), which is the mostly used indoor localization technique. We then briefly explain two slightly less common methods, which were used in our system - two way ranging (TWR) and time difference of arrival (TDOA). We also include some background theory about our implementation and the particle filter.\\
 These are the main parts of this section:\\
-First a short overview of range based localization with the mean principles of RSSI, TWR and TDOF as well as the concept of triangulation/trilateration and the weighting process. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
+First a short overview of range based localization with the mean principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration and the weighting process. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -37,20 +37,37 @@ In this abridged scenario, some difficulties are left out. Full indoor localizat
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{RSSI and Fingerprinting}
+\subsection{Received signal strength indication}
+As already mentioned, many indoor positioning algorithms use received signal strength indiacation to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter. \cite{VorlesungCN}.
+$$
+P_{r} = P_{t} (\lambda/4\pi r)^2
+$$
+\\
+$P_{r}$ - received signal strength\\
+$P_{t}$ - transmitted signal strength\\
+$\lambda$ - wavelength\\
+$r$ - radius (distance from transmitter to receiver)\\
 
+However, this formula is restricted to free-space. There are several different kind of distractions that can affect the accuracy of the measurements. For example the following occurences:
+\begin{itemize} 
+\item Multi-path propagation
+\item Reflections
+\item Diffraction
+\item Doppler effect
+\item etc.
+\end{itemize}
 
-
-
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Two way ranging, time difference of arrival}
-
-
+Signal strength can often be obtained from the transmitter hardware as a discrete number. The higher the number, the stronger the signal. This discretization reflects another source of errors. 
 
 %-----------------------------------
 %	SUBSECTION 2
+%-----------------------------------
+\subsection{Two way ranging, time difference of arrival}
+Two way ranging and time difference of arrival are two different approaches to measure distances using radio signals.
+
+
+%-----------------------------------
+%	SUBSECTION 3
 %-----------------------------------
 \subsection{Triangulation and Trilateration}
 Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids. \cite{thales} It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
@@ -68,7 +85,7 @@ Figure \ref{fig:trilateration} shows how trilateration is used for positioning. 
 \end{figure}
 
 %-----------------------------------
-%	SUBSECTION 3
+%	SUBSECTION 4
 %-----------------------------------
 
 \subsection{Weighting}
@@ -83,7 +100,7 @@ Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar p
 Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 2
+%	SECTION 3
 %----------------------------------------------------------------------------------------
 
 \section{Particle Filter}
