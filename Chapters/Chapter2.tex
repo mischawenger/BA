@@ -48,7 +48,7 @@ $P_{t}$ - transmitted signal strength\\
 $\lambda$ - wavelength\\
 $r$ - radius (distance from transmitter to receiver)\\
 
-However, this formula is restricted to free-space. There are several different kind of distractions that can affect the accuracy of the measurements. For example the following occurences:
+However, this formula is restricted to free-space. There are several different kind of distractions that can affect the accuracy of the measurements in an indoor environment. For example the following occurences:
 \begin{itemize} 
 \item Multi-path propagation
 \item Reflections
@@ -62,9 +62,19 @@ Signal strength can often be obtained from the transmitter hardware as a discret
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
-\subsection{Two way ranging, time difference of arrival}
-Two way ranging and time difference of arrival are two different approaches to measure distances using radio signals.
+\subsection{Round trip time: Two way ranging, time difference of arrival}
+Gathering round trip times (RTT) is a second method to get distance estimations. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the presented two RTT-measuring communication techniques, the key characteristics are either a quick responding time or extremely well synchronized TAG and AN.
+Operating in two way ranging (TWR) mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With the following equation, the time of flight can now be evaluated:
+$$ ToF = (T_{RA}-T_{SP})-(T_{SA}-T_{RP})$$\\
+$ToF$ - Time of flight\\
+$T_{RA}$ - reception of ACK timestamp\\
+$T_{SP}$ - sending of poll timestamp\\
+$T_{SA}$ - sending of ACK timestamp\\
+$T_{RP}$ - reception of poll timestamp\\
 
+%
+%Add figure of that: https://www.sewio.net/technology/two-way-ranging/
+%
 
 %-----------------------------------
 %	SUBSECTION 3
