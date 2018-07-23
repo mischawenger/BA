@@ -64,17 +64,53 @@ Signal strength can often be obtained from the transmitter hardware as a discret
 %-----------------------------------
 \subsection{Round trip time: Two way ranging, time difference of arrival}
 Gathering round trip times (RTT) is a second method to get distance estimations. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the presented two RTT-measuring communication techniques, the key characteristics are either a quick responding time or extremely well synchronized TAG and AN.
-Operating in two way ranging (TWR) mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With the following equation, the time of flight can now be evaluated:
-$$ ToF = (T_{RA}-T_{SP})-(T_{SA}-T_{RP})$$\\
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/two_way_ranging}
+\decoRule
+\caption[Two Way Ranging]{Illustration of TWR and SDS-TWR communication}
+\label{fig:two_way_ranging}
+\end{figure}
+
+Operating in two way ranging (TWR) mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With the following equation, the time of flight can now be evaluated \cite{SewioTWR}:
+$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP})] / 2$$\\
 $ToF$ - Time of flight\\
 $T_{RA}$ - reception of ACK timestamp\\
 $T_{SP}$ - sending of poll timestamp\\
 $T_{SA}$ - sending of ACK timestamp\\
 $T_{RP}$ - reception of poll timestamp\\
 
-%
-%Add figure of that: https://www.sewio.net/technology/two-way-ranging/
-%
+To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) and is indicated as optional in Figure \ref{fig:two_way_ranging}.
+
+$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4$$\\
+$ToF$ - Time of flight\\
+$T_{RA}$ - reception of ACK timestamp\\
+$T_{SP}$ - sending of poll timestamp\\
+$T_{SA}$ - sending of ACK timestamp\\
+$T_{RP}$ - reception of poll timestamp\\
+$T_{RF}$ - reception of final timestamp\\
+$T_{SF}$ - sending of final timestamp\\
+
+For simplicity reasons normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data direclty to the server.
+
+Time difference of Arrival.
+\cite{SewioTDOA}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/time_difference_of_arrival}
+\decoRule
+\caption[Time Difference of Arrival]{Typical Setup for Time Difference of Arrival communication}
+\label{fig:time_difference_of_arrival}
+\end{figure}
+
+
+For both methods the same calculations to convert the ToF to the related distance can be applied. We assume that radio signals travel almost with speed of light, so we just multiply the ToF with speed of light ($c_{0}$).
+$$ distance = ToF * c_{0} $$
+
+$ToF$ - Time of flight\\
+$c_{0}$ - Speed of Light = \SI{2.99792458e8}{\meter\per\second} (exact) \\
 
 %-----------------------------------
 %	SUBSECTION 3
