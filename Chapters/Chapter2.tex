@@ -16,7 +16,7 @@ First a short overview of range based localization with the mean principles of R
 Range based localization systems are depending on an infrastructure in the area of the localization:
 \begin{itemize} 
 \item \textbf{Target Node (TAG)} which is the device that is localized. 
-\item \textbf{Anchor Nodes (AN)}that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
+\item \textbf{Anchor Nodes (AN)} that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
 \end{itemize}
 
 \begin{figure}[th]
@@ -81,7 +81,7 @@ $T_{SP}$ - sending of poll timestamp\\
 $T_{SA}$ - sending of ACK timestamp\\
 $T_{RP}$ - reception of poll timestamp\\
 
-To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) and is indicated as optional in Figure \ref{fig:two_way_ranging}.
+To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) \cite{Wikipedia} and is indicated as optional in Figure \ref{fig:two_way_ranging}.
 
 $$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4$$\\
 $ToF$ - Time of flight\\
@@ -94,7 +94,14 @@ $T_{SF}$ - sending of final timestamp\\
 
 For simplicity reasons normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data direclty to the server.
 
-Time difference of Arrival.
+While TWR does not need further synchronization between the devices, time difference of arrival (TDOA) requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
+To evaluate the time of flight, a TAG in range will broadcast a blink message. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID for a tagret device, it can perform the position and therefore the distance estimation.
+A huge benefit of TDOA is the fact, that the tag only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. For TWR the overhead grows enourmous with every anchor and every tag that is added. For TDOA hundrets of TAGs can be tracked, whith only proportional overhead growth and much lower energy consumption for the TAG. 
+
+Number of messages sent:\\
+TWR: $3 * n_{t} * n_{an}$\\
+TDOA: $n_{t}$\\
+Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes.
 \cite{SewioTDOA}
 
 \begin{figure}[th]
