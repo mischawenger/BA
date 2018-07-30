@@ -3,35 +3,25 @@
 \chapter{System design} % Main chapter title
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-I kljdf kljdf lke dakd .
-kladf.
+The given background theory of section 2 was applied for our system design. In the following we present our theoretical system and which aspects of the theory led to system design decisions. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about algorithms that could be used.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Overview}
-
-Range based localization systems are depending on an infrastructure in the area of the localization:
-\begin{itemize} 
-\item \textbf{Target Node (TAG)} which is the device that is localized. 
-\item \textbf{Anchor Nodes (AN)}that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
-\end{itemize}
+As already mentioned in the introduction, our system combines different types of data input to achieve the best position estimation. This leds to a slightly more complicated ranging process than indicated on the simplified illustration in figure \ref{fig:ranging_process}.\\
+We wanted to include not only measurements from one device, but from several different data sources:
+TAG and AN collect data and send it to the server, where the data is fed into the particle filter. The particle filter spreads particles accoring to TAG movement indication, restricted by the topology read from the floorplan and calculates the position likelihood according to range measurements and again the movement vector. In this phase, trilateration is already done implicitly. With respect to the likelihood, a normalized weight is assigned to each particle. The position estimation corresponds to the weighted sum of all particle positions.
+An overview of the whole process is illustrated on figure \ref{fig:particle_filter_design}.
 
 \begin{figure}[th]
 \centering
-\includegraphics[width=1.0\textwidth]{Figures/ranging_process1}
+\includegraphics[width=1.0\textwidth]{Figures/particle_filter_design}
 \decoRule
-\caption[Ranging process1]{A simple ranging process.}
-\label{fig:ranging_process1}
+\caption[Particle Filter Design]{Overview of the theoretical components in our system.}
+\label{fig:particle_filter_design}
 \end{figure}
-
-As shown in figure \ref{fig:ranging_process1}, a simplified localization system work as follows:
-Either the TAG, the anchor or both of them collect data used for localization. The data can be a signal strength, a round trip time or IMU measurement.
-In a processing unit - on the TAG or on a seperate server - the data is processed and converted into a distance. This is repeated for every anchor node.
-The last step contains trilateration of the position using the ranges of every AN to the TAG.
-
-In this abridged scenario, some difficulties are left out. Full indoor localization systems are more complex, as they use ingenious algorithms to improve the accuracy of the estimated ranges or improve the system by adding weighting to deal with incorrect range measures.
 
 
 %----------------------------------------------------------------------------------------
@@ -39,13 +29,31 @@ In this abridged scenario, some difficulties are left out. Full indoor localizat
 %----------------------------------------------------------------------------------------
 
 \section{Setup}
+The theoretical design on our system is shown in \ref{fig:system_design}, it works as follows:
+At least three ANs, equipped with UWB technology, are placed in an indoor environment of one floor. Our algorithm runs on a seperate server, where a zoneplan and floorplan of the floor are available. A single TAG is located somewhere on the floor, it is as well equipped with UWB technology, moreover it measures acceleration and magnetic energy with the onboard IMU. The TAG continously collects data from the IMU and contemporary waits for a request from the server. The server periodically requests data via UWB from the TAG. As soon as a request is noticed at the TAG, it performs a range estimation to every AN and sends this data together with the continously collected IMU data to the server.
+For every estimation period, the server has all the data needed to feed the particle filter.
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/system_design}
+\decoRule
+\caption[System Design]{Overview of the theoretical system design.}
+\label{fig:system_design}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 3
 %----------------------------------------------------------------------------------------
 
-\section{Algorithms}
+\section{Computations on the server}
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+All calculations are done on the server. As already mentioned, the server receives IMU data and range estimations from the devices. This data, as well as the floorplan constrains, flow into the particle filter. The following operations are done on the server:
+\begin{itemize}
+\item Spread the particles
+\item Append floormap constraints
+\item Evaluate UWB ranges
+\item Evaluate IMU motion
+\item calculate weight function
+\item systematic resampling (repositioning of particles)
+\item calculate weighted position
+\end{itemize}

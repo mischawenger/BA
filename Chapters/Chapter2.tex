@@ -121,7 +121,7 @@ Triagulation and trilateration use the mathematical concepts of triangles to fin
 Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
 As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
 
-Figure \ref{fig:trilateration} shows how trilateration is used for positioning. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
+Figure \ref{fig:trilateration} shows how trilateration is used for positioning. With the known distance to every AN, a circle with radius of this distance can be drawn around every AN. These circles do only have one common intersection point, that is where the TAG lies. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
 
 \begin{figure}[th]
 \centering
@@ -136,7 +136,7 @@ Figure \ref{fig:trilateration} shows how trilateration is used for positioning. 
 %----------------------------------------------------------------------------------------
 
 \section{UWB Theory}
-Ultra wide-band (UWB) is a radio technology in use for military communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide frequency spectrum instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 MHz that lies within the range of 3.1 GHz and 13.6 GHz.
+Ultra wide-band (UWB) is a radio technology in use for military communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 MHz that lies within the range of 3.1 GHz and 13.6 GHz.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/frequency_spectrum}
@@ -144,8 +144,9 @@ Ultra wide-band (UWB) is a radio technology in use for military communication, p
 \caption[UWB frequency spectrum]{Comparison of Wi-Fi (802.11) and UWB frequencies.}
 \label{fig:frequency_spectrum}
 \end{figure}
-UWB opperates with less energy compared to other communication like Wi-Fi. However, the main difference between UWB and conventional radio transmissions is the underlying modulation technique. UWB transmits data by generating radio energy at specific times instead of varying frequency and phase of sinus waves. In addition to pulse position modulation, the pulses can carry information either by their polarity, their amplitude or by using orthogonal pulses.
-A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated.
+UWB opperates with less energy compared to other communication like Wi-Fi. However, the main difference between UWB and conventional radio transmissions is the underlying modulation technique. UWB transmits data by generating short radio energy at specific times instead of varying frequency and phase of sinus waves. In addition to the pulse position, the pulses can carry information either by their polarity, their amplitude or by using orthogonal pulses.
+A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated. As single pulses can be registered and identified by the receiver, UWB devices are able to determine very exact ToFs such that distance estimations can be done to high resolution. Using the large frequency spectrum, there are even methods to overcome multipath propagation, when at least some frequencies have direct line-of-sight trajectories.
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 3
