@@ -3,7 +3,7 @@
 \chapter{System design} % Main chapter title
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-The given background theory of section 2 was applied for our system design. In the following we present our theoretical system and which aspects of the theory led to system design decisions. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about algorithms that could be used.
+The given background theory of section 2 was applied for our system design. In the following we present our theoretical system and which aspects of the theory led to system design decisions. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about the computations that are used.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -46,15 +46,15 @@ For every estimation period, the server has all the data needed to feed the part
 %----------------------------------------------------------------------------------------
 
 \section{Computations on the server}
-All computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constrains, flow into the particle filter. These operations are done on the server:
+All computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constraints and the zone indication, flow into the particle filter. These operations are done on the server:
 \begin{itemize}
 \item Spread the particles and validate new positions with floormap constraints
-\item Evaluate UWB ranges and IMU measures to assign likelihood
+\item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
 \item Calculate weight function and systematically resample (and reposition) particles with low weights
 \item Sum up weighted positions
 \end{itemize}
 
-In the first part, every particles is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
-The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. This is also in effect for the IMU motion, as the difference between the old and the new positon is compared to the measured IMU motion to evaluate the likelihood.
+In the first part, every particle is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
+The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. This is also in effect for the IMU motion, as the difference between the old and the new positon is compared to the measured IMU motion to evaluate the likelihood. \textbf{@Mischa: ADD PART OF ZONE INDICATION} % Add zone indication part!
 In the weighting step, every particle gets weighted by the liklihoods of the previous computations. The weights of all particles are normalized for further processing.
 The last part is simply a weighted sum of the particles locations.
