@@ -15,52 +15,60 @@ We decided to use Raspberry Pis for all mobile devices such as the TAG and the A
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
+
 \subsection{Raspberry Pi}
 A Raspberry Pi is a single-board computer not much bigger than a credit card. Raspberry Pis are mainly designed for educational purposes as an alternative to expensive notebooks or desk computers. Hence the focus lies also on easy-to-use and plug-and-play experiences. Raspberry Pis are useful for versatile types of projects, as they provide common state of the art hardware - like HDMI, USB and wireless LAN - direct on boad and as they are extendable with selected components.
 
 We used Raspberry Pi Model B \cite{Raspberry}, these were the most relevant specifications for our work:
 \begin{itemize}
 \item Quad Core 1.2GHz Broadcom BCM2837 64bit CPU
-\item1GB RAM
+\item 1GB RAM
 \item 100 Base Ethernet
 \item 40-pin extended general purpose input output (GPIO)
 \item Micro SD port for loading your operating system and storing data
 \end{itemize}
 
 %-----------------------------------
-%	SUBSECTION 1
+%	SUBSECTION 2
 %-----------------------------------
 \subsection{SEQUITUR Pi board with InGPS Lite}
 On the 40-pin extended GPIO, we connected the SEQUITUR Pi board from UNISET Company. UNISET is a company located in Italy that focuses on research, development and manufacturing of innovative sensors in two major application areas \cite{Uniset}:
+
 \begin{itemize}
 \item Access control security systems, enhancing the reliability of intrusion detection
 \item Indoor and outdoor tracking. Sequitur is a precise real time locating system (RTLS) for tracking any object in 2D or 3D with centimeter accuracy.
 \end{itemize}
-This hardware seemed perfect for our ambitions, as it provides a state-of-the-art UWB communication and ranging. Moreover the SEQUITUR Pi board of the TAG has IMU sensors like 3D-accelerometer and 3D-magnetometer on board. With the boards, UNISET delivers a firmware running on Raspberry Pis operating system (OS) to establish a connection via user datagram protocol (UDP). This firmware allows to communicate with the sensors in order to retrieve IMU sensor data, but also to get direct access to the range between two nodes. It is explained in detail throughout the next section. 
+
+This hardware seemed perfect for our ambitions, as it provides a state-of-the-art UWB communication and ranging. Moreover the SEQUITUR Pi board of the TAG has IMU sensors like 3D-accelerometer and 3D-magnetometer on board. Together with the hardware, UNISET delivers a firmware running on Raspberry Pis operating system (OS) to establish a connection via user datagram protocol (UDP). This firmware allows to communicate with the sensors in order to retrieve IMU sensor data, but also to get direct access to the range between two nodes. It is explained in detail throughout the next section. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
 \section{UWB Communication and Ranging}
-The theoretical design on our system is shown in \ref{fig:system_design}, it works as follows:
-At least three ANs, equipped with UWB technology, are placed in an indoor environment of one floor. Our algorithm runs on a seperate server, where a zoneplan and floorplan of the floor are available. A single TAG is located somewhere on the floor, it is as well equipped with UWB technology, moreover it measures acceleration and magnetic energy with the onboard IMU. The TAG continously collects data from the IMU and contemporary waits for a request from the server. The server periodically requests data via UWB from the TAG. As soon as a request is noticed at the TAG, it performs a range estimation to every AN and sends this data together with the continously collected IMU data to the server.
-For every estimation period, the server has all the data needed to feed the particle filter.
+The radio module of SEQUITUR Pi board is used on the one hand to transmit data - in order to obviate the need for additional communication hardware - and on the other hand to evaluate the ToF. As UNISET is a comercial company, they do not provide full information of the underlying techniques. Nonetheless in the two following subsections, the known parts are mentioned.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Transmission}
-Here goes the text.
-
-
-\begin{figure}[th]
-\centering
-\includegraphics[width=1.0\textwidth]{Figures/system_design}
-\decoRule
-\caption[System Design]{Overview of the theoretical system design.}
-\label{fig:system_design}
-\end{figure}
+SEQUITUR InGPS Lite enables single-hop wireless communication with the UWB interface between neighboring nodes of the same network. 
+The radio module supports six different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in the table below:\\
+\\
+\begin{tabular}{c c c}
+Channel Number  & Central Frequency [MHz] & Bandwidth [MHz]\\
+1 & 3494.4 & 500\\
+2 & 3993.6 & 500\\
+3 & 4492.8 & 500\\
+4 & 3993.6 & 1300\\
+5 & 6489.6 & 500\\
+7 & 6489.6 & 1100\\
+\end{tabular}
+\\
+\\
+The data rate can be changed to three preset values of 110 kilobit per second (kbps), 850 kbps and 6.8 megabit per second (Mbps). All nodes have to operate in the same radiomode to communicate correctly. A lower data rate allows lager operating distances between the nodes. 
+The default pulse repetition frequency (PRF) is assumed to 64 MHz for all the channels.
+The underlying modulation techniques are not indicated in the specifications. \cite{Usermanual} \cite{Beginnersguide}
 
 %-----------------------------------
 %	SUBSECTION 2
