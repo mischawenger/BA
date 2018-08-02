@@ -89,10 +89,17 @@ We used the a particle filter approach to solve the localization problem. This m
 %-----------------------------------
 \subsection{Inputs}
 As stated above, various measurements are taken into account in our particle filter. The most important inputs are the range estimations between the TAG and ANs, the motion vector measured by the IMU of the TAG and the restrictions given by the floormap. We will refer to $Z_t$ as the range observation vector at time t, which is described as $Z_t = [d^{j}_{t}], j = 1...N,$ where N is the number of ANs. Every distance measurement $d^{j}_{t}$ itself is consisting of various errors, statistically it can be described as: 
-$$d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{\theta, t},$$
-where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{\theta, t},$ is a measured random error.
+$$d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{d^{j}, t},$$
+where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{d^{j}, t},$ is a measured random error.
 
-he motion vector is modeled by two variables $\theta^{t}$
+The motion vector $Mv_t = [\theta_{t}, \ell_{t}]$ is modeled by the heading direction $\theta$ and the movement length $\ell$. Both of $\theta$ and $\ell$ are given by the IMU, where again several noises occur such that the heading direction is statistically described as:
+$$\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\theta, t},$$
+with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. 
+
+Whereas the heading direction is directly calculated from IMU sensors, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
+We described the movement length as follows:
+$$\ell = \delta_{t-1} + \frac{a_{t-1} + a_{t}}{2} * \Delta t^{2}$$
+where $\delta_{t-1}$ is the distance the estimated position differed in the last iteration, $a_{t}, a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t and t-1.
 
 
 
