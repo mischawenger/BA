@@ -1,6 +1,6 @@
 % Chapter Template
 
-\chapter{Implementation} % Main chapter title
+\chapter{Implementation and experiment setup} % Main chapter title
 
 \label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 In this section we explain in detail, what hardware we used in our implementation and with which technology the UWB communication and ranging was done. Finally we briefly explain the core of our work, the mathematical theory of the particle filter.
@@ -82,28 +82,42 @@ The range estimation of two nodes is triggered by the application programming in
 %----------------------------------------------------------------------------------------
 
 \section{Particle Filter}
-All computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constraints and the zone indication, flow into the particle filter. These operations are done on the server:
-\begin{itemize}
-\item Spread the particles and validate new positions with floormap constraints
-\item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
-\item Calculate weight function and systematically resample (and reposition) particles with low weights
-\item Sum up weighted positions
-\end{itemize}
+We used the a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The second paragraph defines the mathematical model whereas we discuss the different variations of our system in the third subsection.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Inputs}
-Here goes the text.
+As stated above, various measurements are taken into account in our particle filter. The most important inputs are the range estimations between the TAG and ANs, the motion vector measured by the IMU of the TAG and the restrictions given by the floormap. We will refer to $Z_t$ as the range observation vector at time t, which is described as $Z_t = [d^{j}_{t}], j = 1...N,$ where N is the number of ANs. Every distance measurement $d^{j}_{t}$ itself is consisting of various errors, statistically it can be described as: 
+$$d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{\theta, t},$$
+where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{\theta, t},$ is a measured random error.
 
-In the first part, every particle is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
-The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. This is also in effect for the IMU motion, as the difference between the old and the new positon is compared to the measured IMU motion to evaluate the likelihood. \textbf{@Mischa:ADD PART OF ZONE INDICATION} % Add zone indication part!
-In the weighting step, every particle gets weighted by the liklihoods of the previous computations. The weights of all particles are normalized for further processing.
-The last part is simply a weighted sum of the particles locations.
+he motion vector is modeled by two variables $\theta^{t}$
+
+
+
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
+\subsection{Mathematical Model}
+Here goes the text.
+
+
+%-----------------------------------
+%	SUBSECTION 3
+%-----------------------------------
+\subsection{Variants}
+Variants of the system (one without spreading particles with movementvector and one without likelihood)
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Experiment Setup}
+
+
 \subsection{Likelihood and weighting}
 Here goes the text.
 

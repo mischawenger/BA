@@ -1,0 +1,91 @@
+% Chapter Template
+
+\chapter{Implementation} % Main chapter title
+
+\label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+In this section we explain in detail, what hardware we used in our implementation and with which technology the UWB communication and ranging was done. Finally we briefly explain the core of our work, the mathematical theory of the particle filter.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Hardware}
+We used the follwing configurations for our experiments:
+\begin{itemize}
+\item Frequency band was set to parameter X: With blabla and so on MHz and middle of xx. 
+\item Data rate was set to 2, which corresponds to 850 kbps
+\item Transmission power txpower is set to 63 (highest value)
+\end{itemize}
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+
+\subsection{Raspberry Pi}
+A Raspberry Pi is a single-board computer not much bigger than a credit card. Raspberry Pis are mainly designed for educational purposes as an alternative to expensive notebooks or desk computers. Hence the focus lies also on easy-to-use and plug-and-play experiences. Raspberry Pis are useful for versatile types of projects, as they provide common state of the art hardware - like HDMI, USB and wireless LAN - direct on boad and as they are extendable with selected components.
+
+
+
+%-----------------------------------
+%	SUBSECTION 2
+%-----------------------------------
+\subsection{SEQUITUR Pi board with InGPS Lite}
+On the 40-pin extended GPIO, we connected the SEQUITUR Pi board from UNISET Company. UNISET is a company located in Italy that focuses on research, development and manufacturing of innovative sensors in two major application areas \cite{Uniset}:
+
+\begin{itemize}
+\item Access control security systems, enhancing the reliability of intrusion detection
+\item Indoor and outdoor tracking. Sequitur is a precise real time locating system (RTLS) for tracking any object in 2D or 3D with centimeter accuracy.
+\end{itemize}
+Here goes the text.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{UWB Communication and Ranging}
+Here goes the text.
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+\subsection{Transmission}
+Here goes the text.
+%-----------------------------------
+%	SUBSECTION 2
+%-----------------------------------
+\subsection{Ranging with TWR}
+Here goes the text.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Particle Filter}
+Here goes the text.
+\begin{itemize}
+\item Spread the particles and validate new positions with floormap constraints
+\item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
+\item Calculate weight function and systematically resample (and reposition) particles with low weights
+\item Sum up weighted positions
+\end{itemize}
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+\subsection{Inputs}
+Here goes the text.
+
+
+
+%-----------------------------------
+%	SUBSECTION 2
+%-----------------------------------
+\subsection{Likelihood and weighting}
+Here goes the text.
+
+
+%-----------------------------------
+%	SUBSECTION 3
+%-----------------------------------
+\subsection{Ranging with TWR}
+Here goes the text.
