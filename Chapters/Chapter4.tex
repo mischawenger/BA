@@ -82,7 +82,7 @@ The range estimation of two nodes is triggered by the application programming in
 %----------------------------------------------------------------------------------------
 
 \section{Particle Filter}
-We used the a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The second paragraph defines the mathematical model whereas we discuss the different variations of our system in the third subsection.
+We used the a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The following paragraphs define the different phases in our mathematical model whereas we discuss the different variations of our system in the last subsection.
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -97,22 +97,45 @@ $$\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\the
 with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. 
 
 Whereas the heading direction is directly calculated from IMU sensors, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
-We described the movement length as follows:
-$$\ell = \delta_{t-1} + \frac{a_{t-1} + a_{t}}{2} * \Delta t^{2}$$
-where $\delta_{t-1}$ is the distance the estimated position differed in the last iteration, $a_{t}, a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t and t-1.
+We approximated the observed movement length as follows:
+$$\ell_{t} = \delta_{t-1} + \frac{a_{t-1} + a_{t}}{2} * \Delta t^{2}$$
+where $\delta_{t-1}$ is the distance the estimated position moved in the system state, $a_{t}, a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t and t-1. Due to sensor data update frequency we assume the change in acceleration during the time period as constant. The movement length can be defined as: 
+$$\ell_{t} = \hat{\ell}_{t-1} + (\hat{a}_{t} + a_{bs,t} +\epsilon_{a, t}) * \Delta t^{2} + \epsilon_{\ell, t},$$
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{t}$ is the actual middle acceleration during time period t, $a_{bs,t}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, t}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively. 
 
+For the likelihood calculation in our work we nevertheless used the actual measurements $d^{j}_{t}$, $\theta_{t}$ and $\ell_{t}$ since the errors are handled in the likelihood model by fusing different data sources and anchor node distances. However, to compensate the bias and error for the particle spreading, we assumed the heading direction $\theta$ and the stride length $\ell$ as random normal variables whose values are obtained from $\mathcal{N}(\theta_{t}, \sigma_{\theta}^{2})$ and $\mathcal{N}(\ell_{t}, \sigma_{\ell}^{2})$.
 
 
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
-\subsection{Mathematical Model}
-Here goes the text.
-
+\subsection{Prediction phase}
+Each particle has a state vector that is defined as follows:
+$$X_{t} = [x_{t}, y_{t}, x_{t-1}, y_{t-1}]$$
+where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t}, y_{t})$ at time t-1 respectively. In the prediction phase each particle is updated depending of the current movement vector $Mv_t = [\theta_{t}, \ell_{t}]$. The coordinates of the particle are updated with the following pattern:
+$$[x_{t}, y_{t}]  = [x_{t-1} + \ell_{t} * cos(\theta_{t}),\quad y_{t-1} + \ell_{t} * sin(\theta_{t})]$$
+As mentioned in the last subsection, with $\ell_{t}$ and $\theta_{t}$ as random normal variables.
+Floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
 
 %-----------------------------------
 %	SUBSECTION 3
+%-----------------------------------
+\subsection{Observation phase}
+
+
+likelihood:
+$$p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{2*\pi \sigma_{Mx}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2*\sigma_{Mx}})$$
+$$p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2*\pi \sigma_{Mx}} * exp(\frac{-[(x^{i}_{t}-x^{i}_{t-1}) - \hat{M}_{x,t}]^{2}}{2*\sigma_{Mx}})$$
+
+%-----------------------------------
+%	SUBSECTION 4
+%-----------------------------------
+\subsection{Resampling phase}
+
+
+%-----------------------------------
+%	SUBSECTION 5
 %-----------------------------------
 \subsection{Variants}
 Variants of the system (one without spreading particles with movementvector and one without likelihood)
