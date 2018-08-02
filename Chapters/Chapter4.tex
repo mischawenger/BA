@@ -88,11 +88,11 @@ We used the a particle filter approach to solve the localization problem. This m
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Inputs}
-As stated above, various measurements are taken into account in our particle filter. The most important inputs are the range estimations between the TAG and ANs, the motion vector measured by the IMU of the TAG and the restrictions given by the floormap. We will refer to $Z_t$ as the range observation vector at time t, which is described as $Z_t = [d^{j}_{t}], j = 1...N,$ where N is the number of ANs. Every distance measurement $d^{j}_{t}$ itself is consisting of various errors, statistically it can be described as: 
+As stated above, various measurements are taken into account in our particle filter. The most important inputs are the range estimations between the TAG and ANs, the motion vector measured by the IMU of the TAG and the restrictions given by the floormap. We will refer to $Zd_{t}$ as the range observation vector at time t, which is described as $Zd_{t} = [d^{j}_{t}], j = 1...N,$ where N is the number of ANs. Every distance measurement $d^{j}_{t}$ itself is consisting of various errors, statistically it can be described as: 
 $$d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{d^{j}, t},$$
 where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{d^{j}, t},$ is a measured random error.
 
-The motion vector $Mv_t = [\theta_{t}, \ell_{t}]$ is modeled by the heading direction $\theta$ and the movement length $\ell$. Both of $\theta$ and $\ell$ are given by the IMU, where again several noises occur such that the heading direction is statistically described as:
+The motion vector $Mv_{t} = [\theta_{t}, \ell_{t}]$ is modeled by the heading direction $\theta$ and the movement length $\ell$. Both of $\theta$ and $\ell$ are given by the IMU, where again several noises occur such that the heading direction is statistically described as:
 $$\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\theta, t},$$
 with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. 
 
@@ -113,15 +113,19 @@ For the likelihood calculation in our work we nevertheless used the actual measu
 \subsection{Prediction phase}
 Each particle has a state vector that is defined as follows:
 $$X_{t} = [x_{t}, y_{t}, x_{t-1}, y_{t-1}]$$
-where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t}, y_{t})$ at time t-1 respectively. In the prediction phase each particle is updated depending of the current movement vector $Mv_t = [\theta_{t}, \ell_{t}]$. The coordinates of the particle are updated with the following pattern:
+where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t}, y_{t})$ at time t-1 respectively. In the prediction phase each particle is updated depending of the current movement vector $Mv_{t} = [\theta_{t}, \ell_{t}]$. The coordinates of the particle are updated with the following pattern:
 $$[x_{t}, y_{t}]  = [x_{t-1} + \ell_{t} * cos(\theta_{t}),\quad y_{t-1} + \ell_{t} * sin(\theta_{t})]$$
-As mentioned in the last subsection, with $\ell_{t}$ and $\theta_{t}$ as random normal variables.
+As mentioned in the last subsection, with $\ell_{t}$ and $\theta_{t}$ as random normal variables. In the remainder of this work we will also refer to the motion in Cartesian coordinates as $M_{x,t} = \ell_{t} * cos(\theta_{t})$ for the motion in x-direction and $M_{y,t} = \ell_{t} * sin(\theta_{t})$ for the motion in y-direction.
 Floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
 
 %-----------------------------------
 %	SUBSECTION 3
 %-----------------------------------
 \subsection{Observation phase}
+In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every partical, since the weight does not anymore correspond to the current position. The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probability is determined as:
+$$ p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t}) $$
+and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t})$$ %is this correct that p(x) and p(y) are multiplied?
+In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood. $z_{t}$ is used when it does not matter if $d_{t}$ or $M_{t}$ is inserted.
 
 
 likelihood:
