@@ -99,7 +99,7 @@ with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a
 Whereas the heading direction is directly calculated from IMU sensors, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
 We approximated the observed movement length as follows:
 $$\ell_{t} = \delta_{t-1} + \frac{a_{t-1} + a_{t}}{2} * \Delta t^{2}$$
-where $\delta_{t-1}$ is the distance the estimated position moved in the system state, $a_{t}, a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t and t-1. Due to sensor data update frequency we assume the change in acceleration during the time period as constant. The movement length can be defined as: 
+where $\delta_{t-1}$ is the distance the estimated position moved in the system state, $a_{t} and a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t-1 and t. Due to sensor data update frequency restrictions we assume the change in acceleration during the time period as constant. The movement length can be defined as: 
 $$\ell_{t} = \hat{\ell}_{t-1} + (\hat{a}_{t} + a_{bs,t} +\epsilon_{a, t}) * \Delta t^{2} + \epsilon_{\ell, t},$$
 where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{t}$ is the actual middle acceleration during time period t, $a_{bs,t}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, t}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively. 
 
@@ -122,21 +122,28 @@ Floorplan restrictions are applied in this phase, whereas movements through wall
 %	SUBSECTION 3
 %-----------------------------------
 \subsection{Observation phase}
-In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every partical, since the weight does not anymore correspond to the current position. The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probability is determined as:
+In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every particle, since the weight does not anymore correspond to the current position. The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probability is determined as:
 $$ p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t}) $$
 and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t})$$ %is this correct that p(x) and p(y) are multiplied?
-In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood. $z_{t}$ is used when it does not matter if $d_{t}$ or $M_{t}$ is inserted.
+In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood.
 
+The associated weight $w^{i}_{t}$ of each particle is given by ranging as well as by motion information. A particle at the current position $(x_{t},y_{t})$ with low probability to observe $d_{t}^{j}$ in its position will be assigned a small weight. Additionally a particle that moved in x-direction by $x_{t}^{i}-x_{t-1}^{i}$ with low probability to observe the movement $M_{x,t}$ will also be assigned a small weight. Analogue for the movement in y-direction.
+That leads to the fact that particles with large weights will have a stronger effect to the determination of the state of the system.
+We assume that all these likelihoods - the ranges to each AN as well as the movement in direction x, y - are statistically independent from each other. Therefore, the likelihood is defined as:
+$$p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} (\hat{d}_{j,t}|X_{t}^{i}) * (\hat{M}_{x,t} | X^{i}_{t}) * (\hat{M}_{y,t} | X^{i}_{t})$$
+where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M}_{x,t}$ is the measured motion in x-direction in timeinterval t, respectively $\hat{M}_{y,t}$ in y-direction.  
 
-likelihood:
-$$p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{2*\pi \sigma_{Mx}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2*\sigma_{Mx}})$$
-$$p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2*\pi \sigma_{Mx}} * exp(\frac{-[(x^{i}_{t}-x^{i}_{t-1}) - \hat{M}_{x,t}]^{2}}{2*\sigma_{Mx}})$$
+The individual likelihood for the range observation can then be expressed as:
+$$p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{\sqrt{2\pi \sigma_{j}^{2}}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2\sigma_{j}^{2}})$$
+where $(x_{j},y_{j})$ are the known coordinates of the jth AN.
+Whereas the individual likelihood of the motion observation in x-direction (analogue for y-direction) is expressed as follows:
+$$p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2\pi \sigma_{Mx}^{2}} * exp(\frac{-[(x^{i}_{t}-x^{i}_{t-1}) - \hat{M}_{x,t}]^{2}}{2\sigma_{Mx}^{2}})$$
 
 %-----------------------------------
 %	SUBSECTION 4
 %-----------------------------------
 \subsection{Resampling phase}
-
+The resampling phase is an essential component of our particle filter implementation, although it is a computationally expensive step. In the resampling, particles with low assigned weights are repositioned at identical positions as particles with high associated weights. This means, that after the repositioning of the prediction phase and the weight calculation in the observation phase, a resampling in systematic manner is done. 
 
 %-----------------------------------
 %	SUBSECTION 5
