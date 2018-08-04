@@ -46,7 +46,7 @@ This hardware seemed perfect for our ambitions, as it provides a state-of-the-ar
 %----------------------------------------------------------------------------------------
 
 \section{UWB Communication and Ranging}
-The radio module of SEQUITUR Pi board is used on the one hand to transmit data - in order to obviate the need for additional communication hardware - and on the other hand to evaluate the ToF. As UNISET is a comercial company, they do not provide full information of the underlying techniques. Nonetheless in the two following subsections, the known parts are mentioned.
+The radio module of SEQUITUR Pi board is used on the one hand to transmit data - in order to obviate the need for additional communication hardware - and on the other hand to evaluate the ToF. As UNISET is a comercial company, they do not provide full information of the underlying transmission techniques. Nonetheless in the two following subsections, the known parts are mentioned.
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -92,20 +92,20 @@ As stated above, various measurements are taken into account in our particle fil
 $$d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{d^{j}, t},$$
 where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{d^{j}, t},$ is a measured random error.
 
-The motion vector $Mv_{t} = [\theta_{t}, \ell_{t}]$ is modeled by the heading direction $\theta$ and the movement length $\ell$. Both of $\theta$ and $\ell$ are given by the IMU, where again several noises occur such that the heading direction is statistically described as:
+The motion vector $Mv_{t} = [\theta_{t}, \ell_{t}]$ is modeled by the heading direction $\theta$ and the movement length $\ell$. Both of $\theta$ and $\ell$ are calculated by the IMU readings, where again several noises occur such that the heading direction is statistically described as:
 $$\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\theta, t},$$
 with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. 
+In our implementation we calculated the heading direction with the formula $\theta = atan(\frac{mag_{x}}{mag_{y}})$, where $mag_{x}$ and $mag_{y}$ are low pass filtered magnetometer readings in x and y direction. The update frequency of the sensor was higher than the update frequency of the particle filter, hence we calculated an average of these different measurements, hereafter appearing as $\theta_{t}$ for the average during time period from t-1 to t.
 
-Whereas the heading direction is directly calculated from IMU sensors, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
-We approximated the observed movement length as follows:
-$$\ell_{t} = \delta_{t-1} + \frac{a_{t-1} + a_{t}}{2} * \Delta t^{2}$$
-where $\delta_{t-1}$ is the distance the estimated position moved in the system state, $a_{t} and a_{t-1}$ the measured acceleration at time t, respectively time t-1 and $\Delta t$ the time passed between t-1 and t. Due to sensor data update frequency restrictions we assume the change in acceleration during the time period as constant. The movement length can be defined as: 
+Whereas the heading direction is directly calculated from IMU data, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
+That means that the movement length can be defined as: 
 $$\ell_{t} = \hat{\ell}_{t-1} + (\hat{a}_{t} + a_{bs,t} +\epsilon_{a, t}) * \Delta t^{2} + \epsilon_{\ell, t},$$
-where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{t}$ is the actual middle acceleration during time period t, $a_{bs,t}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, t}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively. 
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{t}$ is the actual middle acceleration during time period t, $a_{bs,t}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, t}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
+To minimize these errors, we approximated the observed movement length as follows:
+$$\ell_{t} = v_{t-1} * \Delta t + \frac{\sum_{k=0}^N (a_{k})}{N} * \Delta t^{2}$$
+where $v_{t-1}$ is the velocity of the estimated position change in the last system state update, $a_{k}$ is the kth acceleration measurement and N the number of descrete acceleration measurements during the time period $\Delta t$, which corresponds to the time passed between t-1 and t. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption and one with a low adaption, and only took their difference into account. This corrects a part of the long term sensor bias. 
 
-For the likelihood calculation in our work we nevertheless used the actual measurements $d^{j}_{t}$, $\theta_{t}$ and $\ell_{t}$ since the errors are handled in the likelihood model by fusing different data sources and anchor node distances. However, to compensate the bias and error for the particle spreading, we assumed the heading direction $\theta$ and the stride length $\ell$ as random normal variables whose values are obtained from $\mathcal{N}(\theta_{t}, \sigma_{\theta}^{2})$ and $\mathcal{N}(\ell_{t}, \sigma_{\ell}^{2})$.
-
-
+Although there were many sources of errors, for the likelihood calculation in our work we nevertheless used the actual obtained values $d^{j}_{t}$, $\theta_{t}$ and $\ell_{t}$ since the errors are handled in the likelihood model by fusing different data sources and anchor node distances. However, to compensate the bias and error for the particle spreading, we assumed the heading direction $\theta$ and the stride length $\ell$ as random normal variables whose values are obtained from $\mathcal{N}(\theta_{t}, \sigma_{\theta}^{2})$ and $\mathcal{N}(\ell_{t}, \sigma_{\ell}^{2})$.
 
 %-----------------------------------
 %	SUBSECTION 2
@@ -129,8 +129,8 @@ In order to avoid confusion between different likelihoods used in this work, her
 
 The associated weight $w^{i}_{t}$ of each particle is given by ranging as well as by motion information. A particle at the current position $(x_{t},y_{t})$ with low probability to observe $d_{t}^{j}$ in its position will be assigned a small weight. Additionally a particle that moved in x-direction by $x_{t}^{i}-x_{t-1}^{i}$ with low probability to observe the movement $M_{x,t}$ will also be assigned a small weight. Analogue for the movement in y-direction.
 That leads to the fact that particles with large weights will have a stronger effect to the determination of the state of the system.
-We assume that all these likelihoods - the ranges to each AN as well as the movement in direction x, y - are statistically independent from each other. Therefore, the likelihood is defined as:
-$$p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} (\hat{d}_{j,t}|X_{t}^{i}) * (\hat{M}_{x,t} | X^{i}_{t}) * (\hat{M}_{y,t} | X^{i}_{t})$$
+We assume that all these likelihoods - the ranges to each AN as well as the movement in direction x, y - are statistically independent from each other. Therefore, the overall likelihood is defined as:
+$$p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} p(\hat{d}_{j,t}|X_{t}^{i}) * p(\hat{M}_{x,t} | X^{i}_{t}) * p(\hat{M}_{y,t} | X^{i}_{t})$$
 where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M}_{x,t}$ is the measured motion in x-direction in timeinterval t, respectively $\hat{M}_{y,t}$ in y-direction.  
 
 The individual likelihood for the range observation can then be expressed as:
@@ -143,8 +143,7 @@ $$p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2\pi \sigma_{Mx}^{2}} * exp(\frac{-[(x
 %	SUBSECTION 4
 %-----------------------------------
 \subsection{Resampling phase}
-The resampling phase is an essential component of our particle filter implementation, although it is a computationally expensive step. In the resampling, particles with low assigned weights are repositioned at identical positions as particles with high associated weights. This means, that after the repositioning of the prediction phase and the weight calculation in the observation phase, a resampling in systematic manner is done. 
-
+The resampling phase is an essential component of our particle filter implementation, although it is a computationally expensive step. In the resampling, particles with low assigned weights are repositioned at identical positions as particles with high associated weights. This means, that after the repositioning of the prediction phase and the weight calculation in the observation phase, a resampling in systematic manner is done. This resampling relies on the overall likelihood $p(Z_{t} | X^{i}_{t})$, which means that every kind of likelihood is taken into account for this step. After repositioning the particles with low weights (and updating their weight), all weights are normalized to obtain in the next step the weighted center of all particles, which corresponds to the estimated position. 
 %-----------------------------------
 %	SUBSECTION 5
 %-----------------------------------

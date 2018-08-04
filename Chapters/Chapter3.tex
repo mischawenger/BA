@@ -29,7 +29,7 @@ An overview of the whole process is illustrated on figure \ref{fig:particle_filt
 %----------------------------------------------------------------------------------------
 
 \section{Setup}
-The theoretical design on our system is shown in \ref{fig:system_design}, it works as follows:
+The theoretical design on our system is shown in figure \ref{fig:system_design}, it works as follows:
 At least three ANs, equipped with UWB technology, are placed in an indoor environment of one floor. Our algorithm runs on a seperate server, where a zoneplan and floorplan of the floor are available. A single TAG is located somewhere on the floor, it is as well equipped with UWB technology, moreover it measures acceleration and magnetic energy with the onboard IMU. The TAG continously collects data from the IMU and contemporary waits for a request from the server. The server periodically requests data via UWB from the TAG. As soon as a request is noticed at the TAG, it performs a range estimation to every AN and sends this data together with the continously collected IMU data to the server.
 For every estimation period, the server has all the data needed to feed the particle filter.
 
@@ -46,7 +46,7 @@ For every estimation period, the server has all the data needed to feed the part
 %----------------------------------------------------------------------------------------
 
 \section{Computations on the server}
-All computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constraints and the zone indication, flow into the particle filter. These operations are done on the server:
+Most computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constraints and the zone indication, flow into the particle filter. These operations are done on the server:
 \begin{itemize}
 \item Spread the particles and validate new positions with floormap constraints
 \item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
