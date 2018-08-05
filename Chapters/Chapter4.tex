@@ -106,19 +106,19 @@ A =
 where $a_{ij}$ respresents the probability of moving from zone $z_{i}$ to zone $z_{j}$.
 \item A set of observations O, defined as:
 $$O = \{(o_{1},o_{2},\dots,o_{m})_1, \dots, (o_{1},o_{2},\dots,o_{m})_r\}$$
-where $o_{i}$ stands for the zone prediction result of the $i$-th individual machine learning algorithm. This leads to $O$ being a set of $^rP_m$ permutations (repetitions allowed), whith $r$ being the number of zones and m the number of different machine learning algorithms. The machine learning methods have to be conditionally independent for $y_{t} \in O$ as the random variable of the observations in time $t$.
-\item A quadratic matrix $B$ holding the emission probabilities of observation liklelihoods:
+where $o_{i}$ stands for the zone prediction result of the $i$-th individual machine learning algorithm. This leads to $O$ being a set of $^rP_m$ permutations (repetitions allowed), with $r$ being the number of zones and $m$ the number of different machine learning algorithms. The machine learning methods have to be conditionally independent for $y_{t} \in O$ as the random variable of the observations in time $t$.
+\item A matrix $B$ holding the emission probabilities of observation liklelihoods:
 \begin{equation*}
 B = 
 \begin{pmatrix}
-   b_{1,1} & b_{1,2} & \dots & b_{1,n}\\
-   b_{2,1} & b_{2,2} & \dots & b_{2,n}\\
+   b_{1,1} & b_{1,2} & \dots & b_{1,r}\\
+   b_{2,1} & b_{2,2} & \dots & b_{2,r}\\
     \vdots & \vdots & \ddots & \vdots  \\
-   b_{n,1} & b_{n,2} & \dots & b_{n,n}\\
+   b_{n,1} & b_{n,2} & \dots & b_{n,r}\\
 \end{pmatrix},
 \end{equation*}
 where $b_{ij}$ respresents the probability of $(o_{1},o_{2}, \dots, o_{m})_j$ being the observation generated in zone $z_{i}$.
-\item An initial probability distribution $\Pi = \Pi_{1},\Pi_{1},\dots, \Pi_{n}$ over the $n$ zones.
+\item An initial probability distribution $\pi = \pi_{1},\pi_{1},\dots, \pi_{n}$ over the $n$ zones.
 \end{itemize}
 How the specified components interact in the HMM can be seen in figure \ref{fig:hidden_markov_model}.
 
@@ -131,12 +131,18 @@ How the specified components interact in the HMM can be seen in figure \ref{fig:
 \label{fig:hidden_markov_model}
 \end{figure}
 
-The learning of each individual machine learning method only relies on the fingerprint of Wi-Fi, UWB and magnetic field, that's why prediction errors can still occur. However we can integrate the zone transition information (e.g. some areas are only reachable through other areas) in the HMM to improve the prediction. To determine the sequence of variables that is underlying source of some sequence of observation in a model with hidden variables, a decoding task is necessary. With the HMM model $\lambda = \{\Pi, A, B\}$ and the given observation sequence $y_{t-i},\dots, y_{t-1},y_{t}$, the Viterbi algorithm \cite{Viterbi} is used to estimate the hidden states sequence $x_{t-i},\dots,x_{t-1},x_{t}$.
+The learning of each individual machine learning method only relies on the fingerprint of Wi-Fi, UWB and magnetic field, that's why prediction errors can still occur. However we can integrate the zone transition information (e.g. some areas are only reachable through other areas) in the HMM to improve the prediction. To determine the sequence of variables that is underlying source of some sequence of observation in a model with hidden variables, a decoding task is necessary. With the HMM model $\lambda = \{\pi, A, B\}$ and the given observation sequence $y_{t-i},\dots, y_{t-1},y_{t}$, the Viterbi algorithm \cite{Viterbi} is used to estimate the hidden states sequence $x_{t-i},\dots,x_{t-1},x_{t}$.
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
 \subsection{Transition and Emission Probabilities in the HMM}
+In advance, all zones are exactely defined. Then, the transition probabilies in matrix A express the likelihood of moving from a beforehand defined zone to another. The connections between zones, retrieved from the floorplan, predetermine these probabilities. Therefore the values in the $n\times n$-matrix $A = (a_{ij})$ are defined as follows:
+$$a_{ij} = P(x_{t+1} = z_{j} | x_{t} = z_{i})$$
+where $a_{ij}$ represents the transition likelihood from zone $z_{i}$ to zone $z_{j}$. Thus, $\forall i \in \{1,\dots,n\}: \sum_{j=1}^{n} a_{ij} = 1$.\\
+The emission probability is the likelihood of observing a particular set of observations $y_{j}$ at zone $z_{i}$. Therefore the values of the $n\times r$-matrix $B = (b_{ij})$ can be written as:
+$$b_{ij} = P(y_{j} | z_{i}), \forall y_{j} \in O \land z_{i} \in Z,$$
+where $y_{j} = (o_1, o_2, \dots, o_m)_j$ and $o_i$ is the zone prediction result from the $i$-th machine learning algorithm.
 
 %also include the ML specification, (parameter and used methods) maybe in implementation?
 
