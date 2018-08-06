@@ -23,6 +23,7 @@ We used Raspberry Pi Model B \cite{Raspberry}, these were the most relevant spec
 \begin{itemize}
 \item Quad Core 1.2GHz Broadcom BCM2837 64bit CPU
 \item 1GB RAM
+\item BCM43438 wireless LAN
 \item 100 Base Ethernet
 \item 40-pin extended general purpose input output (GPIO)
 \item Micro SD port for loading your operating system and storing data
@@ -137,13 +138,17 @@ The learning of each individual machine learning method only relies on the finge
 %	SUBSECTION 2
 %-----------------------------------
 \subsection{Transition and Emission Probabilities in the HMM}
-In advance, all zones are exactely defined. Then, the transition probabilies in matrix A express the likelihood of moving from a beforehand defined zone to another. The connections between zones, retrieved from the floorplan, predetermine these probabilities. Therefore the values in the $n\times n$-matrix $A = (a_{ij})$ are defined as follows:
+In advance, all zones are exactely defined. Then, the transition probabilies in matrix $A$ express the likelihood of moving from a beforehand defined zone to another. The connections between zones, retrieved from the floorplan, predetermine these probabilities. Therefore the values in the $n\times n$-matrix $A = (a_{ij})$ are defined as follows:
 $$a_{ij} = P(x_{t+1} = z_{j} | x_{t} = z_{i})$$
 where $a_{ij}$ represents the transition likelihood from zone $z_{i}$ to zone $z_{j}$. Thus, $\forall i \in \{1,\dots,n\}: \sum_{j=1}^{n} a_{ij} = 1$.\\
 The emission probability is the likelihood of observing a particular set of observations $y_{j}$ at zone $z_{i}$. Therefore the values of the $n\times r$-matrix $B = (b_{ij})$ can be written as:
 $$b_{ij} = P(y_{j} | z_{i}), \forall y_{j} \in O \land z_{i} \in Z,$$
 where $y_{j} = (o_1, o_2, \dots, o_m)_j$ and $o_i$ is the zone prediction result from the $i$-th machine learning algorithm.
-
+Since different individual machine learning methods are used independently, we can assume with good reason that the their outcomes are conditionally independent. This leads to the simplified expression:
+$$b_{ij} = \prod^{n}_{n=1} P(o_{j} | z_{i})_{n},$$
+where $P(o_{j} | z_{i})_{n}$ is the probability of the $n$-th learning method predicting $o_{j}$ at zone $z_{i}$. Therefore it is equal to the sensitivity of the $n$-th machine learning algorithm at zone $z_{i}:
+$$P(o_{j} | z_{i})_{n} = \frac{TP_{n}}{TP_{n} + FN_{n}},$$
+with $TP_{n}$ and $FP_{n}$ being the true positive respectively the false positive rate of the corresponding ML algorithm.
 %also include the ML specification, (parameter and used methods) maybe in implementation?
 
 
@@ -167,13 +172,12 @@ $$\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\the
 with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. 
 In our implementation we calculated the heading direction with the formula $\theta = atan(\frac{mag_{x}}{mag_{y}})$, where $mag_{x}$ and $mag_{y}$ are low pass filtered magnetometer readings in x and y direction. The update frequency of the sensor was higher than the update frequency of the particle filter, hence we calculated an average of these different measurements, hereafter appearing as $\theta_{t}$ for the average during time period from t-1 to t.
 
-Whereas the heading direction is directly calculated from IMU data, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time.
-That means that the movement length can be defined as: 
-$$\ell_{t} = \hat{\ell}_{t-1} + (\hat{a}_{t} + a_{bs,t} +\epsilon_{a, t}) * \Delta t^{2} + \epsilon_{\ell, t},$$
-where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{t}$ is the actual middle acceleration during time period t, $a_{bs,t}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, t}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
-To minimize these errors, we approximated the observed movement length as follows:
-$$\ell_{t} = v_{t-1} * \Delta t + \frac{\sum_{k=0}^N (a_{k})}{N} * \Delta t^{2}$$
-where $v_{t-1}$ is the velocity of the estimated position change in the last system state update, $a_{k}$ is the kth acceleration measurement and N the number of descrete acceleration measurements during the time period $\Delta t$, which corresponds to the time passed between t-1 and t. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption and one with a low adaption, and only took their difference into account. This corrects a part of the long term sensor bias. 
+Whereas the heading direction is directly calculated from IMU data, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time. As we can not assume the acceleration to be constant, the movement length approximation can be defined as: 
+$$\ell_{t} = \hat{\ell}_{t-1} + \sum_{i=0}^{N}([(\hat{a}_{i} + a_{bs,i} +\epsilon_{a, i}) * \Delta t_{i} ]*(N-i)) *\Delta t + \epsilon_{\ell, t},$$
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period t, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
+In our implementation the observed movement length is calculated as follows:
+$$\ell_{t} = v_{t-1} * \Delta t + \sum_{i=0}^N [(a_{i} * \Delta t_{i})(N-i)]* \Delta t^{2}$$
+where $v_{t-1}$ is the velocity of the estimated position change in the last system state update, $a_{i}$ is the $i$-th acceleration measurement and N the number of descrete acceleration measurements during the time period $\Delta t$, which corresponds to the time passed between t-1 and t. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption and one with a low adaption, and only took their difference into account. This corrects a part of the long term sensor bias. 
 
 Although there were many sources of errors, for the likelihood calculation in our work we nevertheless used the actual obtained values $d^{j}_{t}$, $\theta_{t}$ and $\ell_{t}$ since the errors are handled in the likelihood model by fusing different data sources and anchor node distances. However, to compensate the bias and error for the particle spreading, we assumed the heading direction $\theta$ and the stride length $\ell$ as random normal variables whose values are obtained from $\mathcal{N}(\theta_{t}, \sigma_{\theta}^{2})$ and $\mathcal{N}(\ell_{t}, \sigma_{\ell}^{2})$.
 
