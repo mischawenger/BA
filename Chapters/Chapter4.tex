@@ -222,7 +222,9 @@ The resampling phase is an essential component of our particle filter implementa
 %	SUBSECTION 5
 %-----------------------------------
 \subsection{Variants}
-Variants of the system (one without spreading particles with movementvector and one without likelihood)
+We implemented three variants of the particle filter localization system to state the effect on accuracy of the different parts in our system.
+Hereafter we will refer to $PF_{full}$ for the full implementation of the particle filter as defined in the last subsection. $PF_{rand}$ will refer to the particle filter implementation, where the particles are not spread according to the movement vector, but randomly spread in a box of $2 \times 2$ meters centered on the last estimated position. The rest of the implementation is exactly as in $PF_{full}$.
+The third variant $PF_{UWBonly}$ is exclusively using UWB ranging and does not take the IMU measured movement into account, neither in the prediction phase nor in the observation phase.
 
 
 %----------------------------------------------------------------------------------------
@@ -230,13 +232,15 @@ Variants of the system (one without spreading particles with movementvector and 
 %----------------------------------------------------------------------------------------
 
 \section{Experiment Setup}
+In our experiment we tested the localization accuracy of the different implemented variants, as well as the accuracy of the indoor tracking system UNISET company provided with their sensors, in a complex indoor scenario with trajectories through numerous of rooms on one floor in a real building of the University of Bern.
 
-
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
 \subsection{Zone indication: concrete implementation and parameters}
 In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}. 
 The internal parameters of the ML algorithms were optimized from training data, whereas the following parameters were used for the non self optimizing parameters: global percent ratio of 30\% for KStar, single hidden layer with 10 neurons for MLP and a confidence factor of 0.25 for J48.
 The zone definition can be seen in figure \ref{fig:zone_definition}.
-
 
 We assumed that the liklihood of staying in the same zone is bigger than moving to another zone, which led to the empirically defined values for matrix $A$ as:
 
@@ -271,10 +275,26 @@ A =
 \end{pmatrix},
 \end{equation*}
 
-
-
 %-----------------------------------
-%	SUBSECTION 3
+%	SUBSECTION 2
 %-----------------------------------
-\subsection{Trajectories}
-Here goes the text.
+\subsection{Placement, trajectories and configuration}
+We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position}. Whereas the particle filter updated its state every 700 milliseconds, the IMU sensors were updated every 100 milliseconds. The UWB transmitter of the TAG and the ANs operated in radio mode 3 with a datarate of 6.8 Mbps, they were configured to use channel 1 with a central frequency of 3494.4 MHz and an occupied sprectrum of 500 MHz. \textbf{Anpassen sobald nachgeschaut}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/anchor_position}
+\decoRule
+\caption[Anchor Node Positions]{Distributed anchor nodes on the floor map (with distance reference of 10m).}
+\label{fig:anchor_position}
+\end{figure}
+
+The TAG was placed on a small vehicle at the starting point of the trajectories, when the system was started. The vehicle drove the given paths indicated in figure \ref{fig:trajectories}, as soon as it passed a predefined checkpoint the current position estimation was registered. Every trajectory was tested 3 times. 
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectories}
+\decoRule
+\caption[Trajectories]{The three different trajectories with the defined checkpoints.}
+\label{fig:trajectories}
+\end{figure}
