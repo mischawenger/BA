@@ -146,7 +146,7 @@ $$b_{ij} = P(y_{j} | z_{i}), \forall y_{j} \in O \land z_{i} \in Z,$$
 where $y_{j} = (o_1, o_2, \dots, o_m)_j$ and $o_i$ is the zone prediction result from the $i$-th machine learning algorithm.
 Since different individual machine learning methods are used independently, we can assume with good reason that the their outcomes are conditionally independent. This leads to the simplified expression:
 $$b_{ij} = \prod^{n}_{n=1} P(o_{j} | z_{i})_{n},$$
-where $P(o_{j} | z_{i})_{n}$ is the probability of the $n$-th learning method predicting $o_{j}$ at zone $z_{i}$. Therefore it is equal to the sensitivity of the $n$-th machine learning algorithm at zone $z_{i}:
+where $P(o_{j} | z_{i})_{n}$ is the probability of the $n$-th learning method predicting $o_{j}$ at zone $z_{i}$. Therefore it is equal to the sensitivity of the $n$-th machine learning algorithm at zone $z_{i}$:
 $$P(o_{j} | z_{i})_{n} = \frac{TP_{n}}{TP_{n} + FN_{n}},$$
 with $TP_{n}$ and $FP_{n}$ being the true positive respectively the false positive rate of the corresponding ML algorithm.
 %also include the ML specification, (parameter and used methods) maybe in implementation?
@@ -174,7 +174,7 @@ In our implementation we calculated the heading direction with the formula $\the
 
 Whereas the heading direction is directly calculated from IMU data, for the stride length we took the previous system state into account. This was necessary, because measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time. As we can not assume the acceleration to be constant, the movement length approximation can be defined as: 
 $$\ell_{t} = \hat{\ell}_{t-1} + \sum_{i=0}^{N}([(\hat{a}_{i} + a_{bs,i} +\epsilon_{a, i}) * \Delta t_{i} ]*(N-i)) *\Delta t + \epsilon_{\ell, t},$$
-where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period t, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period $\Delta t$, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
 In our implementation the observed movement length is calculated as follows:
 $$\ell_{t} = v_{t-1} * \Delta t + \sum_{i=0}^N [(a_{i} * \Delta t_{i})(N-i)]* \Delta t^{2}$$
 where $v_{t-1}$ is the velocity of the estimated position change in the last system state update, $a_{i}$ is the $i$-th acceleration measurement and N the number of descrete acceleration measurements during the time period $\Delta t$, which corresponds to the time passed between t-1 and t. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption and one with a low adaption, and only took their difference into account. This corrects a part of the long term sensor bias. 
@@ -232,12 +232,49 @@ Variants of the system (one without spreading particles with movementvector and 
 \section{Experiment Setup}
 
 
-\subsection{Likelihood and weighting}
-Here goes the text.
+\subsection{Zone indication: concrete implementation and parameters}
+In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}. 
+The internal parameters of the ML algorithms were optimized from training data, whereas the following parameters were used for the non self optimizing parameters: global percent ratio of 30\% for KStar, single hidden layer with 10 neurons for MLP and a confidence factor of 0.25 for J48.
+The zone definition can be seen in figure \ref{fig:zone_definition}.
+
+
+We assumed that the liklihood of staying in the same zone is bigger than moving to another zone, which led to the empirically defined values for matrix $A$ as:
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/zone_definition}
+\decoRule
+\caption[Zone Definition]{Zone definition and transitions between zones}
+\label{fig:zone_definition}
+\end{figure}
+
+\textbf{MATRIX A has to be updated by the correct values}
+
+\setcounter{MaxMatrixCols}{15}
+\begin{equation*}
+A = 
+\begin{pmatrix}
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
+\end{pmatrix},
+\end{equation*}
+
 
 
 %-----------------------------------
 %	SUBSECTION 3
 %-----------------------------------
-\subsection{Ranging with TWR}
+\subsection{Trajectories}
 Here goes the text.
