@@ -3,7 +3,7 @@
 \chapter{Implementation and experiment setup} % Main chapter title
 
 \label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we explain in detail, what hardware we used in our implementation and with which technology the UWB communication and ranging was done. Finally we briefly explain the core of our work, the mathematical theory of the particle filter.
+In this section we explain in detail, what hardware we used in our implementation and with which technology the UWB communication and ranging was done. Then we introduce the zone indication learning algorithm and finally we briefly explain the core of our work, the mathematical theory of the particle filter.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -69,14 +69,14 @@ Channel Number  & Central Frequency [MHz] & Bandwidth [MHz]\\
 \\
 The data rate can be changed to three preset values of 110 kilobit per second (kbps), 850 kbps and 6.8 megabit per second (Mbps). All nodes have to operate in the same radiomode to communicate correctly. A lower data rate allows lager operating distances between the nodes. 
 The default pulse repetition frequency (PRF) is assumed to 64 MHz for all the channels.
-The underlying modulation techniques are not indicated in the specifications. \cite{Usermanual} \cite{Beginnersguide}
+The underlying modulation techniques are not indicated in the specifications \cite{Usermanual} \cite{Beginnersguide}.
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
 \subsection{Ranging with TWR}
 UNISET company offers two different packages for positioning. InGPS Lite, which is the standard software and InGPS Pro, which is the advanced package. For our implementation InGPS Lite was sufficient, as the main difference of the two packages are the number of TAGs and anchors supported. With InGPS Lite only one TAG and a maximum of 10 anchors are supported as with InGPS Pro numerous TAGs and anchors are possible. InGPS Lite opperates only in TWR mode other than InGPS Pro, where a second mode with TDOA range estimation is available.
-The range estimation of two nodes is triggered by the application programming interface (API) command $CLIENT\_GET\_RANGE\ (50)$. In our application we sent the command to the anchor in order to minimize the communication of the TAG. The flow of actions related to this API is a even more simplified version of the message exchange indicated in Figure \ref{fig:two_way_ranging}. In our case, the request message performed by the client starts the TWR conversation via UWB between AN and TAG. The AN sends only one ranging request to the TAG, which immediately responds. By observing the difference between the time instants related to the transmission of the request packet and the reception of the response packet, the AN will directly determine the RTT and thus the range. Finally an answer message with the range is reported from the AN to the client and no messages are reported from the TAG to the client.
+The range estimation of two nodes is triggered by the application programming interface (API) command $CLIENT\_GET\_RANGE\ (50)$. In our application we sent the command to the anchor in order to minimize the communication of the TAG. The flow of actions related to this API is a even more simplified version of the message exchange indicated in figure \ref{fig:two_way_ranging}. In our case, the request message performed by the client starts the TWR conversation via UWB between AN and TAG. The AN sends only one ranging request to the TAG, which immediately responds. By observing the difference between the time instants related to the transmission of the request packet and the reception of the response packet, the AN will directly determine the RTT and thus the range. Finally an answer message with the range is reported from the AN to the client and no messages are reported from the TAG to the client.
 
 
 %----------------------------------------------------------------------------------------
@@ -84,13 +84,13 @@ The range estimation of two nodes is triggered by the application programming in
 %----------------------------------------------------------------------------------------
 
 \section{Zone Indication: Descriminative Ensemble Learning with Hidden Markov Models}
-As the zone indication we used is a rather complex and computationally demanding process, we will expain it to higher detail than the other inputs of the particle filter. The zone indication fuses Wi-Fi, UWB, magnetic field (MF) and room transition information in an enhanced learning model. A set of independent individual machine learning methods are combined in an ensemble learning model. The used approach integrates Hidden Markov Model (HMM) with discriminative learning techniques as presented in an earlier work of CDS. \cite{Carrera2}
+The zone indication is a rather complex and computationally demanding process, thus we will expain it to higher detail than the other inputs of the particle filter. The zone indication fuses Wi-Fi, UWB, magnetic field (MF) and room transition information in an enhanced learning model. A set of independent individual machine learning methods are combined in an ensemble learning model. The used approach integrates Hidden Markov Model (HMM) with discriminative learning techniques as presented in an earlier work of CDS \cite{Carrera2}.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{HMM-Discriminative Ensemble Learning Method}
-In this approach different machine learning algorithms are combined to improve the zone prediction result. Where a zone can be defined as any subarea in the area of interest (e.g. a room). In the concept of Markov localization \cite{Markov}, the state of the system is estimated by the state transitions. For localization, the states of the model correspond to defined zones.
+In this approach different machine learning algorithms are combined to improve the zone prediction result. A zone can be defined as any subarea in the area of interest (e.g. a room). In the concept of Markov localization \cite{Markov}, the state of the system is estimated by the state transitions. For localization, the states of the model correspond to defined zones.
 Therefore, the HMM is specified by the following components, as in \cite{Carrera2}:
 \begin{itemize}
 \item A set of $n$ states $Z=\{z_{1}, z_{2},\dots,z_{n}\}$, with $z_{i}$ as the identifier value of the zone $i$. Resulting the descrete random variable $x_{t} \in Z$ representing the hidden state at time t.
@@ -108,7 +108,7 @@ where $a_{ij}$ respresents the probability of moving from zone $z_{i}$ to zone $
 \item A set of observations O, defined as:
 $$O = \{(o_{1},o_{2},\dots,o_{m})_1, \dots, (o_{1},o_{2},\dots,o_{m})_r\}$$
 where $o_{i}$ stands for the zone prediction result of the $i$-th individual machine learning algorithm. This leads to $O$ being a set of $^rP_m$ permutations (repetitions allowed), with $r$ being the number of zones and $m$ the number of different machine learning algorithms. The machine learning methods have to be conditionally independent for $y_{t} \in O$ as the random variable of the observations in time $t$.
-\item A matrix $B$ holding the emission probabilities of observation liklelihoods:
+\item A matrix $B$ holding the emission probabilities of observation likelihoods:
 \begin{equation*}
 B = 
 \begin{pmatrix}
@@ -144,7 +144,7 @@ where $a_{ij}$ represents the transition likelihood from zone $z_{i}$ to zone $z
 The emission probability is the likelihood of observing a particular set of observations $y_{j}$ at zone $z_{i}$. Therefore the values of the $n\times r$-matrix $B = (b_{ij})$ can be written as:
 $$b_{ij} = P(y_{j} | z_{i}), \forall y_{j} \in O \land z_{i} \in Z,$$
 where $y_{j} = (o_1, o_2, \dots, o_m)_j$ and $o_i$ is the zone prediction result from the $i$-th machine learning algorithm.
-Since different individual machine learning methods are used independently, we can assume with good reason that the their outcomes are conditionally independent. This leads to the simplified expression:
+Since different individual machine learning methods are used independently, we can assume with good reason that their outcomes are conditionally independent. This leads to the simplified expression:
 $$b_{ij} = \prod^{n}_{n=1} P(o_{j} | z_{i})_{n},$$
 where $P(o_{j} | z_{i})_{n}$ is the probability of the $n$-th learning method predicting $o_{j}$ at zone $z_{i}$. Therefore it is equal to the sensitivity of the $n$-th machine learning algorithm at zone $z_{i}$:
 $$P(o_{j} | z_{i})_{n} = \frac{TP_{n}}{TP_{n} + FN_{n}},$$
@@ -157,7 +157,7 @@ with $TP_{n}$ and $FP_{n}$ being the true positive respectively the false positi
 %----------------------------------------------------------------------------------------
 
 \section{Particle Filter}
-We used the a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The following paragraphs define the different phases in our mathematical model whereas we discuss the different variations of our system in the last subsection.
+We used a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The following paragraphs define the different phases in our mathematical model whereas we discuss the different variations of our system in the last subsection.
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -176,7 +176,7 @@ Whereas the heading direction is directly calculated from IMU data, for the stri
 $$\ell_{t} = \hat{\ell}_{t-1} + \sum_{i=0}^{N}([(\hat{a}_{i} + a_{bs,i} +\epsilon_{a, i}) * \Delta t_{i} ]*(N-i)) *\Delta t + \epsilon_{\ell, t},$$
 where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period $\Delta t$, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
 In our implementation the observed movement length is calculated as follows:
-$$\ell_{t} = v_{t-1} * \Delta t + \sum_{i=0}^N [(a_{i} * \Delta t_{i})(N-i)]* \Delta t^{2}$$
+$$\ell_{t} = v_{t-1} * \Delta t + \sum_{i=0}^N [(a_{i} * \Delta t_{i})(N-i)]* \Delta t$$
 where $v_{t-1}$ is the velocity of the estimated position change in the last system state update, $a_{i}$ is the $i$-th acceleration measurement and N the number of descrete acceleration measurements during the time period $\Delta t$, which corresponds to the time passed between t-1 and t. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption and one with a low adaption, and only took their difference into account. This corrects a part of the long term sensor bias. 
 
 Although there were many sources of errors, for the likelihood calculation in our work we nevertheless used the actual obtained values $d^{j}_{t}$, $\theta_{t}$ and $\ell_{t}$ since the errors are handled in the likelihood model by fusing different data sources and anchor node distances. However, to compensate the bias and error for the particle spreading, we assumed the heading direction $\theta$ and the stride length $\ell$ as random normal variables whose values are obtained from $\mathcal{N}(\theta_{t}, \sigma_{\theta}^{2})$ and $\mathcal{N}(\ell_{t}, \sigma_{\ell}^{2})$.
@@ -187,7 +187,7 @@ Although there were many sources of errors, for the likelihood calculation in ou
 \subsection{Prediction phase}
 Each particle has a state vector that is defined as follows:
 $$X_{t} = [x_{t}, y_{t}, x_{t-1}, y_{t-1}]$$
-where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t}, y_{t})$ at time t-1 respectively. In the prediction phase each particle is updated depending of the current movement vector $Mv_{t} = [\theta_{t}, \ell_{t}]$. The coordinates of the particle are updated with the following pattern:
+where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t-1}, y_{t-1})$ at time t-1 respectively. In the prediction phase each particle is updated depending of the current movement vector $Mv_{t} = [\theta_{t}, \ell_{t}]$. The coordinates of the particle are updated with the following pattern:
 $$[x_{t}, y_{t}]  = [x_{t-1} + \ell_{t} * cos(\theta_{t}),\quad y_{t-1} + \ell_{t} * sin(\theta_{t})]$$
 As mentioned in the last subsection, with $\ell_{t}$ and $\theta_{t}$ as random normal variables. In the remainder of this work we will also refer to the motion in Cartesian coordinates as $M_{x,t} = \ell_{t} * cos(\theta_{t})$ for the motion in x-direction and $M_{y,t} = \ell_{t} * sin(\theta_{t})$ for the motion in y-direction.
 Floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
@@ -209,7 +209,7 @@ where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M
 
 The individual likelihood for the range observation can then be expressed as:
 $$p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{\sqrt{2\pi \sigma_{j}^{2}}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2\sigma_{j}^{2}})$$
-where $(x_{j},y_{j})$ are the known coordinates of the jth AN.
+where $(x_{j},y_{j})$ are the known coordinates of the $j$-th AN.
 Whereas the individual likelihood of the motion observation in x-direction (analogue for y-direction) is expressed as follows:
 $$p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2\pi \sigma_{Mx}^{2}} * exp(\frac{-[(x^{i}_{t}-x^{i}_{t-1}) - \hat{M}_{x,t}]^{2}}{2\sigma_{Mx}^{2}})$$
 
@@ -289,12 +289,12 @@ We distributed the UWB anchor nodes over several rooms to cover the area of inte
 \label{fig:anchor_position}
 \end{figure}
 
-The TAG was placed on a small vehicle at the starting point of the trajectories, when the system was started. The vehicle drove the given paths indicated in figure \ref{fig:trajectories}, as soon as it passed a predefined checkpoint the current position estimation was registered. Every trajectory was tested 3 times. 
+The TAG was hold in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given path indicated in figure \ref{fig:trajectory1}, as soon as he passed a predefined checkpoint the current position estimation was registered. The other three trajectories can be seen in appendix \ref{AppendixA}. Every trajectory was tested with every algorithm 4 times.
 
 \begin{figure}[th]
 \centering
-\includegraphics[width=0.8\textwidth]{Figures/trajectories}
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1}
 \decoRule
-\caption[Trajectories]{The three different trajectories with the defined checkpoints.}
-\label{fig:trajectories}
+\caption[Trajectory 1]{Trajectory 1 of the four defined trajectories with the position checkpoints.}
+\label{fig:trajectory1}
 \end{figure}
