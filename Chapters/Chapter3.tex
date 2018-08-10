@@ -29,7 +29,7 @@ An overview of the whole process is illustrated on figure \ref{fig:particle_filt
 %----------------------------------------------------------------------------------------
 
 \section{Setup}
-The theoretical design on our system is shown in figure \ref{fig:system_design}, it works as follows:
+The theoretical design of our system is shown in figure \ref{fig:system_design}, it works as follows:
 At least three ANs, equipped with UWB technology, are placed in an indoor environment of one floor. Our algorithm runs on a seperate server, where a zoneplan and floorplan of the floor are available. A single TAG is located somewhere on the floor, it is as well equipped with UWB technology, moreover it measures acceleration and magnetic energy with the onboard IMU. The TAG continously collects data from the IMU and contemporary waits for a request from the server. The server periodically requests data via UWB from the TAG. As soon as a request is noticed at the TAG, it performs a range estimation to every AN and sends this data together with the continously collected IMU data to the server.
 For every estimation period, the server has all the data needed to feed the particle filter.
 
@@ -55,6 +55,6 @@ Most computations are done on the seperate server, as we would like to minimize 
 \end{itemize}
 
 In the first part, every particle is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
-The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. This is also in effect for the IMU motion, as the difference between the old and the new positon is compared to the measured IMU motion to evaluate the likelihood. \textbf{@Mischa: ADD PART OF ZONE INDICATION} % Add zone indication part!
+The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. In this phase also the zone indication is taken into account. An AN that lies in the predicted zone is assumed to be more accurate than ANs far away, so the likelihood is even higher, when a near anchor has a small difference in range estimation. For the IMU motion, the difference between the old and the new positon is compared to the measured IMU motion to evaluate the likelihood.
 In the weighting step, every particle gets weighted by the liklihoods of the previous computations. The weights of all particles are normalized for further processing.
 The last part is simply a weighted sum of the particles locations.

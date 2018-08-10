@@ -5,7 +5,7 @@
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 In this section we explain the different types of range measuring in range-based localization systems. For comparison reasons, we shortly introduce variants of received signal strength indication (RSSI), which is the mostly used indoor localization technique. We then briefly explain two slightly less common methods, which were used in our system - two way ranging (TWR) and time difference of arrival (TDOA). We also include some background theory about our implementation and the particle filter.\\
 These are the main parts of this section:\\
-First a short overview of range based localization with the mean principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration and the weighting process. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
+First a short overview of range based localization with the main principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration and the weighting process. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -38,7 +38,7 @@ In this abridged scenario, some difficulties are left out. Full indoor localizat
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Received signal strength indication}
-As already mentioned, many indoor positioning algorithms use received signal strength indiacation to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter. \cite{VorlesungCN}.
+As already mentioned, many indoor positioning algorithms use received signal strength indication to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter \cite{VorlesungCN}.
 $$
 P_{r} = P_{t} (\lambda/4\pi r)^2
 $$
@@ -57,7 +57,7 @@ However, this formula is restricted to free-space. There are several different k
 \item etc.
 \end{itemize}
 
-Signal strength can often be obtained from the transmitter hardware as a discrete number. The higher the number, the stronger the signal. This discretization reflects another source of errors. 
+Signal strength can often be obtained from the transmitter hardware as a discrete number. The higher the number, the stronger the signal. This discretization reflects another source of errors.
 
 %-----------------------------------
 %	SUBSECTION 2
@@ -88,16 +88,15 @@ $T_{RA}$ - reception of ACK timestamp\\
 $T_{SF}$ - sending of final timestamp \\
 $T_{RF}$ - reception of final timestamp\\
 
-For simplicity reasons normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data direclty to the server.
+For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data direclty to the server.
 
 While TWR does not need further synchronization between the devices, time difference of arrival (TDOA) requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
 To evaluate the time of flight, a TAG in range will broadcast a blink message. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID for a tagret device, it can perform the position and therefore the distance estimation.
-A huge benefit of TDOA is the fact, that the tag only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. For TWR the overhead grows enourmous with every anchor and every tag that is added. For TDOA hundrets of TAGs can be tracked, whith only proportional overhead growth and much lower energy consumption for the TAG.\\
+A huge benefit of TDOA is the fact, that the tag only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}. For TWR the overhead grows enourmous with every anchor and every tag that is added. For TDOA hundrets of TAGs can be tracked, whith only proportional overhead growth and much lower energy consumption for the TAG.\\
 Number of messages sent in one iteration:\\
 TWR:  $3 * n_{t} * n_{an}$\\
 TDOA:  $n_{t}$\\
-Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes.
-\cite{SewioTDOA}
+Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \cite{SewioTDOA}.
 
 \begin{figure}[th]
 \centering
@@ -117,7 +116,7 @@ $c_{0}$ - Speed of Light = \SI{2.99792458e8}{\meter\per\second} (exact) \\
 %	SUBSECTION 3
 %-----------------------------------
 \subsection{Triangulation and Trilateration}
-Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids. \cite{thales} It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
+Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids \cite{thales}. It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
 Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
 As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
 

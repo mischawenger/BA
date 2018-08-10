@@ -9,7 +9,7 @@
 %----------------------------------------------------------------------------------------
 
 \section{Motivation}
-In the last twenty years, the number of mobile devices in use has tremendously increased. In the first quater of 2018 more than 380 Million smartphones have been sold worldwide \cite{Gartner}. However, in the past few years, not only smartphones have been sold, but also a new market of mobile gadgets and connected devices, summed up as Internet of Things, has evolved. In 2017, more than 20 Billion devices were connected to the internet. Forecasts predict 30 Billion devices in 2020 and already more than 70 Billion in 2025. \cite{Statista}
+In the last twenty years, the number of mobile devices in use has tremendously increased. In the first quarter of 2018 more than 380 Million smartphones have been sold worldwide \cite{Gartner}. However, in the past few years, not only smartphones have been sold, but also a new market of mobile gadgets and connected devices, summed up as Internet of Things (IoT), has evolved. In 2017, more than 20 Billion devices were connected to the internet. Forecasts predict 30 Billion devices in 2020 and already more than 70 Billion in 2025 \cite{Statista}.
 
 This increase in mobile computing has also increased the demand of accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning. 
 
@@ -18,7 +18,7 @@ This increase in mobile computing has also increased the demand of accurate real
 %-----------------------------------
 \subsection{Indoor difficulties vs Outdoor}
 
-For outdoor applications, primarily the Global Positioning System (GPS) is in use. For indoor application in the other hand, GPS has limitations that make it almost useless. Due to the environmental conditions indoors, with heavy walls armoured with steel and other distractions, additional signal loss is encountered which makes it hard to detect and decode GPS signals. \cite{GPSforIndoor} In addition, higher buildings in the neighborhood can reflect transmitted signals, which leads to false position estimations. As GPS is mainy applied as 2D positioning system, it will not provide 3D indoor information such as the current floor level
+For outdoor applications, primarily the Global Positioning System (GPS) is in use. For indoor application in the other hand, GPS has limitations that make it almost useless. Due to the environmental conditions indoors, with heavy walls armoured with steel and other distractions, additional signal loss is encountered which makes it hard to detect and decode GPS signals \cite{GPSforIndoor}. In addition, higher buildings in the neighborhood can reflect transmitted signals, which leads to false position estimations. As GPS is mainy applied as 2D positioning system, it will not provide 3D indoor information such as the current floor level.
 For this purposes we are forced to use alternative technologies that provide even higher accurracy indoors than GPS would achieve outdoors. There are many different approaches to do indoor positioning, which made it an attractive and active research field. 
 
 %-----------------------------------
@@ -26,20 +26,18 @@ For this purposes we are forced to use alternative technologies that provide eve
 %-----------------------------------
 
 \subsection{Important Applications}
-There are various possible use cases for devices that track their indoor position. These use cases can be grouped into two groups. In the one hand applications for pedestrians with a smartphone and in the other hand real machine to machine (M2M) applications. 
-
-Some examples for Smartphones:
+There are various possible use cases for devices that track their indoor position. These use cases can be grouped into two groups. In the one hand applications for pedestrians with a smartphone and in the other hand real machine to machine (M2M) applications. \\
+Some examples for smartphone applications:
 \begin{description}
-\item [Location of person in need] For emergency services every second counts to get to the position of persons in need. An accurate positioning system that indicates additional information such as the floor level could save lifes.
-\item [Security Guards] Real time tracking of security guards on their patrol. A security system can check autonomous if all security guards are on the right tracks.
-\item [Museum guidance] Tourists visiting a museum could easily be guided through the museum with customized location based information.
+\item [Location of person in need:] For emergency services every second counts to get to the position of persons in need. An accurate positioning system that indicates additional information such as the floor level could save lifes.
+\item [Security Guards:] Real time tracking of security guards on their patrol. A security system can check autonomous if all security guards are on the right tracks.
+\item [Museum guidance:] Tourists visiting a museum could easily be guided through the museum with customized location based information.
 \end{description}
-
-Examples for Machine to machine (M2M):
+Examples for machine to machine (M2M) applications:
 \begin{description}
-\item [Logistic] An autonomous storage system can find articles in a big storehouse according to the exact position of the carrier vehicle. Numerous vehicles can be in use at the same time.
-\item [Cleaning] An autonomous cleaning machine keeps track of its position, such that the floor can efficiently be cleaned.
-\item [Indoor post roboter] An autonomous roboter can collect letters in the building and bring them to the internal post office.
+\item [Logistic:] An autonomous storage system can find articles in a big storehouse according to the exact position of the carrier vehicle. Numerous vehicles can be in use at the same time.
+\item [Cleaning:] An autonomous cleaning machine keeps track of its position, such that the floor can efficiently be cleaned.
+\item [Indoor post roboter:] An autonomous roboter can collect letters in the building and bring them to the internal post office.
 \end{description}
 
 
@@ -56,7 +54,7 @@ Alternatively the object can be tracked by defining at least three triangulation
 %-----------------------------------
 \subsection{Ranging Positioning System with different Inputs}
 
-Our idea was to not only use one of the mentioned approaches, but to combine them to in one alorithm. We would use a range positoning system combined with motion detection of the device and even integrate environmental restrictions, given by floor topologies like walls. By combining different methods we hope to compensate measurement errors and thus minimize the overall errors.
+Our idea was to not only use one of the mentioned approaches, but to combine them in one alorithm. We would use a range positioning system combined with motion detection of the device and even integrate environmental restrictions, given by floor topologies like walls. By combining different methods we hope to compensate measurement errors and thus minimize the overall errors.
 
 
 %----------------------------------------------------------------------------------------
@@ -65,12 +63,12 @@ Our idea was to not only use one of the mentioned approaches, but to combine the
 
 \section{Contributions}
 
-In this thesis we present a real-time indoor positioning system on Raspberry Pi based on a particle filter implementation in smartphones, developed in previous works of the University of Bern. \cite{Carrera} We adapted the inputs of the particle filter to range-based localization using ultra wideband (UWB) instead of Wi-Fi and added motions measured by inertial measurement units (IMU) of the target.
+In this thesis we present a real-time indoor positioning system running on a Raspberry Pi, based on a particle filter implementation in smartphones that was developed in previous works of the University of Bern \cite{Carrera}. We adapted the inputs of the particle filter to range-based localization using ultra wideband (UWB) instead of Wi-Fi and added motions measured by inertial measurement units (IMU) of the target. In addition, we implemented a room recognition algorithm, which is used to weight the range estimations of different anchors.
 We expound results of our experiments, where we tested different variants of our implementation and other algorithms in a real test scenario and compared the accuracy of the estimated position.
 
 Our main contributions are:
 \begin{itemize}
-\item We implemented a real-time localization system on raspberry pi using UWB and IMU sensors. 
+\item We implemented a real-time localization system on Raspberry Pi using UWB and IMU sensors, as well as a room recognition based on fingerprinting. 
 \item We created an extensive test scenario, where we placed several anchor nodes in a real building and collected data on complex indoor trajectories. 
 \item We compared the results of our implementation to the results of an UWB based localization system provided by Uniset Company.
 \end{itemize}
