@@ -198,14 +198,17 @@ Floorplan restrictions are applied in this phase, whereas movements through wall
 \subsection{Observation phase}
 In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every particle, since the weight does not anymore correspond to the current position. The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probability is determined as:
 $$ p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t}) $$
-and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t})$$ %is this correct that p(x) and p(y) are multiplied?
-In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood.
+and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t}).$$ %is this correct that p(x) and p(y) are multiplied?
+In addition, as defined in subsection 4.3, the zone probability is:
+$$ p(y_t | X^{i}_{t}) = p(y_{t} | z^{i}_{t})$$
+where $y_t$ is the observed fingerprint at time $t$ and $z^{i}_{t}$ the current zone of particle $X^{i}$.
+In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood, $p(y_t | X^{i}_{t})$ for the zone likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood.
 
 The associated weight $w^{i}_{t}$ of each particle is given by ranging as well as by motion information. A particle at the current position $(x_{t},y_{t})$ with low probability to observe $d_{t}^{j}$ in its position will be assigned a small weight. Additionally a particle that moved in x-direction by $x_{t}^{i}-x_{t-1}^{i}$ with low probability to observe the movement $M_{x,t}$ will also be assigned a small weight. Analogue for the movement in y-direction.
 That leads to the fact that particles with large weights will have a stronger effect to the determination of the state of the system.
 We assume that all these likelihoods - the ranges to each AN as well as the movement in direction x, y - are statistically independent from each other. Therefore, the overall likelihood is defined as:
-$$p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} p(\hat{d}_{j,t}|X_{t}^{i}) * p(\hat{M}_{x,t} | X^{i}_{t}) * p(\hat{M}_{y,t} | X^{i}_{t})$$
-where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M}_{x,t}$ is the measured motion in x-direction in timeinterval t, respectively $\hat{M}_{y,t}$ in y-direction.  
+$$p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} p(\hat{d}_{j,t}|X_{t}^{i}) * p(\hat{M}_{x,t} | X^{i}_{t}) * p(\hat{M}_{y,t} | X^{i}_{t}) * p(y_t | X^{i}_{t})$$
+where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M}_{x,t}$ is the measured motion in x-direction in timeinterval t, respectively $\hat{M}_{y,t}$ in y-direction and $y_t$ is the measured RSS fingerprint.
 
 The individual likelihood for the range observation can then be expressed as:
 $$p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{\sqrt{2\pi \sigma_{j}^{2}}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2\sigma_{j}^{2}})$$
@@ -222,9 +225,9 @@ The resampling phase is an essential component of our particle filter implementa
 %	SUBSECTION 5
 %-----------------------------------
 \subsection{Variants}
-We implemented three variants of the particle filter localization system to state the effect on accuracy of the different parts in our system.
-Hereafter we will refer to $PF_{full}$ for the full implementation of the particle filter as defined in the last subsection. $PF_{rand}$ will refer to the particle filter implementation, where the particles are not spread according to the movement vector, but randomly spread in a box of $2 \times 2$ meters centered on the last estimated position. The rest of the implementation is exactly as in $PF_{full}$.
-The third variant $PF_{UWBonly}$ is exclusively using UWB ranging and does not take the IMU measured movement into account, neither in the prediction phase nor in the observation phase.
+We implemented two variants of the particle filter localization system to state the effect on accuracy of the different parts in our system.
+Hereafter we will refer to $PF_{full}$ for the full implementation of the particle filter as defined in the last subsection. However, the particles were not spread according to the movement vector, but randomly spread in a box of $2 \times 2$ meters centered on the last estimated position. We decided to cancel the movement vector for spreading, as it caused a very bouncy position estimation.
+The second variant $PF_{UWBonly}$ is exclusively using UWB ranging and does not take the IMU measured movement or the fingerprint into account, neither in the prediction phase nor in the observation phase. 
 
 
 %----------------------------------------------------------------------------------------

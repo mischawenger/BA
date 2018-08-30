@@ -63,7 +63,7 @@ Our idea was to not only use one of the mentioned approaches, but to combine the
 
 \section{Contributions}
 
-In this thesis we present a real-time indoor positioning system running on a Raspberry Pi, based on a particle filter implementation in smartphones that was developed in previous works of the University of Bern \cite{Carrera}. We adapted the inputs of the particle filter to range-based localization using ultra wideband (UWB) instead of Wi-Fi and added motions measured by inertial measurement units (IMU) of the target. In addition, we implemented a room recognition algorithm, which is used to weight the range estimations of different anchors.
+In this thesis we present a real-time indoor positioning system running on a Raspberry Pi, based on a particle filter implementation in smartphones that was developed in previous works of the University of Bern \cite{Carrera}. We adapted the inputs of the particle filter to range-based localization using ultra wideband (UWB) instead of Wi-Fi and added motions measured by inertial measurement units (IMU) of the target. In addition, we implemented a room recognition algorithm using WiFi and UWB RSS fingerprints and fused its results into our particle filter approach.
 We expound results of our experiments, where we tested different variants of our implementation and other algorithms in a real test scenario and compared the accuracy of the estimated position.
 
 Our main contributions are:
