@@ -234,15 +234,15 @@ The second variant $PF_{UWBonly}$ is exclusively using UWB ranging and does not 
 %	SECTION 5
 %----------------------------------------------------------------------------------------
 
-\section{Experiment Setup}
-In our experiment we tested the localization accuracy of the different implemented variants, as well as the accuracy of the indoor tracking system UNISET company provided with their sensors, in a complex indoor scenario with trajectories through numerous of rooms on one floor in a real building of the University of Bern.
+\section{Experiment Setup and parameter}
+In our experiment we tested the localization accuracy of the different implemented variants, as well as the accuracy of the indoor tracking system UNISET company provided with their sensors, in a complex indoor scenario with trajectories through numerous of rooms on one floor in a real building of the University of Bern. During our experiments an additional test setup with optimized anchor node positions was defined.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{Zone indication: concrete implementation and parameters}
-In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}. 
-The internal parameters of the ML algorithms were optimized from training data, whereas the following parameters were used for the non self optimizing parameters: global percent ratio of 30\% for KStar, single hidden layer with 10 neurons for MLP and a confidence factor of 0.25 for J48.
+\subsection{Zone indication: concrete implementation and parameter}
+In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}.  \textbf{ADAPT to GINI, SV and KNN}
+The internal parameter of the ML algorithms were optimized from training data, whereas the following parameter were used for the non self optimizing parameters: global percent ratio of 30\% for KStar, single hidden layer with 10 neurons for MLP and a confidence factor of 0.25 for J48.
 The zone definition can be seen in figure \ref{fig:zone_definition}.
 
 We assumed that the liklihood of staying in the same zone is bigger than moving to another zone, which led to the empirically defined values for matrix $A$ as:
@@ -282,7 +282,7 @@ A =
 %	SUBSECTION 2
 %-----------------------------------
 \subsection{Placement, trajectories and configuration}
-We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position}. Whereas the particle filter updated its state every 700 milliseconds, the IMU sensors were updated every 100 milliseconds. The UWB transmitter of the TAG and the ANs operated in radio mode 3 with a datarate of 6.8 Mbps, they were configured to use channel 1 with a central frequency of 3494.4 MHz and an occupied sprectrum of 500 MHz. \textbf{Anpassen sobald nachgeschaut}
+We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position}. Whereas the particle filter updated its state every 700 milliseconds, the IMU sensors were updated every 100 milliseconds. The UWB transmitter of the TAG and the ANs operated in radio mode 2 with a datarate of 850 kbps, they were configured to use channel 4 with a central frequency of 3993.6 MHz and an occupied sprectrum of 1300 MHz.
 
 \begin{figure}[th]
 \centering
@@ -300,4 +300,14 @@ The TAG was hold in the hand of a pedestrian at the starting point of the trajec
 \decoRule
 \caption[Trajectory 1]{Trajectory 1 of the four defined trajectories with the position checkpoints.}
 \label{fig:trajectory1}
+\end{figure}
+
+In an ajusted experiment setup with improved anchor node positions we evaluated a fifth trajectory for every of the three algorithms. We just replaced the AN positions and did not change any other parameter. The new positions of the anchors and the trajectory checkpoints can be seen in figure \ref{fig:trajectory5_withAnchors}.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory5_withAnchors}
+\decoRule
+\caption[Trajectory 5]{Trajectory 5 with improved anchor positions.}
+\label{fig:trajectory5_withAnchors}
 \end{figure}
