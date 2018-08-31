@@ -12,9 +12,9 @@ In this section we present the results of our experiments in detail. In the firs
 \section{Indoor positioning results with low density of anchor nodes}
 In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. Each trajectory was tested five times, the results are shown as arithmetic means of these five probes. The anchor node positions for these four tested trajectories are indicated in figure \ref{fig:anchor_position}.
 
-In the first trajectory, the average (arithmetic mean) distance error over all checkpoints was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than 1.5 meter, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22m for $PF_{full}$, 0.68m for $PF_{UWBonly}$ and 1.14m for Sequitur, which are significantly lower than the arithmetic means.
+In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than 1.5 meter, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22m for $PF_{full}$, 0.68m for $PF_{UWBonly}$ and 1.14m for Sequitur, which are significantly lower than the arithmetic means.
 
-The measurements for trajectory two were almost identical, except for $PF_{UWBonly}$, which had no outliers. The arithmetic mean error for $PF_{full}$ was 2.36m, for $PF_{UWBonly}$ it was 0.55m and for Sequitur 2.26m. Except for $PF_{UWBonly}$, the median errors were again a lot more accurate with 1.07m for $PF_{full}$, 0.49m for $PF_{UWBonly}$ and 1.73m for Sequitur.
+The measurements for trajectory two were almost identical, except for $PF_{UWBonly}$, which had no outliers during trajectory 2. The arithmetic mean error for $PF_{full}$ was 2.36m, for $PF_{UWBonly}$ it was 0.55m and for Sequitur 2.26m. Except for $PF_{UWBonly}$, the median errors were again a lot more accurate with 1.07m for $PF_{full}$, 0.49m for $PF_{UWBonly}$ and 1.73m for Sequitur.
 
 \begin{figure}[th]
 \centering
@@ -24,7 +24,9 @@ The measurements for trajectory two were almost identical, except for $PF_{UWBon
 \label{fig:trajectory1and2_results}
 \end{figure}
 
+The results for trajectory 3 and 4 were rather similar, however, the peaks observed in figure \ref{fig:trajectory3and4_results} were not as extreme as for the first two trajectories. As above, the average errors in the third trajectory of 1.18m for $PF_{full}$, 0.80m for $PF_{UWBonly}$ and 1.87m for Sequitur were also mentionable higher than the medians of 0.92m, 0.76m and 1.60m.
 
+In the last of these four trajectories no big outliers were stated. Nonetheless the average errors of 1.72m, 1.51m and 1.52m, as well as the median errors 1.26m, 0.68m and 1.24m for $PF_{full}$, $PF_{UWBonly}$ and Sequitur, were still not as accurate as intended.
 
 \begin{figure}[th]
 \centering
@@ -33,6 +35,28 @@ The measurements for trajectory two were almost identical, except for $PF_{UWBon
 \caption[Positioning results trajectory 3 and 4]{Graphs of measured distance errors at each checkpoint in trajectory 3, respectively trajectory 4.}
 \label{fig:trajectory3and4_results}
 \end{figure}
+
+Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisingly the version of the particle filter only using UWB was the best on every of the trajectories in the low-density anchor node test environment. Moreover, we have seen that there are very big differences between the single checkpoints and even between trajectories. The full variant of the particle filter and the Sequitur system have similar accuracies. For some trajectories one of the algorithms is better, for other trajectories the other one performs better.
+
+\begin{table}
+\caption{The arithmetic mean of errors in trajectory 1 to 4 and in total over all measured checkpoints for the three algorithms.}
+\label{tab:arithmetic_errors}
+\centering
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Trajectory} & \textbf{PF Full} & \textbf{PF UWB} & \textbf{Sequitur}\\
+\midrule
+\textbf{T1} & 1.54 & 1.47 & 1.69\\
+\textbf{T2} & 2.36 & 0.55 & 2.26\\
+\textbf{T3} & 1.18 & 0.80 & 1.87\\
+\textbf{T4} & 1.72 & 1.51 & 1.52\\
+\midrule
+\textbf{total}  & \textbf{1.61} & \textbf{1.03} & \textbf{1.79}\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+
+
 
 %-----------------------------------
 %	SUBSECTION 1
