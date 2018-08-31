@@ -10,18 +10,29 @@ In this section we present the results of our experiments in detail. In the firs
 %----------------------------------------------------------------------------------------
 
 \section{Indoor positioning results with low density of anchor nodes}
-In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. The anchor node positions for these four positions are indicated in figure \ref{fig:anchor_position}.
+In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. Each trajectory was tested five times, the results are shown as arithmetic means of these five probes. The anchor node positions for these four tested trajectories are indicated in figure \ref{fig:anchor_position}.
 
-In the first trajectory, the average (arithmetic mean) distance error was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1_results}, we see that the errors are often smaller than 1.5 meters, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22 m for $PF_{full}$, 0.68 m for $PF_{UWBonly}$ and 1.14 m for Sequitur, which are significantly lower than the arithmetic means.
+In the first trajectory, the average (arithmetic mean) distance error over all checkpoints was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than 1.5 meter, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22m for $PF_{full}$, 0.68m for $PF_{UWBonly}$ and 1.14m for Sequitur, which are significantly lower than the arithmetic means.
+
+The measurements for trajectory two were almost identical, except for $PF_{UWBonly}$, which had no outliers. The arithmetic mean error for $PF_{full}$ was 2.36m, for $PF_{UWBonly}$ it was 0.55m and for Sequitur 2.26m. Except for $PF_{UWBonly}$, the median errors were again a lot more accurate with 1.07m for $PF_{full}$, 0.49m for $PF_{UWBonly}$ and 1.73m for Sequitur.
 
 \begin{figure}[th]
 \centering
-\includegraphics[width=0.8\textwidth]{Figures/trajectory1_results}
+\includegraphics[width=1.0\textwidth]{Figures/trajectory1_2_results}
 \decoRule
-\caption[Positioning results trajectory 1]{Graph of measured distance errors for trajectory 1.}
-\label{fig:trajectory1_results}
+\caption[Positioning results trajectory 1 and 2]{Graphs of measured distance errors at each checkpoint in trajectory 1, respectively trajectory 2.}
+\label{fig:trajectory1and2_results}
 \end{figure}
 
+
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectory3_4_results}
+\decoRule
+\caption[Positioning results trajectory 3 and 4]{Graphs of measured distance errors at each checkpoint in trajectory 3, respectively trajectory 4.}
+\label{fig:trajectory3and4_results}
+\end{figure}
 
 %-----------------------------------
 %	SUBSECTION 1
