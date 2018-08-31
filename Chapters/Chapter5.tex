@@ -1,15 +1,15 @@
 % Chapter Template
 
-\chapter{Implementation} % Main chapter title
+\chapter{Experiments evaluation} % Main chapter title
 
-\label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we explain in detail, what hardware we used in our implementation and with which technology the UWB communication and ranging was done. Finally we briefly explain the core of our work, the mathematical theory of the particle filter.
+\label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+In this section the results of our experiments are presented. In the first two sections we compare the estimated positions of the three tested algorithms. Firstly the results of experiments with wide spread anchors are presented, secondly the results with nearer anchor positions are shown. In a third section we justify the differences between these two scenarios. In the last section we conclude our work and propose next improvement steps for our algorithm. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Hardware}
+\section{Indoor positioning results with low density of anchor nodes}
 We used the follwing configurations for our experiments:
 \begin{itemize}
 \item Frequency band was set to parameter X: With blabla and so on MHz and middle of xx. 
@@ -42,7 +42,7 @@ Here goes the text.
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{UWB Communication and Ranging}
+\section{Indoor positioning results with high density of anchor nodes}
 Here goes the text.
 
 %-----------------------------------
@@ -60,7 +60,7 @@ Here goes the text.
 %	SECTION 3
 %----------------------------------------------------------------------------------------
 
-\section{Particle Filter}
+\section{Comment}
 Here goes the text.
 \begin{itemize}
 \item Spread the particles and validate new positions with floormap constraints
@@ -89,3 +89,18 @@ Here goes the text.
 %-----------------------------------
 \subsection{Ranging with TWR}
 Here goes the text.
+
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+\section{Conclusion and further work}
+Here goes the text.
+\begin{itemize}
+\item Spread the particles and validate new positions with floormap constraints
+\item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
+\item Calculate weight function and systematically resample (and reposition) particles with low weights
+\item Sum up weighted positions
+\end{itemize}
