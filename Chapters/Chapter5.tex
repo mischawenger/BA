@@ -3,19 +3,25 @@
 \chapter{Experiments evaluation} % Main chapter title
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section the results of our experiments are presented. In the first two sections we compare the estimated positions of the three tested algorithms. Firstly the results of experiments with wide spread anchors are presented, secondly the results with nearer anchor positions are shown. In a third section we justify the differences between these two scenarios. In the last section we conclude our work and propose next improvement steps for our algorithm. 
+In this section we present the results of our experiments in detail. In the first two sections we compare the estimated positions of the three tested algorithms at the given checkpoints. Firstly the results of experiments with wide spread anchors are indicated, secondly the results with nearer anchor positions are shown. In a third section we justify the differences between these two scenarios and comment the accuracy of the results. In the last section we conclude our work and propose next improvement steps for our algorithm. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Indoor positioning results with low density of anchor nodes}
-We used the follwing configurations for our experiments:
-\begin{itemize}
-\item Frequency band was set to parameter X: With blabla and so on MHz and middle of xx. 
-\item Data rate was set to 2, which corresponds to 850 kbps
-\item Transmission power txpower is set to 63 (highest value)
-\end{itemize}
+In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. The anchor node positions for these four positions are indicated in figure \ref{fig:anchor_position}.
+
+In the first trajectory, the average (arithmetic mean) distance error was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1_results}, we see that the errors are often smaller than 1.5 meters, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22 m for $PF_{full}$, 0.68 m for $PF_{UWBonly}$ and 1.14 m for Sequitur, which are significantly lower than the arithmetic means.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1_results}
+\decoRule
+\caption[Positioning results trajectory 1]{Graph of measured distance errors for trajectory 1.}
+\label{fig:trajectory1_results}
+\end{figure}
+
 
 %-----------------------------------
 %	SUBSECTION 1
