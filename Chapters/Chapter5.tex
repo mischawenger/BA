@@ -36,7 +36,7 @@ In the last of these four trajectories no big outliers were stated. Nonetheless 
 \label{fig:trajectory3and4_results}
 \end{figure}
 
-Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisingly the version of the particle filter only using UWB was the best on every of the trajectories in the low-density anchor node test environment. Moreover, we have seen that there are very big differences between the single checkpoints and even between trajectories. The full variant of the particle filter and the Sequitur system have similar accuracies. For some trajectories one of the algorithms is better, for other trajectories the other one performs better.
+Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisingly the version of the particle filter only using UWB was the best on every of the trajectories in the low-density anchor node test environment. Moreover, we have seen that there are very big differences between the single checkpoints and even between trajectories. The full variant of the particle filter and the Sequitur system have similar accuracies. For some trajectories one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming section \ref{Section2}. 
 
 \begin{table}
 \caption{The arithmetic mean of errors in trajectory 1 to 4 and in total over all measured checkpoints for the three algorithms.}
@@ -56,35 +56,40 @@ Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisin
 \end{tabular}
 \end{table}
 
-
-
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-
-\subsection{Raspberry Pi}
-A Raspberry Pi is a single-board computer not much bigger than a credit card. Raspberry Pis are mainly designed for educational purposes as an alternative to expensive notebooks or desk computers. Hence the focus lies also on easy-to-use and plug-and-play experiences. Raspberry Pis are useful for versatile types of projects, as they provide common state of the art hardware - like HDMI, USB and wireless LAN - direct on boad and as they are extendable with selected components.
-
-
-
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
-\subsection{SEQUITUR Pi board with InGPS Lite}
-On the 40-pin extended GPIO, we connected the SEQUITUR Pi board from UNISET Company. UNISET is a company located in Italy that focuses on research, development and manufacturing of innovative sensors in two major application areas \cite{Uniset}:
-
-\begin{itemize}
-\item Access control security systems, enhancing the reliability of intrusion detection
-\item Indoor and outdoor tracking. Sequitur is a precise real time locating system (RTLS) for tracking any object in 2D or 3D with centimeter accuracy.
-\end{itemize}
-Here goes the text.
-
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
+\section{Comments on low density anchor node test results}
+\label{Section2}
+The test results in the experiment setup with wide anchor node distances were not as good as intended. To find the reasons for that, we have to carefully have a look at the underlying implementation and the single checkpoint circumstances. We identified two main causes for bad results, they are explained in detail during the next two subsections.
+\begin{itemize}
+\item Checkpoints outside of AN bounding boxes
+\item Failing UWB connection due to too wide distances to ANs
+\end{itemize}
+
+\subsection{Bounding box restrictions}
+The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However even small ranging errors can lead to wrong position estimations outside the bounding box. 
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1_boundingBox}
+\decoRule
+\caption[Bounding box and checkpoints for trajectory 1 ]{Indicated bounding box of the anchor node positions for trajectory 1.}
+\label{fig:trajectory1_boundingBox}
+\end{figure}
+In our experiment especially the results on checkpoint 5 in trajectory 1 and 2 stand out. The average measured errors of 3.09m for $PF_{full}$, 6.23m for ${PF_UWBonly}$ and 5.70m for Sequitur during the first trajectory and 6.46m,  0.38m and 7.45m during the second trajectory are way higher than for other checkpoints. The fact that all of the three algorithms had troubles estimating this position, leads to the conclusion that the experiment setup was the main reason for the big errors at this checkpoint. Moreover, not only lies this point outside the bounding box, but it was also far away from the nearest ANs without line of sight.
+
+\subsection{Failing UWB connections}
+All three algorithms depend on a good established UWB connection, as all the ANs ranging estimations are only transmitted via UWB. Especially in the full implementation of the particle filter many UWB meassages are transmitted, because fingerprinting and IMU data are additionally exchanged. For this purpose the radio mode of the UWB devices had to be set to 2, which led to a higher datarate with the cost of lower possible communication distances.
+For certain checkpoints the distance to the farest anchor nodes were even more than 35m, which was too much for a stable UWB connection with the mentioned configuration. Particularly the full particle filter had troubles receiving enough usable data, as it produced more overhead than the other algorithms. This led to a high package loss for the full version, such that only one or two range measurements per estimation step were taken into account - instead of the possible five - leading to a higher error. 
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
 \section{Indoor positioning results with high density of anchor nodes}
-Here goes the text.
+By 
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -98,10 +103,11 @@ Here goes the text.
 Here goes the text.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 3
+%	SECTION 4
 %----------------------------------------------------------------------------------------
 
-\section{Comment}
+\section{Comments on high density anchor node test results}
+\label{Section4}
 Here goes the text.
 \begin{itemize}
 \item Spread the particles and validate new positions with floormap constraints
