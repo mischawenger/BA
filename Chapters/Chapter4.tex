@@ -79,77 +79,16 @@ UNISET company offers two different packages for positioning. InGPS Lite, which 
 The range estimation of two nodes is triggered by the application programming interface (API) command $CLIENT\_GET\_RANGE\ (50)$. In our application we sent the command to the anchor in order to minimize the communication of the TAG. The flow of actions related to this API is a even more simplified version of the message exchange indicated in figure \ref{fig:two_way_ranging}. In our case, the request message performed by the client starts the TWR conversation via UWB between AN and TAG. The AN sends only one ranging request to the TAG, which immediately responds. By observing the difference between the time instants related to the transmission of the request packet and the reception of the response packet, the AN will directly determine the RTT and thus the range. Finally an answer message with the range is reported from the AN to the client and no messages are reported from the TAG to the client.
 
 
-%----------------------------------------------------------------------------------------
+%-----------------------------------
 %	SECTION 3
-%----------------------------------------------------------------------------------------
-
-\section{Zone Indication: Descriminative Ensemble Learning with Hidden Markov Models}
-The zone indication is a rather complex and computationally demanding process, thus we will expain it to higher detail than the other inputs of the particle filter. The zone indication fuses Wi-Fi, UWB, magnetic field (MF) and room transition information in an enhanced learning model. A set of independent individual machine learning methods are combined in an ensemble learning model. The used approach integrates Hidden Markov Model (HMM) with discriminative learning techniques as presented in an earlier work of CDS \cite{Carrera2}.
-
 %-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{HMM-Discriminative Ensemble Learning Method}
-In this approach different machine learning algorithms are combined to improve the zone prediction result. A zone can be defined as any subarea in the area of interest (e.g. a room). In the concept of Markov localization \cite{Markov}, the state of the system is estimated by the state transitions. For localization, the states of the model correspond to defined zones.
-Therefore, the HMM is specified by the following components, as in \cite{Carrera2}:
-\begin{itemize}
-\item A set of $n$ states $Z=\{z_{1}, z_{2},\dots,z_{n}\}$, with $z_{i}$ as the identifier value of the zone $i$. Resulting the descrete random variable $x_{t} \in Z$ representing the hidden state at time t.
-\item A quadratic matrix $A$ holding the transition probabilities,
-\begin{equation*}
-A = 
-\begin{pmatrix}
-   a_{1,1} & a_{1,2} & \dots & a_{1,n}\\
-   a_{2,1} & a_{2,2} & \dots & a_{2,n}\\
-    \vdots & \vdots & \ddots & \vdots  \\
-   a_{n,1} & a_{n,2} & \dots & a_{n,n}\\
-\end{pmatrix},
-\end{equation*}
-where $a_{ij}$ respresents the probability of moving from zone $z_{i}$ to zone $z_{j}$.
-\item A set of observations O, defined as:
-$$O = \{(o_{1},o_{2},\dots,o_{m})_1, \dots, (o_{1},o_{2},\dots,o_{m})_r\}$$
-where $o_{i}$ stands for the zone prediction result of the $i$-th individual machine learning algorithm. This leads to $O$ being a set of $^rP_m$ permutations (repetitions allowed), with $r$ being the number of zones and $m$ the number of different machine learning algorithms. The machine learning methods have to be conditionally independent for $y_{t} \in O$ as the random variable of the observations in time $t$.
-\item A matrix $B$ holding the emission probabilities of observation likelihoods:
-\begin{equation*}
-B = 
-\begin{pmatrix}
-   b_{1,1} & b_{1,2} & \dots & b_{1,r}\\
-   b_{2,1} & b_{2,2} & \dots & b_{2,r}\\
-    \vdots & \vdots & \ddots & \vdots  \\
-   b_{n,1} & b_{n,2} & \dots & b_{n,r}\\
-\end{pmatrix},
-\end{equation*}
-where $b_{ij}$ respresents the probability of $(o_{1},o_{2}, \dots, o_{m})_j$ being the observation generated in zone $z_{i}$.
-\item An initial probability distribution $\pi = \pi_{1},\pi_{1},\dots, \pi_{n}$ over the $n$ zones.
-\end{itemize}
-How the specified components interact in the HMM can be seen in figure \ref{fig:hidden_markov_model}.
+
+\section{Zone Indication: Ensemble Learning}
+The zone indication is a rather complex and computationally demanding process, thus we will expain it to higher detail than the other inputs of the particle filter. The zone indication fuses Wi-Fi and  UWB RSS in an enhanced learning model. A set of independent individual machine learning methods are combined in an ensemble learning model, however, we used a much easier version of the ensemble learning presented in an earlier work of CDS \cite{Carrera2}.
+
+In our zone Indication several different machine learning algorithms are fed with the same fingerprint data. Every of the machine learning algorithms performs a zone prediction and assigns a likelihood for every zone. The likelihood represents the probability of observing the given RSS fingerprint while being in this zone. Therefore the probability can be stated as: $p(y_{t} | z^{i})$, with $y_{t}$ being the observed fingerprint at time t and $z^{i}$ being the $i$-th zone. We assume that for every of the machine learning algorithms these probabilities are statiistically independent, thus the probabilities returned by our ensemble learning algorithm are just the multiplied results of the single machine learning algorithms: $$ p_{tot}(y_{t} | z^{i})=  \prod_{j=1}^{N} p_{j}(y_{t} | z^{i})$$ for $N$ as the number of descrete ML algorithms.
 
 
-\begin{figure}[th]
-\centering
-\includegraphics[width=0.8\textwidth]{Figures/hidden_markov_model}
-\decoRule
-\caption[HMM]{Application of the different probabilistic parameters in the hidden markov model.}
-\label{fig:hidden_markov_model}
-\end{figure}
-
-The learning of each individual machine learning method only relies on the fingerprint of Wi-Fi, UWB and magnetic field, that's why prediction errors can still occur. However we can integrate the zone transition information (e.g. some areas are only reachable through other areas) in the HMM to improve the prediction. To determine the sequence of variables that is underlying source of some sequence of observation in a model with hidden variables, a decoding task is necessary. With the HMM model $\lambda = \{\pi, A, B\}$ and the given observation sequence $y_{t-i},\dots, y_{t-1},y_{t}$, the Viterbi algorithm \cite{Viterbi} is used to estimate the hidden states sequence $x_{t-i},\dots,x_{t-1},x_{t}$.
-
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
-\subsection{Transition and Emission Probabilities in the HMM}
-In advance, all zones are exactely defined. Then, the transition probabilies in matrix $A$ express the likelihood of moving from a beforehand defined zone to another. The connections between zones, retrieved from the floorplan, predetermine these probabilities. Therefore the values in the $n\times n$-matrix $A = (a_{ij})$ are defined as follows:
-$$a_{ij} = P(x_{t+1} = z_{j} | x_{t} = z_{i})$$
-where $a_{ij}$ represents the transition likelihood from zone $z_{i}$ to zone $z_{j}$. Thus, $\forall i \in \{1,\dots,n\}: \sum_{j=1}^{n} a_{ij} = 1$.\\
-The emission probability is the likelihood of observing a particular set of observations $y_{j}$ at zone $z_{i}$. Therefore the values of the $n\times r$-matrix $B = (b_{ij})$ can be written as:
-$$b_{ij} = P(y_{j} | z_{i}), \forall y_{j} \in O \land z_{i} \in Z,$$
-where $y_{j} = (o_1, o_2, \dots, o_m)_j$ and $o_i$ is the zone prediction result from the $i$-th machine learning algorithm.
-Since different individual machine learning methods are used independently, we can assume with good reason that their outcomes are conditionally independent. This leads to the simplified expression:
-$$b_{ij} = \prod^{n}_{n=1} P(o_{j} | z_{i})_{n},$$
-where $P(o_{j} | z_{i})_{n}$ is the probability of the $n$-th learning method predicting $o_{j}$ at zone $z_{i}$. Therefore it is equal to the sensitivity of the $n$-th machine learning algorithm at zone $z_{i}$:
-$$P(o_{j} | z_{i})_{n} = \frac{TP_{n}}{TP_{n} + FN_{n}},$$
-with $TP_{n}$ and $FP_{n}$ being the true positive respectively the false positive rate of the corresponding ML algorithm.
-%also include the ML specification, (parameter and used methods) maybe in implementation?
 
 
 %----------------------------------------------------------------------------------------
@@ -200,7 +139,7 @@ In the observation phase an associated weight $w^{i}_{t}$ is recalculated for ev
 $$ p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t}) $$
 and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t}).$$ %is this correct that p(x) and p(y) are multiplied?
 In addition, as defined in subsection 4.3, the zone probability is:
-$$ p(y_t | X^{i}_{t}) = p(y_{t} | z^{i}_{t})$$
+$$ p(y_t | X^{i}_{t}) = p_{tot}(y_{t} | z^{i}_{t})$$
 where $y_t$ is the observed fingerprint at time $t$ and $z^{i}_{t}$ the current zone of particle $X^{i}$.
 In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood, $p(y_t | X^{i}_{t})$ for the zone likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood.
 
@@ -242,10 +181,9 @@ In our experiment we tested the localization accuracy of the different implement
 %-----------------------------------
 \subsection{Zone indication: concrete implementation and parameter}
 In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}.  \textbf{ADAPT to GINI, SV and KNN}
-The internal parameter of the ML algorithms were optimized from training data, whereas the following parameter were used for the non self optimizing parameters: global percent ratio of 30\% for KStar, single hidden layer with 10 neurons for MLP and a confidence factor of 0.25 for J48.
-The zone definition can be seen in figure \ref{fig:zone_definition}.
+The internal parameter of the ML algorithms were optimized from training data, whereas the following parameter were used for the non self optimizing parameters: \textbf{are there any parameters in GINI, AV and KNN already set?}
 
-We assumed that the liklihood of staying in the same zone is bigger than moving to another zone, which led to the empirically defined values for matrix $A$ as:
+The zone definition can be seen in figure \ref{fig:zone_definition}, wheras for the smaller scenario (only for trajectory 5) only data in the passed rooms was collected. These were the rooms 1, 2, 3, 5, 6 and 7.  For the wider scenario obviously all indicated rooms were fingerprinted.
 
 \begin{figure}[th]
 \centering
@@ -255,28 +193,7 @@ We assumed that the liklihood of staying in the same zone is bigger than moving 
 \label{fig:zone_definition}
 \end{figure}
 
-\textbf{MATRIX A has to be updated by the correct values}
-
-\setcounter{MaxMatrixCols}{15}
-\begin{equation*}
-A = 
-\begin{pmatrix}
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-0.6 & 0.4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\cr
-\end{pmatrix},
-\end{equation*}
+For the testing data the three machine learning algorithms had a correct prediction rate of 80 to 99 percent. 
 
 %-----------------------------------
 %	SUBSECTION 2
