@@ -17,7 +17,7 @@ We decided to use Raspberry Pis for all mobile devices such as the TAG and the A
 %-----------------------------------
 
 \subsection{Raspberry Pi}
-A Raspberry Pi is a single-board computer not much bigger than a credit card. Raspberry Pis are mainly designed for educational purposes as an alternative to expensive notebooks or desk computers. Hence the focus lies also on easy-to-use and plug-and-play experiences. Raspberry Pis are useful for versatile types of projects, as they provide common state of the art hardware - like HDMI, USB and wireless LAN - direct on boad and as they are extendable with selected components.
+A Raspberry Pi is a single-board computer not much bigger than a credit card. Raspberry Pis are mainly designed for educational purposes as an alternative to expensive notebooks or desk computers. Hence the focus lies also on easy-to-use and plug-and-play experiences. Raspberry Pis are useful for versatile types of projects, as they provide common state of the art hardware - like HDMI, USB and wireless LAN - direct on board and as they are extendable with selected components.
 
 We used Raspberry Pi Model B \cite{Raspberry}, these were the most relevant specifications for our work:
 \begin{itemize}
@@ -46,8 +46,8 @@ This hardware seemed perfect for our ambitions, as it provides a state-of-the-ar
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{UWB Communication and Ranging}
-The radio module of SEQUITUR Pi board is used on the one hand to transmit data - in order to obviate the need for additional communication hardware - and on the other hand to evaluate the ToF. As UNISET is a comercial company, they do not provide full information of the underlying transmission techniques. Nonetheless in the two following subsections, the known parts are mentioned.
+\section{UWB communication and ranging}
+The radio module of SEQUITUR Pi board is used on the one hand to transmit data - in order to obviate the need for additional communication hardware - and on the other hand to evaluate the ToF. As UNISET is a commercial company, they do not provide full information of the underlying transmission techniques. Nonetheless in the two following subsections, the known parts are mentioned.
 
 %-----------------------------------
 %	SUBSECTION 1
@@ -83,10 +83,10 @@ The range estimation of two nodes is triggered by the application programming in
 %	SECTION 3
 %-----------------------------------
 
-\section{Zone Indication: Ensemble Learning}
+\section{Zone indication: Ensemble learning}
 The zone indication is a rather complex and computationally demanding process, thus we will expain it to higher detail than the other inputs of the particle filter. The zone indication fuses Wi-Fi and  UWB RSS in an enhanced learning model. A set of independent individual machine learning methods are combined in an ensemble learning model, however, we used a much easier version of the ensemble learning presented in an earlier work of CDS \cite{Carrera2}.
 
-In our zone Indication several different machine learning algorithms are fed with the same fingerprint data. Every of the machine learning algorithms performs a zone prediction and assigns a likelihood for every zone. The likelihood represents the probability of observing the given RSS fingerprint while being in this zone. Therefore the probability can be stated as: $p(y_{t} | z^{i})$, with $y_{t}$ being the observed fingerprint at time t and $z^{i}$ being the $i$-th zone. We assume that for every of the machine learning algorithms these probabilities are statiistically independent, thus the probabilities returned by our ensemble learning algorithm are just the multiplied results of the single machine learning algorithms: $$ p_{tot}(y_{t} | z^{i})=  \prod_{j=1}^{N} p_{j}(y_{t} | z^{i})$$ for $N$ as the number of descrete ML algorithms.
+In our zone indication several different machine learning algorithms are fed with the same fingerprint data. Every of the machine learning algorithms performs a zone prediction and assigns a likelihood for every zone. The likelihood represents the probability of observing the given RSS fingerprint while being in this zone. Therefore the probability can be stated as: $p(y_{t} | z^{i})$, with $y_{t}$ being the observed fingerprint at time t and $z^{i}$ being the $i$-th zone. We assume that for every of the machine learning algorithms these probabilities are statistically independent, thus the probabilities returned by our ensemble learning algorithm are just the multiplied results of the single machine learning algorithms: $$ p_{tot}(y_{t} | z^{i})=  \prod_{j=1}^{N} p_{j}(y_{t} | z^{i})$$ for $N$ as the number of descrete ML algorithms.
 
 
 
@@ -95,7 +95,7 @@ In our zone Indication several different machine learning algorithms are fed wit
 %	SECTION 4
 %----------------------------------------------------------------------------------------
 
-\section{Particle Filter}
+\section{Particle filter}
 We used a particle filter approach to solve the localization problem. This method, also known as Monte Carlo Localization (MCL), is often used for indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain in a first paragraph which inputs we fused into the particle filter. The following paragraphs define the different phases in our mathematical model whereas we discuss the different variations of our system in the last subsection.
 
 %-----------------------------------
@@ -137,7 +137,7 @@ Floorplan restrictions are applied in this phase, whereas movements through wall
 \subsection{Observation phase}
 In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every particle, since the weight does not anymore correspond to the current position. The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probability is determined as:
 $$ p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t}) $$
-and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t}).$$ %is this correct that p(x) and p(y) are multiplied?
+and $$ p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t}).$$ 
 In addition, as defined in subsection 4.3, the zone probability is:
 $$ p(y_t | X^{i}_{t}) = p_{tot}(y_{t} | z^{i}_{t})$$
 where $y_t$ is the observed fingerprint at time $t$ and $z^{i}_{t}$ the current zone of particle $X^{i}$.
@@ -173,7 +173,7 @@ The second variant $PF_{UWBonly}$ is exclusively using UWB ranging and does not 
 %	SECTION 5
 %----------------------------------------------------------------------------------------
 
-\section{Experiment Setup and parameter}
+\section{Experiment setup and parameter}
 In our experiment we tested the localization accuracy of the different implemented variants, as well as the accuracy of the indoor tracking system UNISET company provided with their sensors, in a complex indoor scenario with trajectories through numerous of rooms on one floor in a real building of the University of Bern. During our experiments an additional test setup with optimized anchor node positions was defined.
 
 %-----------------------------------
@@ -189,7 +189,7 @@ The zone definition can be seen in figure \ref{fig:zone_definition}, wheras for 
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/zone_definition}
 \decoRule
-\caption[Zone Definition]{Zone definition and transitions between zones}
+\caption[Zone definition]{Zone definition and transitions between zones}
 \label{fig:zone_definition}
 \end{figure}
 
@@ -205,7 +205,7 @@ We distributed the UWB anchor nodes over several rooms to cover the area of inte
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/anchor_position}
 \decoRule
-\caption[Anchor Node Positions]{Distributed anchor nodes on the floor map (with distance reference of 10m).}
+\caption[Anchor node positions]{Distributed anchor nodes on the floor map (with distance reference of 10m).}
 \label{fig:anchor_position}
 \end{figure}
 

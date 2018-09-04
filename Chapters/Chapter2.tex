@@ -1,11 +1,11 @@
 % Chapter Template
 
-\chapter{Theoretical Background and Related Work} % Main chapter title
+\chapter{Theoretical background and related work} % Main chapter title
 
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 In this section we explain the different types of range measuring in range-based localization systems. For comparison reasons, we shortly introduce variants of received signal strength indication (RSSI), which is the mostly used indoor localization technique. We then briefly explain two slightly less common methods, which were used in our system - two way ranging (TWR) and time difference of arrival (TDOA). We also include some background theory about our implementation and the particle filter.\\
 These are the main parts of this section:\\
-First a short overview of range based localization with the main principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration and the weighting process. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
+First a short overview of range based localization with the main principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -38,7 +38,7 @@ In this abridged scenario, some difficulties are left out. Full indoor localizat
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Received signal strength indication}
-As already mentioned, many indoor positioning algorithms use received signal strength indication to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter \cite{VorlesungCN}.
+As already mentioned, many indoor positioning algorithms use received signal strength indication to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter \cite{VorlesungCN}:
 $$
 P_{r} = P_{t} (\lambda/4\pi r)^2
 $$
@@ -69,7 +69,7 @@ Gathering round trip times (RTT) is a second method to get distance estimations.
 \centering
 \includegraphics[width=0.5\textwidth]{Figures/two_way_ranging}
 \decoRule
-\caption[Two Way Ranging]{Illustration of TWR and SDS-TWR communication}
+\caption[Two way ranging]{Illustration of TWR and SDS-TWR communication}
 \label{fig:two_way_ranging}
 \end{figure}
 
@@ -88,7 +88,7 @@ $T_{RA}$ - reception of ACK timestamp\\
 $T_{SF}$ - sending of final timestamp \\
 $T_{RF}$ - reception of final timestamp\\
 
-For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data direclty to the server.
+For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data directly to the server.
 
 While TWR does not need further synchronization between the devices, time difference of arrival (TDOA) requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
 To evaluate the time of flight, a TAG in range will broadcast a blink message. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID for a tagret device, it can perform the position and therefore the distance estimation.
@@ -102,7 +102,7 @@ Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \
 \centering
 \includegraphics[width=0.7\textwidth]{Figures/time_difference_of_arrival}
 \decoRule
-\caption[Time Difference of Arrival]{Typical Setup for Time Difference of Arrival communication}
+\caption[Time difference of arrival]{Typical Setup for Time Difference of Arrival communication}
 \label{fig:time_difference_of_arrival}
 \end{figure}
 
@@ -115,7 +115,7 @@ $c_{0}$ - Speed of Light = \SI{2.99792458e8}{\meter\per\second} (exact) \\
 %-----------------------------------
 %	SUBSECTION 3
 %-----------------------------------
-\subsection{Triangulation and Trilateration}
+\subsection{Triangulation and trilateration}
 Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids \cite{thales}. It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
 Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
 As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
@@ -134,7 +134,7 @@ Figure \ref{fig:trilateration} shows how trilateration is used for positioning. 
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{UWB Theory}
+\section{UWB theory}
 Ultra wide-band (UWB) is a radio technology in use for military communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
 \begin{figure}[th]
 \centering
@@ -144,14 +144,14 @@ Ultra wide-band (UWB) is a radio technology in use for military communication, p
 \label{fig:frequency_spectrum}
 \end{figure}
 UWB opperates with less energy compared to other communication like Wi-Fi. However, the main difference between UWB and conventional radio transmissions is the underlying modulation technique. UWB transmits data by generating short radio energy at specific times instead of varying frequency and phase of sinus waves. In addition to the pulse position, the pulses can carry information either by their polarity, their amplitude or by using orthogonal pulses.
-A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated. As single pulses can be registered and identified by the receiver, UWB devices are able to determine very exact ToFs such that distance estimations can be done to high resolution. Using the large frequency spectrum, there are even methods to overcome multipath propagation, when at least some frequencies have direct line-of-sight trajectories.
+A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated. As single pulses can be registered and identified by the receiver, UWB devices are able to determine very exact ToFs such that distance estimations can be done to high resolution.
 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 3
 %----------------------------------------------------------------------------------------
 
-\section{Particle Filter and Room Recognition}
+\section{Particle filter and room recognition}
 
 In the last years the CDS of UniBe has made big effort in developing an indoor positioning system. In various works, many variants of particle filter based localization have been presented and tested. In one of the latest works, the authors proposed a robust real-time indoor tracking system based on smartphones \cite{Carrera}, which extended some previous works \cite{Carrera3}. These works were mainly based on Wi-Fi RSSI measurements fusing with IMU data. Since there are no documentations about the particle filter approach based on UWB ranging, we will address this gap.\\
 In addition, the CDS also presented enhanced machine learning techniques for room recognition based on Wi-Fi and magnetic field energy fingerprints \cite{Carrera2}.

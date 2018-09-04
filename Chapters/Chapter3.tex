@@ -3,7 +3,7 @@
 \chapter{System design} % Main chapter title
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-The given background theory of section 2 was applied for our system design. In the following we present our theoretical system and which aspects of the theory led to system design decisions. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about the computations that are used.
+The given background theory of section 2 was applied for our system design. In the following we present our theoretical system design. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about the computations that are used.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -19,7 +19,7 @@ An overview of the whole process is illustrated on figure \ref{fig:particle_filt
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/particle_filter_design}
 \decoRule
-\caption[Particle Filter Design]{Overview of the theoretical components in our system.}
+\caption[Particle filter design]{Overview of the theoretical components in our system.}
 \label{fig:particle_filter_design}
 \end{figure}
 
@@ -37,7 +37,7 @@ For every estimation period, the server has all the data needed to feed the part
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/system_design}
 \decoRule
-\caption[System Design]{Overview of the theoretical system design.}
+\caption[System design]{Overview of the theoretical system design.}
 \label{fig:system_design}
 \end{figure}
 
@@ -57,4 +57,4 @@ Most computations are done on the seperate server, as we would like to minimize 
 In the first part, every particle is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
 The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. In this phase also the zone indication is taken into account. A particle that lies in the predicted zone is assumed to be more accurate than particles in a wrong zone. Therefore the probability returned from the ML algorithms of being in the zone of the particle is directly assigned as the zone indication likelihood. For the IMU motion, the difference between the old and the new position is compared to the measured IMU motion to evaluate the likelihood.
 In the weighting step, every particle gets weighted by the liklihoods of the previous computations. The weights of all particles are normalized for further processing.
-The last part is simply a weighted sum of the particles locations.
+The last part is simply a weighted sum of the particles locations to retrieve the estimated position.

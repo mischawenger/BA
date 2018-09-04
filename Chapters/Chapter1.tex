@@ -16,7 +16,7 @@ This increase in mobile computing has also increased the demand of accurate real
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{Indoor difficulties vs Outdoor}
+\subsection{Indoor difficulties vs outdoor}
 
 For outdoor applications, primarily the Global Positioning System (GPS) is in use. For indoor application in the other hand, GPS has limitations that make it almost useless. Due to the environmental conditions indoors, with heavy walls armoured with steel and other distractions, additional signal loss is encountered which makes it hard to detect and decode GPS signals \cite{GPSforIndoor}. In addition, higher buildings in the neighborhood can reflect transmitted signals, which leads to false position estimations. As GPS is mainy applied as 2D positioning system, it will not provide 3D indoor information such as the current floor level.
 For this purposes we are forced to use alternative technologies that provide even higher accurracy indoors than GPS would achieve outdoors. There are many different approaches to do indoor positioning, which made it an attractive and active research field. 
@@ -25,7 +25,7 @@ For this purposes we are forced to use alternative technologies that provide eve
 %	SUBSECTION 2
 %-----------------------------------
 
-\subsection{Important Applications}
+\subsection{Important applications}
 There are various possible use cases for devices that track their indoor position. These use cases can be grouped into two groups. In the one hand applications for pedestrians with a smartphone and in the other hand real machine to machine (M2M) applications. \\
 Some examples for smartphone applications:
 \begin{description}
@@ -47,12 +47,12 @@ Examples for machine to machine (M2M) applications:
 
 \section{Idea}
 For an object in space, there are several basic ideas to keep track of its current location. We can define a starting position and keep track of every move the device registers. E.g. every visitor in the museum starts at the entrance and will then walk through the building.
-Alternatively the object can be tracked by defining at least three triangulation points and periodically measure the distance from these points to the device. There are various ways to measure this distance, some with higher and some with lower accuracy.
+Alternatively the object can be tracked by defining at least three trilateration points and periodically measure the distance from these points to the device. There are various ways to measure this distance, some with higher and some with lower accuracy.
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{Ranging Positioning System with different Inputs}
+\subsection{Ranging positioning system with different inputs}
 
 Our idea was to not only use one of the mentioned approaches, but to combine them in one alorithm. We would use a range positioning system combined with motion detection of the device and even integrate environmental restrictions, given by floor topologies like walls. By combining different methods we hope to compensate measurement errors and thus minimize the overall errors.
 
