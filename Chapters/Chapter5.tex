@@ -3,7 +3,7 @@
 \chapter{Experiments evaluation} % Main chapter title
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we present the results of our experiments in detail. In the first two sections we compare the estimated positions of the three tested algorithms at the given checkpoints. Firstly the results of experiments with wide spread anchors are indicated, secondly the results with nearer anchor positions are shown. In a third section we justify the differences between these two scenarios and comment the accuracy of the results. In the last section we conclude our work and propose next improvement steps for our algorithm. 
+In this section we present the results of our experiments in detail. In two sections we compare the estimated positions of the three tested algorithms at the given checkpoints. Firstly the results of experiments with wide spread anchors are indicated and commented, secondly the results with nearer anchor positions are shown and discussed.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -148,18 +148,3 @@ In the new setup we purposely added checkpoints at the edge or outside the bound
 
 \subsection{Failing UWB connections}
 A bigger influence on the estimation error has the UWB connection. With a better established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the full version of the particle filter the communication is one of the key performance values, because the data is requested serially. This only allowes a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality,  such that some evaluating steps were skipped. 
-
-
-
-%----------------------------------------------------------------------------------------
-%	SECTION 4
-%----------------------------------------------------------------------------------------
-
-\section{Conclusion and further work}
-Here goes the text.
-\begin{itemize}
-\item Spread the particles and validate new positions with floormap constraints
-\item Evaluate UWB ranges, IMU measures and zone indication to assign likelihood
-\item Calculate weight function and systematically resample (and reposition) particles with low weights
-\item Sum up weighted positions
-\end{itemize}

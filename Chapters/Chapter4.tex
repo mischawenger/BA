@@ -180,8 +180,8 @@ In our experiment we tested the localization accuracy of the different implement
 %	SUBSECTION 1
 %-----------------------------------
 \subsection{Zone indication: concrete implementation and parameter}
-In our implementation these three completely different ML algorithms were used: KStar \cite{KStar}, Multilayer Perceptron (MLP) \cite{MLP} and the J48 decision tree \cite{J48}.  \textbf{ADAPT to GINI, SV and KNN}
-The internal parameter of the ML algorithms were optimized from training data, whereas the following parameter were used for the non self optimizing parameters: \textbf{are there any parameters in GINI, AV and KNN already set?}
+In our implementation these three completely different ML algorithms were used: Decision Tree Learning with gini impurity \cite{WikiGini}, K nearest neighbor (KNN) classification \cite{KNN} and a soft voting classifier using gini, KNN and gaussian naive bayes \cite{SKLearn, GaussianNB} algorithms.
+Where present, the internal parameter of the ML algorithms were optimized from training data. The three algorithms were selected out of half a dozen machine learning algorithms, those three had the best classification results in the test data.
 
 The zone definition can be seen in figure \ref{fig:zone_definition}, wheras for the smaller scenario (only for trajectory 5) only data in the passed rooms was collected. These were the rooms 1, 2, 3, 5, 6 and 7.  For the wider scenario obviously all indicated rooms were fingerprinted.
 
@@ -199,7 +199,7 @@ For the testing data the three machine learning algorithms had a correct predict
 %	SUBSECTION 2
 %-----------------------------------
 \subsection{Placement, trajectories and configuration}
-We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position}. Whereas the particle filter updated its state every 700 milliseconds, the IMU sensors were updated every 100 milliseconds. The UWB transmitter of the TAG and the ANs operated in radio mode 2 with a datarate of 850 kbps, they were configured to use channel 4 with a central frequency of 3993.6 MHz and an occupied sprectrum of 1300 MHz.
+We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position}. Whereas the particle filter updated its state every 700 milliseconds, the IMU sensors were updated every 100 milliseconds. The UWB transmitter of the TAG and the ANs operated in radio mode 2 with a datarate of 850 kbps, they were configured to use channel 4 with a central frequency of 3993.6 MHz and an occupied sprectrum of 1300 MHz. Before starting the experiments, a calibration with 1000 measurements per UWB device was made as described in the beginners guide \cite{Beginnersguide}.
 
 \begin{figure}[th]
 \centering
