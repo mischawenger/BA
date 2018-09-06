@@ -10,15 +10,25 @@ In this section we conclude our findings and our work. In the last section we pr
 %----------------------------------------------------------------------------------------
 
 \section{Conclusion}
-Here goes the text.
+In this bachelor thesis an enhanced particle filter fusing UWB radio signals, inertial sensor measurements, physical environmental information and WiFi signals is presented. Running on Raspberry Pi devices, the system achieves high localization accuracy in complex indoor scenarios. With a proper anchor node positioning, the particle filter accomplished an average accuracy of 0.45m and a 90\% accuracy of 0.87m. In comparison to smartphone based implementation in previous works of the CDS (avg accuracy of 1.15m and 90\% accuracy of 1.8m), our UWB radio signal implementation is promising for the future \cite{Carrera}. Although we observed a rather good accuracy, we anticipate that the accuracy could be improved even more in further research by optimizing our algorithm according to the points listed in the next section.
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
 \section{Further work}
-Here goes the text.
-UWB communication\\
-Stabiliy when no data is available\\
-performance of the code (eliminate loops) -> contemporality and separate communication unit\\
-improvement for wall detection (deadlock).\\
+In future work, the positioning of the anchor nodes should be evaluated to higher detail. For the implementation itself, we identified the following four main improvements to our particle filter approach to address in further research:
+\begin{itemize}
+\item Seperate UWB communication
+\item Stability (especially when no data is available)
+\item Performance (run time)
+\item Wall detection deadlock
+\end{itemize}
+
+A key bottleneck in our implementation was the UWB communication, as data was requested directly when it was needed. After each request, this caused a small waiting period, where the system waited for the requested data. In some cases the timeout was reached and the system continued without the requested data. A separate communication unit with anticipated data requests and a proper handling of received messages would definitly improve the performance. \\
+For the cases with bad UWB connection, only a small amount of data was available for the estimation. Especially when none of the ANs responded to the data requests, the system terminated with errors, as obviously it was not able to perform a position localization. For these cases a defined fallback should be taken into account.\\
+The particle filter algorithm, especially with the room recognition, is computationally demanding. All computations are done serially one after another, just like the requesting of data. The estimation run time should be improved by adding contemporal computations and eliminating unnecessary loops.\\
+Finally for some trajectories the wall detection produced a deadlock, when walking around wall edges with moderate speed. In this case the system was not able to reestablish good accuracy without going back to the room, where the deadlock occured.\\
+
+Addressing these gaps, I am sure that UWB based indoor positioning using particle filter error correction is very promising for the future to outperform other localization technologies.

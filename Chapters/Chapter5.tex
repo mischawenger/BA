@@ -39,7 +39,7 @@ In the last of these four trajectories no big outliers were stated. Nonetheless 
 Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisingly the version of the particle filter only using UWB was the best on every of the trajectories in the low-density anchor node test environment. Moreover, we have seen that there are very big differences between the single checkpoints and even between trajectories. The full variant of the particle filter and the Sequitur system have similar accuracies. For some trajectories one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming section \ref{Section2}. 
 
 \begin{table}
-\caption{The arithmetic mean of errors in trajectory 1 to 4.}
+\caption{The arithmetic mean of errors in trajectory 1 to 4 (in meter).}
 \label{tab:arithmetic_errors}
 \centering
 \begin{tabular}{l l l l}
@@ -67,7 +67,7 @@ The test results in the experiment setup with wide anchor node distances were no
 \item Checkpoints outside of AN bounding boxes
 \item Failing UWB connection due to too wide distances to ANs
 \end{itemize}
-These two were in addition to the distractions listed in chapter \ref{Chapter2}. The distractions mentioned for RSSI do also affect UWB signals, especially a cluttered environment will increase - and thus distort - the RTT used for UWB ranging. As in our testing environment servers with iron racks, desks with computer screens as well as a lot of different equipment was present, this effect should not be neglected.
+These two reasons weren identified in addition to the distractions listed in chapter \ref{Chapter2}. The distractions mentioned for RSSI do also affect UWB signals, especially a cluttered environment will increase - and thus distort - the RTT used for UWB ranging. As in our testing environment servers with iron racks, desks with computer screens as well as a lot of different equipment was present, this effect should not be neglected.
 
 \subsection{Bounding box restrictions}
 The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However even small ranging errors can lead to wrong position estimations outside the bounding box. 
@@ -105,7 +105,7 @@ As desired the results in this setup were way better than with wider ANs. With a
 \end{figure}
 
 \begin{table}
-\caption{The arithmetic mean of errors in trajectory 5.}
+\caption{The arithmetic mean of errors in trajectory 5 (in meter).}
 \label{tab:arithmetic_errors_trajectory5}
 \centering
 \begin{tabular}{l l l l}
@@ -147,4 +147,4 @@ In the new setup we purposely added checkpoints at the edge or outside the bound
 \end{figure}
 
 \subsection{Failing UWB connections}
-A bigger influence on the estimation error has the UWB connection. With a better established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the full version of the particle filter the communication is one of the key performance values, because the data is requested serially. This only allowes a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality,  such that some evaluating steps were skipped. 
+A bigger influence on the estimation error has the UWB connection. With a better established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the full version of the particle filter the communication is one of the key performance values, because the data is requested serially. This only allowes a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality,  such that some evaluating steps were skipped. Obviously the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, what is not possible when a part of the data is not present. 
