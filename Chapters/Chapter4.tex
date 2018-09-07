@@ -54,19 +54,24 @@ The radio module of SEQUITUR Pi board is used on the one hand to transmit data -
 %-----------------------------------
 \subsection{Transmission}
 SEQUITUR InGPS Lite enables single-hop wireless communication with the UWB interface between neighboring nodes of the same network. 
-The radio module supports six different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in the table below:\\
-\\
+The radio module supports six different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in table \ref{tab:spectral_occupation}.\\
+\begin{table}
+\caption{Spectral occupation of predefined channels.}
+\label{tab:spectral_occupation}
+\centering
 \begin{tabular}{c c c}
-Channel Number  & Central Frequency [MHz] & Bandwidth [MHz]\\
+\toprule
+\textbf{Channel Number} & \textbf{Central Frequency}[MHz] & \textbf{Bandwidth}[MHz]\\
+\midrule
 1 & 3494.4 & 500\\
 2 & 3993.6 & 500\\
 3 & 4492.8 & 500\\
 4 & 3993.6 & 1300\\
 5 & 6489.6 & 500\\
 7 & 6489.6 & 1100\\
+\bottomrule\\
 \end{tabular}
-\\
-\\
+\end{table}
 The data rate can be changed to three preset values of 110 kilobit per second (kbps), 850 kbps and 6.8 megabit per second (Mbps). All nodes have to operate in the same radiomode to communicate correctly. A lower data rate allows lager operating distances between the nodes. 
 The default pulse repetition frequency (PRF) is assumed to 64 MHz for all the channels.
 The underlying modulation techniques are not indicated in the specifications \cite{Usermanual} \cite{Beginnersguide}.
