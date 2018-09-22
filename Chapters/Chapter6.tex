@@ -1,34 +1,150 @@
 % Chapter Template
 
-\chapter{Conclusion and further work} % Main chapter title
+\chapter{Experiments evaluation} % Main chapter title
 
 \label{Chapter6} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we conclude our findings and our work. In the last section we propose which aspects in particular could be addressed in further research. 
+In this section we present the results of our experiments in detail. In two sections we compare the estimated positions of the three tested algorithms at the given checkpoints. Firstly the results of experiments with wide spread anchors are indicated and commented, secondly the results with nearer anchor positions are shown and discussed.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Conclusion}
-In this bachelor thesis an enhanced particle filter fusing UWB radio signals, inertial sensor measurements, physical environmental information and WiFi signals is presented. Running on Raspberry Pi devices, the system achieves high localization accuracy in complex indoor scenarios. With a proper anchor node positioning, the particle filter accomplished an average accuracy of 0.45m and a 90\% accuracy of 0.87m. In comparison to smartphone based implementation in previous works of the CDS (avg accuracy of 1.15m and 90\% accuracy of 1.8m), our UWB radio signal implementation is promising for the future \cite{Carrera}. Although we observed a rather good accuracy, we anticipate that the accuracy could be improved even more in further research by optimizing our algorithm according to the points listed in the next section.
+\section{Indoor positioning results with low density of anchor nodes}
+In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. Each trajectory was tested five times, the results are shown as arithmetic means of these five probes. The anchor node positions for these four tested trajectories are indicated in figure \ref{fig:anchor_position}.
 
+In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than 1.5 meter, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22m for $PF_{full}$, 0.68m for $PF_{UWBonly}$ and 1.14m for Sequitur, which are significantly lower than the arithmetic means.
+
+The measurements for trajectory two were almost identical, except for $PF_{UWBonly}$, which had no outliers during trajectory 2. The arithmetic mean error for $PF_{full}$ was 2.36m, for $PF_{UWBonly}$ it was 0.55m and for Sequitur 2.26m. Except for $PF_{UWBonly}$, the median errors were again a lot more accurate with 1.07m for $PF_{full}$, 0.49m for $PF_{UWBonly}$ and 1.73m for Sequitur.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectory1_2_results}
+\decoRule
+\caption[Positioning results trajectory 1 and 2]{Graphs of measured distance errors at each checkpoint in trajectory 1, respectively trajectory 2.}
+\label{fig:trajectory1and2_results}
+\end{figure}
+
+The results for trajectory 3 and 4 were rather similar, however, the peaks observed in figure \ref{fig:trajectory3and4_results} were not as extreme as for the first two trajectories. As above, the average errors in the third trajectory of 1.18m for $PF_{full}$, 0.80m for $PF_{UWBonly}$ and 1.87m for Sequitur were also mentionable higher than the medians of 0.92m, 0.76m and 1.60m.
+
+In the last of these four trajectories no big outliers were stated. Nonetheless the average errors of 1.72m, 1.51m and 1.52m, as well as the median errors 1.26m, 0.68m and 1.24m for $PF_{full}$, $PF_{UWBonly}$ and Sequitur, were still not as accurate as intended.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectory3_4_results}
+\decoRule
+\caption[Positioning results trajectory 3 and 4]{Graphs of measured distance errors at each checkpoint in trajectory 3, respectively trajectory 4.}
+\label{fig:trajectory3and4_results}
+\end{figure}
+
+Having a closer look at table \ref{tab:arithmetic_errors}, we see that surprisingly the version of the particle filter only using UWB was the best on every of the trajectories in the low-density anchor node test environment. Moreover, we have seen that there are very big differences between the single checkpoints and even between trajectories. The full variant of the particle filter and the Sequitur system have similar accuracies. For some trajectories one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming section \ref{Section2}. 
+
+\begin{table}
+\caption{The arithmetic mean of errors in trajectory 1 to 4 (in meter).}
+\label{tab:arithmetic_errors}
+\centering
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Trajectory} & \textbf{PF Full} & \textbf{PF UWB} & \textbf{Sequitur}\\
+\midrule
+\textbf{T1} & 1.54 & 1.47 & 1.69\\
+\textbf{T2} & 2.36 & 0.55 & 2.26\\
+\textbf{T3} & 1.18 & 0.80 & 1.87\\
+\textbf{T4} & 1.72 & 1.51 & 1.52\\
+\midrule
+\textbf{total 1-4}  & \textbf{1.61} & \textbf{1.03} & \textbf{1.79}\\
+\bottomrule\\
+\end{tabular}
+\end{table}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Further work}
-In future work, the positioning of the anchor nodes should be evaluated to higher detail. For the implementation itself, we identified the following four main improvements to our particle filter approach to address in further research:
+\section{Comments on low density anchor node test results}
+\label{Section2}
+The test results in the experiment setup with wide anchor node distances were not as good as intended. To find the reasons for that, we have to carefully have a look at the underlying implementation and the single checkpoint circumstances. We identified two main causes for bad results, they are explained in detail during the next two subsections.
 \begin{itemize}
-\item Seperate UWB communication
-\item Stability (especially when no data is available)
-\item Performance (run time)
-\item Wall detection deadlock
+\item Checkpoints outside of AN bounding boxes
+\item Failing UWB connection due to too wide distances to ANs
+\end{itemize}
+These two reasons weren identified in addition to the distractions listed in chapter \ref{Chapter2}. The distractions mentioned for RSSI do also affect UWB signals, especially a cluttered environment will increase - and thus distort - the RTT used for UWB ranging. As in our testing environment servers with iron racks, desks with computer screens as well as a lot of different equipment was present, this effect should not be neglected.
+
+\subsection{Bounding box restrictions}
+The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However even small ranging errors can lead to wrong position estimations outside the bounding box. 
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1_boundingBox}
+\decoRule
+\caption[Bounding box and checkpoints for trajectory 1 ]{Indicated bounding box of the anchor node positions for trajectory 1.}
+\label{fig:trajectory1_boundingBox}
+\end{figure}
+In our experiment especially the results on checkpoint 5 in trajectory 1 and 2 stand out. The average measured errors of 3.09m for $PF_{full}$, 6.23m for $PF_{UWBonly}$ and 5.70m for Sequitur during the first trajectory and 6.46m,  0.38m and 7.45m during the second trajectory are way higher than for other checkpoints. The fact that all of the three algorithms had troubles estimating this position, leads to the conclusion that the experiment setup was the main reason for the big errors at this checkpoint. Moreover, not only lies this point outside the bounding box, but it was also far away from the nearest ANs without a direct line of sight.
+
+\subsection{Failing UWB connections}
+All three algorithms depend on a good established UWB connection, as all the ANs ranging estimations are only transmitted via UWB. Especially in the full implementation of the particle filter many UWB meassages are transmitted, because fingerprinting and IMU data are additionally requested and exchanged. For this purpose the radio mode of the UWB devices had to be set to 2, which led to a higher datarate with the cost of lower possible communication distances.\\
+For certain checkpoints the distance to the farest anchor nodes were even more than 35m, which was too much for a stable UWB connection with the mentioned configuration. Particularly, the full particle filter had troubles receiving enough usable data, as it produced more overhead than the other algorithms. This led to a high package loss for the full version, such that only one or two range measurements per estimation step were taken into account - instead of the possible five - leading to a higher error. 
+\\
+\\
+During the experiments, we were surprised by the big inaccuracies of all three systems. We intended our system to perform better and in particular the results for Sequitur were surprising, as the UNISET company advertises with centimeter accuracy. This prompted a change in our setup, in order to establish better communication between the nodes with less package loss to enforce more data flowing into the particle filter. 
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Indoor positioning results with high density of anchor nodes}
+For trajectory 5 the distances between the anchor nodes were shortened. The exact setup was indicated above in figure \ref{fig:trajectory5_withAnchors}. Equally as before, also trajectory 5 was tested five times, the following results are shown as arithmetic means of these five tests.
+
+As desired the results in this setup were way better than with wider ANs. With an average error of 0.45m for $PF_{full}$, 0.59m for $PF_{UWBonly}$ and 0.48m for Sequitur, this setup outperformed the other trajectories with every algorithm. Even the median errors - with 0.40m, 0.57m and 0.45m -  were not much different, which means that there are no huge differences over the different checkpoints. This can also be seen in figure \ref{fig:trajectory5_results}, where most of the errors are smaller than 0.80m (please note the different axis scale, when comparing with the results for trajectory 1 to 4.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory5_results}
+\decoRule
+\caption[Positioning results trajectory 5]{Graphs of measured distance errors at each checkpoint in trajectory 5.}
+\label{fig:trajectory5_results}
+\end{figure}
+
+\begin{table}
+\caption{The arithmetic mean of errors in trajectory 5 (in meter).}
+\label{tab:arithmetic_errors_trajectory5}
+\centering
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Trajectory} & \textbf{PF Full} & \textbf{PF UWB} & \textbf{Sequitur}\\
+\midrule
+\textbf{total 1-4} & 1.61 & 1.03 & 1.79\\
+\textbf{T5} & 0.45 & 0.59 & 0.48\\
+\midrule
+\textbf{difference}  & \textbf{-1.16} & \textbf{-0.44} & \textbf{-1.31}\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+
+In table \ref{tab:arithmetic_errors_trajectory5}, the results of the low density ANs and the high density ANs are compared. The results improved significantly, confirming our suspicion of bad communication affecting the accuracy. With the highest accuracy the full version of the particle filter slightly overcame the Sequitur commercial system. The particle filter only taking UWB ranging into account was more accurate too, however, the improvement was not as big as for the two other algorithms.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+\section{Comments on high density anchor node test results}
+\label{Section4}
+With the more dense spread of the ANs, the estimations improved a lot. Having a look at our two assumptions from section \ref{Section2}, we can state the following:
+
+\begin{itemize}
+\item Checkpoints outside of AN bounding boxes had quite good accuracy, adding doubts to this explanation.
+\item The communication was better, what improved the accuracy a lot and confirmed our assumption.
 \end{itemize}
 
-A key bottleneck in our implementation was the UWB communication, as data was requested directly when it was needed. After each request, this caused a small waiting period, where the system waited for the requested data. In some cases the timeout was reached and the system continued without the requested data. A separate communication unit with anticipated data requests and a proper handling of received messages would definitly improve the performance. \\
-For the cases with bad UWB connection, only a small amount of data was available for the estimation. Especially when none of the ANs responded to the data requests, the system terminated with errors, as obviously it was not able to perform a position localization. For these cases a defined fallback should be taken into account.\\
-The particle filter algorithm, especially with the room recognition, is computationally demanding. All computations are done serially one after another, just like the requesting of data. The estimation run time should be improved by adding contemporal computations and eliminating unnecessary loops.\\
-Finally for some trajectories the wall detection produced a deadlock, when walking around wall edges with moderate speed. In this case the system was not able to reestablish good accuracy without going back to the room, where the deadlock occured.\\
+\subsection{Bounding box restrictions}
+In the new setup we purposely added checkpoints at the edge or outside the bounding box, as seen in figure \ref{fig:trajectory5_boundingBox}. Especially checkpoint 5 and 8 are not lying within the bounding box, however they still had a quite good accuracy. For checkpoint 5 the average estimation errors were 0.30m, 	0.34m, and 0.14m, for checkpoint 8 the errors were 0.43m,	1.01m and 0.25m for $PF_{full}$, $PF_{UWBonly}$ and Sequitur. It made no difference for the tag being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.
 
-Addressing these gaps, I am sure that UWB based indoor positioning using particle filter error correction is very promising for the future to outperform other localization technologies.
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory5_boundingBox}
+\decoRule
+\caption[Trajectory 5 with bounding box]{Indicated bounding box of the anchor node positions for trajectory 5.}
+\label{fig:trajectory5_boundingBox}
+\end{figure}
+
+\subsection{Failing UWB connections}
+A bigger influence on the estimation error has the UWB connection. With a better established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the full version of the particle filter the communication is one of the key performance values, because the data is requested serially. This only allowes a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality,  such that some evaluating steps were skipped. Obviously the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, what is not possible when a part of the data is not present. 

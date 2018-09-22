@@ -1,60 +1,159 @@
 % Chapter Template
 
-\chapter{System design} % Main chapter title
+\chapter{Related Work} % Main chapter title
 
-\label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-The given background theory of section 2 was applied for our system design. In the following we present our theoretical system design. We provide a short overview in the first part, following a part where our theoretical setup is introduced. Finally we add our thoughts about the computations that are used.
+\label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+In this section we explain the different types of range measuring in range-based localization systems. For comparison reasons, we shortly introduce variants of received signal strength indication (RSSI), which is the mostly used indoor localization technique. We then briefly explain two slightly less common methods, which were used in our system - two way ranging (TWR) and time difference of arrival (TDOA). We also include some background theory about our implementation and the particle filter.\\
+These are the main parts of this section:\\
+First a short overview of range based localization with the main principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Overview}
-As already mentioned in the introduction, our system combines different types of data input to achieve the best position estimation. This leds to a slightly more complicated ranging process than indicated on the simplified illustration in figure \ref{fig:ranging_process}.\\
-We wanted to include not only measurements from one device, but from several different data sources:
-TAG and AN collect data and send it to the server, where the data is fed into the particle filter. The particle filter spreads particles accoring to TAG movement indication, restricted by the topology read from the floorplan and calculates the position likelihood according to range measurements, the movement vector and a rather complex zone indication. In this phase, trilateration is already done implicitly. With respect to the likelihood, a normalized weight is assigned to each particle. The position estimation corresponds to the weighted sum of all particle positions.
-An overview of the whole process is illustrated on figure \ref{fig:particle_filter_design}.
+\section{Range based localization}
+
+Range based localization systems are depending on an infrastructure in the area of the localization:
+\begin{itemize} 
+\item \textbf{Target Node (TAG)} which is the device that is localized. 
+\item \textbf{Anchor Nodes (AN)} that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
+\end{itemize}
 
 \begin{figure}[th]
 \centering
-\includegraphics[width=1.0\textwidth]{Figures/particle_filter_design}
+\includegraphics[width=1.0\textwidth]{Figures/ranging_process}
 \decoRule
-\caption[Particle filter design]{Overview of the theoretical components in our system.}
-\label{fig:particle_filter_design}
+\caption[Ranging process]{A simple ranging process.}
+\label{fig:ranging_process}
 \end{figure}
 
+As shown in figure \ref{fig:ranging_process}, a simplified localization system work as follows:
+Either the TAG, the anchor or both of them collect data used for localization. The data can be a signal strength, a round trip time or IMU measurement.
+In a processing unit - on the TAG or on a seperate server - the data is processed and converted into a distance. This is repeated for every anchor node.
+The last step contains trilateration of the position using the ranges of every AN to the TAG.
+
+In this abridged scenario, some difficulties are left out. Full indoor localization systems are more complex, as they use ingenious algorithms to improve the accuracy of the estimated ranges or improve the system by adding weighting to deal with incorrect range measures.
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+\subsection{Received signal strength indication}
+As already mentioned, many indoor positioning algorithms use received signal strength indication to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter \cite{VorlesungCN}:
+$$
+P_{r} = P_{t} (\lambda/4\pi r)^2
+$$
+\\
+$P_{r}$ - received signal strength\\
+$P_{t}$ - transmitted signal strength\\
+$\lambda$ - wavelength\\
+$r$ - radius (distance from transmitter to receiver)\\
+
+However, this formula is restricted to free-space. There are several different kind of distractions that can affect the accuracy of the measurements in an indoor environment. For example the following occurences:
+\begin{itemize} 
+\item Multi-path propagation
+\item Reflections
+\item Diffraction
+\item Doppler effect
+\item etc.
+\end{itemize}
+
+Signal strength can often be obtained from the transmitter hardware as a discrete number. The higher the number, the stronger the signal. This discretization reflects another source of errors.
+
+%-----------------------------------
+%	SUBSECTION 2
+%-----------------------------------
+\subsection{Round trip time: Two way ranging, time difference of arrival}
+Gathering round trip times (RTT) is a second method to get distance estimations. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the presented two RTT-measuring communication techniques, the key characteristics are either a quick responding time or extremely well synchronized TAG and AN.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/two_way_ranging}
+\decoRule
+\caption[Two way ranging]{Illustration of TWR and SDS-TWR communication}
+\label{fig:two_way_ranging}
+\end{figure}
+
+Operating in two way ranging (TWR) mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With the equation below, the time of flight can now be evaluated \cite{SewioTWR}.
+To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) \cite{Wikipedia} and is indicated as optional in Figure \ref{fig:two_way_ranging}.\\
+\\
+Time of flight for TWR:\\
+$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP})] / 2$$\\
+Time of flight for SDS-TWR:\\
+$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4$$\\
+$ToF$ - Time of flight\\
+$T_{SP}$ - sending of poll timestamp \\
+$T_{RP}$ - reception of poll timestamp\\
+$T_{SA}$ - sending of ACK timestamp \\
+$T_{RA}$ - reception of ACK timestamp\\
+$T_{SF}$ - sending of final timestamp \\
+$T_{RF}$ - reception of final timestamp\\
+
+For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data directly to the server.
+
+While TWR does not need further synchronization between the devices, time difference of arrival (TDOA) requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
+To evaluate the time of flight, a TAG in range will broadcast a blink message. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID for a tagret device, it can perform the position and therefore the distance estimation.
+A huge benefit of TDOA is the fact, that the tag only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}. For TWR the overhead grows enourmous with every anchor and every tag that is added. For TDOA hundrets of TAGs can be tracked, whith only proportional overhead growth and much lower energy consumption for the TAG.\\
+Number of messages sent in one iteration:\\
+TWR:  $3 * n_{t} * n_{an}$\\
+TDOA:  $n_{t}$\\
+Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \cite{SewioTDOA}.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.7\textwidth]{Figures/time_difference_of_arrival}
+\decoRule
+\caption[Time difference of arrival]{Typical Setup for Time Difference of Arrival communication}
+\label{fig:time_difference_of_arrival}
+\end{figure}
+
+
+For both methods the same calculations to convert the ToF to the related distance can be applied. We assume that radio signals travel almost with speed of light, so we just multiply the ToF with speed of light ($c_{0}$).
+$$ distance = ToF * c_{0} $$\\
+$ToF$ - Time of flight\\
+$c_{0}$ - Speed of Light = \SI{2.99792458e8}{\meter\per\second} (exact) \\
+
+%-----------------------------------
+%	SUBSECTION 3
+%-----------------------------------
+\subsection{Triangulation and trilateration}
+Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids \cite{thales}. It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
+Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
+As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
+
+Figure \ref{fig:trilateration} shows how trilateration is used for positioning. With the known distance to every AN, a circle with radius of this distance can be drawn around every AN. These circles do only have one common intersection point, that is where the TAG lies. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.6\textwidth]{Figures/trilateration}
+\decoRule
+\caption[Trilateration]{Graphical illustration of the trilateration concept.}
+\label{fig:trilateration}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Setup}
-The theoretical design of our system is shown in figure \ref{fig:system_design}, it works as follows:
-At least three ANs, equipped with UWB technology, are placed in an indoor environment of one floor. Our algorithm runs on a seperate server, where a zoneplan and floorplan of the floor are available. A single TAG is located somewhere on the floor, it is as well equipped with UWB technology, moreover it measures acceleration with the onboard IMU and signal strength to WiFi access points. The TAG continously collects data from the IMU and contemporary waits for a request from the server. The server periodically requests data via UWB from the TAG. As soon as a request is noticed at the TAG, it performs a range estimation to every AN, senses the signal strength of the WiFi and sends this data together with the continously collected IMU data to the server.
-For every estimation period, the server has all the data needed to feed the particle filter.
-
+\section{UWB theory}
+Ultra wide-band (UWB) is a radio technology in use for military communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
 \begin{figure}[th]
 \centering
-\includegraphics[width=1.0\textwidth]{Figures/system_design}
+\includegraphics[width=1.0\textwidth]{Figures/frequency_spectrum}
 \decoRule
-\caption[System design]{Overview of the theoretical system design.}
-\label{fig:system_design}
+\caption[UWB frequency spectrum]{Comparison of Wi-Fi (802.11) and UWB frequencies.}
+\label{fig:frequency_spectrum}
 \end{figure}
+UWB opperates with less energy compared to other communication like Wi-Fi. However, the main difference between UWB and conventional radio transmissions is the underlying modulation technique. UWB transmits data by generating short radio energy at specific times instead of varying frequency and phase of sinus waves. In addition to the pulse position, the pulses can carry information either by their polarity, their amplitude or by using orthogonal pulses.
+A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated. As single pulses can be registered and identified by the receiver, UWB devices are able to determine very exact ToFs such that distance estimations can be done to high resolution.
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 3
 %----------------------------------------------------------------------------------------
 
-\section{Computations on the server}
-Most computations are done on the seperate server, as we would like to minimize the required computational power and energy consumption of the devices. As already mentioned, the server receives IMU data and range estimations from the nodes. This data, as well as the floorplan constraints and the zone indication, flow into the particle filter. These operations are done on the server:
-\begin{itemize}
-\item Spread the particles and validate new positions with floormap constraints
-\item Evaluate UWB ranges, IMU measures and machine learning fingerprints for zone indication to assign likelihood
-\item Calculate weight function and systematically resample (and reposition) particles with low weights
-\item Sum up weighted positions
-\end{itemize}
+\section{Particle filter and room recognition}
 
-In the first part, every particle is moved from its current to a new position. To validate the new position, we check if the direct trajectory between the old and the new location intersects with an impediment. If so, a new position is generated, as the last was not reachable.
-The second item covers the likelihood of the new position. For every AN, the measured distance is compared to the distance from the new position to the AN. The less these two distances differ, the higher is the assigned liklihood. In this phase also the zone indication is taken into account. A particle that lies in the predicted zone is assumed to be more accurate than particles in a wrong zone. Therefore the probability returned from the ML algorithms of being in the zone of the particle is directly assigned as the zone indication likelihood. For the IMU motion, the difference between the old and the new position is compared to the measured IMU motion to evaluate the likelihood.
-In the weighting step, every particle gets weighted by the liklihoods of the previous computations. The weights of all particles are normalized for further processing.
-The last part is simply a weighted sum of the particles locations to retrieve the estimated position.
+In the last years the CDS of UniBe has made big effort in developing an indoor positioning system. In various works, many variants of particle filter based localization have been presented and tested. In one of the latest works, the authors proposed a robust real-time indoor tracking system based on smartphones \cite{Carrera}, which extended some previous works \cite{Carrera3}. These works were mainly based on Wi-Fi RSSI measurements fusing with IMU data. Since there are no documentations about the particle filter approach based on UWB ranging, we will address this gap.\\
+In addition, the CDS also presented enhanced machine learning techniques for room recognition based on Wi-Fi and magnetic field energy fingerprints \cite{Carrera2}.
+
+As our work is an extension of the particle filter in combination with a simplified version of the room recognition algorithm, the principles of these works are explained in detail in chapter \ref{Chapter4}.
