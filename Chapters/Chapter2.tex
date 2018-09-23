@@ -19,11 +19,26 @@ In this section we present some related work, grouped by the different types of 
 Localization systems can either run on a seperate server or on the client device itself. A server-based localization system can be interesting, as it does not require a specific target device hardware, which makes it fairly scalable. Coordination of the different system components and data processing can be done on the server, such as in \cite{Delmastro}.
 In \cite{Carrera} the system runs on a commodity smartphone, with the benefit of eliminating further communication to an external entity. Such client-based localization systems can often be deployed without any additional hardware, when for example WLAN access points are already available. The authors of \cite{Guoguo} use a hybrid of server and client-based architecture - ranges are calculated on the client device and network control as well as the database are managed on a server. 
 
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
 \section{Fingerprint Localization}
 Fingerprint Localization is a range-free localization method where radio signals and other measurements that are highly affected by environmental conditions are fingerprinted and stored in a map. The position is estimated by comparing a current fingerprints to the existing map. The authors of \cite{Taniuchi} provided a room-based ensemble learning technique for localization. The room detection uses averaged coordinate outputs of a k-NN estimator. Whereas in \cite{Carrera2} the authors propose a hidden markov model discriminative learning method for indoor localization. Their apporach is a zone recognition algorithm based on magnetic field and WiFi fingerprints brought together with transition probabilities between zones.
 
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
 \section{Range-based Localization}
 In range-based localization systems, range is defined as the propagation distance between the target and anchor nodes (AN). First the propagation distances are calculated, afterwards many different algorithms can be used to find the absolute position of the target. In \cite{Horus} a received signal strenght indicator is used to estimate the range during the ranging process. A different method to do ranging is used in \cite{IEEE}, where the authors calculated distances by the elapsed time between sending and receiving radio messages. Range-based algorithms are often much lighter and computationally less expensive than fingerprinting methods, as the big effort in generating, storing and processing a radio map falls away. 
 
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
 \section{Pedestrian Dead Reckoning}
 PDR relies on inertial measurement unit (IMU) readings to find the new position. PDR systems are often not able to calculate absolute positions, but the relative change in position. This leads to an accumulation of errors over time, which are in most systems eliminated by adding a different source of information, such as WiFi signals or floorplan information. Different IMU sensor readings are used to obtain a stride length estimation, a heading direction estimation and step recognition. In \cite{Borestein} gyroscope data is used to determine the heading orientation and accelerometer readings provide the displacement. They defined a method called Heuristic Drift Elimination (HDE) to minimize the accumulated errors, by adding a specialized sensor deployed on the foot of the pedestrian. An other method to find heading direction is used in \cite{Kakiuchi}, where the authors use a kind of digital compass by measuring magnetic field energy. Based on accelerometer readings they defined a walking and a running model.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 5
+%----------------------------------------------------------------------------------------
+\section{Combined Localization}
+The different characteristics of different types of localization methods makes it obvious, that combined localization systems could achieve higher accuracy. In combined approaches, especially relative and absolute measurements are fused to have the advantages of both methods. The authors of \cite{Nagpal} used a fingerprinting-based solution in combination with a digital compass. \cite{Carrera} is a particle filter approach that fuses PDR and radio-based ranging, as well as floorplan information into the localization process. Errors in the PDR system are mitigrated by the ranging estimations and vice-versa. This makes these approaches highly interesting in the research.
