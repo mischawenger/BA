@@ -30,7 +30,7 @@ The online phase consists of an observed fingerprint at the targets location, on
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Range based localization}
+\section{Range Based Localization}
 
 Range based localization systems are depending on an infrastructure in the area of the localization:
 \begin{itemize} 
@@ -38,50 +38,41 @@ Range based localization systems are depending on an infrastructure in the area 
 \item \textbf{Anchor Nodes (AN)} that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
 \end{itemize}
 
-\begin{figure}[th]
-\centering
-\includegraphics[width=1.0\textwidth]{Figures/ranging_process}
-\decoRule
-\caption[Ranging process]{A simple ranging process.}
-\label{fig:ranging_process}
-\end{figure}
-
-As shown in figure \ref{fig:ranging_process}, a simplified localization system work as follows:
-Either the TAG, the anchor or both of them collect data used for localization. The data can be a signal strength, a round trip time or IMU measurement.
-In a processing unit - on the TAG or on a seperate server - the data is processed and converted into a distance. This is repeated for every anchor node.
-The last step contains trilateration of the position using the ranges of every AN to the TAG.
-
-In this abridged scenario, some difficulties are left out. Full indoor localization systems are more complex, as they use ingenious algorithms to improve the accuracy of the estimated ranges or improve the system by adding weighting to deal with incorrect range measures.
+The key idea of range based positioning is to measure the distance between TAG and ANs. With the use of these distances, the exact position of the TAG can be evaluated using multilateration or similar mathematical models. Several different approaches are possible to determine the distance to an anchor node, they can be classified into the two groups. In the one hand there are algorithms using propagation models, which rely on the reduction in power density of electromagnetic waves propagating through space. In the other hand, algorithms make use of known propagation velocities for radio signals  by measuring the time of flight of transmitted waves. 
 
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{Received signal strength indication}
-As already mentioned, many indoor positioning algorithms use received signal strength indication to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses the universal theory of free-space path loss. The following formula describes the relation between the received signal strength and the distance to the transmitter \cite{VorlesungCN}:
-$$
+\subsection{Propagation Models}
+An electromagnetic wave loses power density when travelling through space. In free space, the following formula explains the relationship between distance and signal strength \cite{VorlesungCN}.
+
+\begin{equation}
 P_{r} = P_{t} (\lambda/4\pi r)^2
-$$
-\\
-$P_{r}$ - received signal strength\\
-$P_{t}$ - transmitted signal strength\\
-$\lambda$ - wavelength\\
-$r$ - radius (distance from transmitter to receiver)\\
+\label{eqn:freePathLoss}
+\end{equation}
 
-However, this formula is restricted to free-space. There are several different kind of distractions that can affect the accuracy of the measurements in an indoor environment. For example the following occurences:
-\begin{itemize} 
-\item Multi-path propagation
-\item Reflections
-\item Diffraction
-\item Doppler effect
-\item etc.
-\end{itemize}
+where $P_{r}$ is the received signal strength and $P_{t}$ the transmitted signal strength. $\lambda$ is the wavelength and $r$ the radius, or in other words the distance from transmitter to receiver. As this formula is restricted to free-space and often in real indoor environments various kind of obstacles are present, several other approximations for the relationship between distance and signal power exist. Many indoor positioning algorithms use received signal strength indication (RSSI) to calculate distances to the anchor nodes. Mainly because RSSI can be applied to almost every type of transmitted signal, thus RSSI uses universal applicable theory. Two approximations are widely used to take care of the non-free-space environments indoors.\\
+\noindent\hspace*{5mm}%
+A commonly used model for the relationship of distance and RSS is known as Log-normal Distance Path Loss (LDPL), where the path loss in Decibel (dB) is defined as \cite{Sarkar}:
+\begin{equation}
+PL = PL_{0} +10 \gamma log_{10} (\frac{d}{d_{0}}) + X_{g}
+\label{eqn:LDPL}
+\end{equation}
 
-Signal strength can often be obtained from the transmitter hardware as a discrete number. The higher the number, the stronger the signal. This discretization reflects another source of errors.
+with $\gamma$ as the path loss exponent, $PL_{0}$ a path loss measurement at reference distance $d_0$ and $X_{g}$ a zero-mean Gaussian noise. This generic model can be applied to many different enviroments. It can even be simplified by defining useful reference distances, like done in \cite{Kurt}.\\
+\noindent\hspace*{5mm}%
+LDPL has shown to be rather inaccurate for indoor environments, which led to a path loss model based on Non-Linear Regression (NLR) as used in \cite{ZanLi}. In this approach, the distance to RSS relationship is modelled with the equation:
+\begin{equation}
+d_{i} = \alpha_{i} e^{\beta_{i}RSS_{i}}.
+\label{eqn:NLR}
+\end{equation}
+$d_{i}$ is the distance between the $i$-th AN and the TAG, $RSS_{i}$ the measured signal strength at the $i$-th AN and $\alpha_{i}$, $\beta_{i}$ specific coefficients obtained in the area of interest. These two coefficients are rather important for the performance of this approach. They are defined due to extensive calculations based on preliminary measuements as described in \cite{Kurt}.
+
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
-\subsection{Round trip time: Two way ranging, time difference of arrival}
+\subsection{Time of Flight Based Models}
 Gathering round trip times (RTT) is a second method to get distance estimations. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the presented two RTT-measuring communication techniques, the key characteristics are either a quick responding time or extremely well synchronized TAG and AN.
 
 \begin{figure}[th]
