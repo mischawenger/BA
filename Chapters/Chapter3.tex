@@ -27,7 +27,7 @@ In the offline phase, a radio map is generated with several fingerprints. The ra
 The online phase consists of an observed fingerprint at the targets location, on which the localization algorithm can be applied to associate the fingerprint to simliar radio map entries. This association is then used to estimate the targets location. The result can either be a concrete position estimation built on the presence of reference points or it can be a probability of the target being in a recognized zone. 
 
 %----------------------------------------------------------------------------------------
-%	SECTION 1
+%	SECTION 3
 %----------------------------------------------------------------------------------------
 
 \section{Range Based Localization}
@@ -41,7 +41,7 @@ Range based localization systems are depending on an infrastructure in the area 
 The key idea of range based positioning is to measure the distance between TAG and ANs. With the use of these distances, the exact position of the TAG can be evaluated using multilateration or similar mathematical models. Several different approaches are possible to determine the distance to an anchor node, they can be classified into the two groups. In the one hand there are algorithms using propagation models, which rely on the reduction in power density of electromagnetic waves propagating through space. In the other hand, algorithms make use of known propagation velocities for radio signals  by measuring the time of flight of transmitted waves. 
 
 %-----------------------------------
-%	SUBSECTION 1
+%	SUBSECTION 3.1
 %-----------------------------------
 \subsection{Propagation Models}
 An electromagnetic wave loses power density when travelling through space. In free space, the following formula explains the relationship between distance and signal strength \cite{VorlesungCN}.
@@ -70,10 +70,12 @@ $d_{i}$ is the distance between the $i$-th AN and the TAG, $RSS_{i}$ the measure
 
 
 %-----------------------------------
-%	SUBSECTION 2
+%	SUBSECTION 3.2
 %-----------------------------------
 \subsection{Time of Flight Based Models}
-Gathering round trip times (RTT) is a second method to get distance estimations. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the presented two RTT-measuring communication techniques, the key characteristics are either a quick responding time or extremely well synchronized TAG and AN.
+A totally different technique to get distance estimations are time of flight based models. The key idea is, that we know the travelling velocity of radio waves, which is approximately the speed of light (\SI{2.99792458e8}{\meter\per\second}). When measuring the time between sending and receiving a radio signal, we can easily convert this time of flight (ToF) to a distance estimation. Time of flights are determined by gathering round trip times (RTT) in radio signal communication. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the two presented RTT-measuring techniques, the key characteristics are either a quick responding time or extremely well synchronized sender and receiver.\\
+\noindent\hspace*{5mm}%
+Two way ranging (TWR) is one of these methods to retrieve an accurate round trip time. An illustration of the TWR process can be seen in figure \ref{fig:two_way_ranging}. When operating in TWR mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With equation \ref{eqn:TWR}, the time of flight can now be evaluated \cite{SewioTWR}.
 
 \begin{figure}[th]
 \centering
@@ -83,31 +85,24 @@ Gathering round trip times (RTT) is a second method to get distance estimations.
 \label{fig:two_way_ranging}
 \end{figure}
 
-Operating in two way ranging (TWR) mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With the equation below, the time of flight can now be evaluated \cite{SewioTWR}.
 To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) \cite{Wikipedia} and is indicated as optional in Figure \ref{fig:two_way_ranging}.\\
 \\
-Time of flight for TWR:\\
-$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP})] / 2$$\\
-Time of flight for SDS-TWR:\\
-$$ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4$$\\
-$ToF$ - Time of flight\\
-$T_{SP}$ - sending of poll timestamp \\
-$T_{RP}$ - reception of poll timestamp\\
-$T_{SA}$ - sending of ACK timestamp \\
-$T_{RA}$ - reception of ACK timestamp\\
-$T_{SF}$ - sending of final timestamp \\
-$T_{RF}$ - reception of final timestamp\\
+Evaluation of time of flight for TWR:\\
+\begin{equation}
+ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP})] / 2
+\label{eqn:TWR}
+\end{equation}
 
-For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data directly to the server.
+Respectively the time of flight for SDS-TWR:\\
+\begin{equation}
+ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4
+\label{eqn:SDS-TWR}
+\end{equation}
 
-While TWR does not need further synchronization between the devices, time difference of arrival (TDOA) requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
-To evaluate the time of flight, a TAG in range will broadcast a blink message. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID for a tagret device, it can perform the position and therefore the distance estimation.
-A huge benefit of TDOA is the fact, that the tag only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}. For TWR the overhead grows enourmous with every anchor and every tag that is added. For TDOA hundrets of TAGs can be tracked, whith only proportional overhead growth and much lower energy consumption for the TAG.\\
-Number of messages sent in one iteration:\\
-TWR:  $3 * n_{t} * n_{an}$\\
-TDOA:  $n_{t}$\\
-Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \cite{SewioTDOA}.
-
+with the following timestamps: $T_{SP}$ as time of poll-sending, $T_{RP}$ as time of poll-reception, $T_{SA}$ as time of ACK-sending, $T_{RA}$ as time of ACK-reception, $T_{SF}$ as time of Final-sending and $T_{RF}$ as time of Final-reception.\\
+\noindent\hspace*{5mm}%
+A second approach for RTT determination is called time difference of arrival (TDOA). While TWR does not need further synchronization between the devices, TDOA requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
+To evaluate the time of flight, a TAG in range will broadcast a blink message. This blink message will initialize the ranging of the TAG. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID, it can perform the position and therefore the distance estimation based on the time of arrival of the initial blink message at each AN.
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.7\textwidth]{Figures/time_difference_of_arrival}
@@ -115,22 +110,19 @@ Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \
 \caption[Time difference of arrival]{Typical Setup for Time Difference of Arrival communication}
 \label{fig:time_difference_of_arrival}
 \end{figure}
-
-
-For both methods the same calculations to convert the ToF to the related distance can be applied. We assume that radio signals travel almost with speed of light, so we just multiply the ToF with speed of light ($c_{0}$).
-$$ distance = ToF * c_{0} $$\\
-$ToF$ - Time of flight\\
-$c_{0}$ - Speed of Light = \SI{2.99792458e8}{\meter\per\second} (exact) \\
+A huge benefit of TDOA is the fact, that the TAG only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}. For TWR the overhead grows enourmous with every anchor and every TAG that is added. For TDOA hundrets of TAGs can be tracked, with only proportional overhead growth and much lower energy consumption for the TAG.\\
+Number of messages sent in one iteration:\\
+TWR:  $3 * n_{t} * n_{an}$\\
+TDOA:  $n_{t}$\\
+Where $n_{t}$ is the number of TAGs and $n_{an}$ is the number of anchor nodes \cite{SewioTDOA}.
 
 %-----------------------------------
-%	SUBSECTION 3
+%	SUBSECTION 3.3
 %-----------------------------------
-\subsection{Triangulation and trilateration}
-Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids \cite{thales}. It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
+\subsection{Multilateration}
+Multilateration is a mathematical method to calculate a position using three or more known distances. It is an extention of trilateration, where only three distances are used. Triagulation and trilateration use the mathematical concepts of triangles to find unknown lengths. Triangulation was already mentioned by the greek mathematician Thales, who used this concept for finding out the height of ancient egypt pyramids \cite{thales}. It was also used for cartography purposes, where angles between fixed points were measured and heights and distances could be calculated. 
 Although trilateration and triangulation use the same mathematical triangle concept, they have one defined difference: We call it triangulation, when angles to anchor positions are measured, otherwise - when distances to anchors are measured - it's called trilateration.
 As it was easier to measure angles than distances in the past, triangulation was more often used. With modern electronic devices, it is more common to determine distances, rather than angles. 
-
-Figure \ref{fig:trilateration} shows how trilateration is used for positioning. With the known distance to every AN, a circle with radius of this distance can be drawn around every AN. These circles do only have one common intersection point, that is where the TAG lies. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
 
 \begin{figure}[th]
 \centering
@@ -140,12 +132,98 @@ Figure \ref{fig:trilateration} shows how trilateration is used for positioning. 
 \label{fig:trilateration}
 \end{figure}
 
+Figure \ref{fig:trilateration} shows how trilateration is used for positioning. With the known distance to every AN, a circle with radius of this distance can be drawn around every AN. These circles do only have one common intersection point, that is where the TAG lies. However, this is a theoretical and idealized scenario, where every range can be determined accurately. In real applications, the ranges are not exactly calculated, what leads to the fact that we will not only get a single point for the calculated position, but several points, especially when we use more than three ANs.
+
 %----------------------------------------------------------------------------------------
-%	SECTION 2
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+\section{Movement Detection}
+Indoor positioning is often reduced to two dimensions, such that the movement vector is also a two dimensional construct. A movement vector $Mv_{t}$ can be stored as $(X_{t}, Y_{t})$ cartesian coordinates or using a tuple of heading direction angle and stride length $(\theta_{t}, \ell_{t})$. Both of $\theta$ and $\ell$ can be calculated by the IMU readings, where several noises occur such that the heading direction is statistically described as:
+\begin{equation}
+\theta_{t} = \hat{\theta}_{t} + \theta_{bs,t} + \theta_{be,t} + \epsilon_{\theta, t},
+\label{eqn:heading_direction}
+\end{equation}
+with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. The heading direction can be calculated by using the geomagnetic field of the earth. The formula $\theta = atan(\frac{mag_{x}}{mag_{y}})$ can be used to obtain the heading direction, where $mag_{x}$ and $mag_{y}$ are the magnetic field sensor readings in X direction, respectively in Y direction.\\
+\noindent\hspace*{5mm}%
+Whereas the heading direction is obtained by measuring absolute values of magnetic field energy, the accelerometer data is a relative quantity, that is used for stride length determination. Dealing with relative values, measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time. To address this, a absolute quantity is needed to correct long term errors. Velocities from previous time slots can be used for this. As we can not assume the acceleration to be constant during a whole time slot, the movement length approximation can be defined as: 
+\begin{equation}
+\ell_{t} = \hat{\ell}_{t-1} + \sum_{i=0}^{N}([(\hat{a}_{i} + a_{bs,i} +\epsilon_{a, i}) * \Delta t_{i} ]*(N-i)) *\Delta t + \epsilon_{\ell, t},
+\label{eqn:stride_length}
+\end{equation}
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period $\Delta t$, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 5
 %----------------------------------------------------------------------------------------
 
-\section{UWB theory}
-Ultra wide-band (UWB) is a radio technology in use for military communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
+\section{Data Fusion for Localization}
+When several different sources of data are collected and brought together in one algorithm, we call it data fusion. There are several common ways of fusing data, the most widely used are filtering approaches such as the Kalman Filter \cite{Kurt} and the Particle Filter. The focus of this work lies on a particle filter approach, also known as Monte Calro Localization (MCL), which is often used fo indoor positioning. It combines various noisy measurements to estimate the system state and minimize errors. To introduce the particle filter, we explain its three main phases and the corresponding inputs. 
+
+\subsection{Particle Filter: Prediction Phase}
+In the prediction phase, every particle is repositioned. At time $t$, each particle has a state vector that is defined as follows:
+\begin{equation}
+X_{t} = [x_{t}, y_{t}, x_{t-1}, y_{t-1}],
+\label{eqn:particles}
+\end{equation}
+where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t-1}, y_{t-1})$ at time t-1 respectively. The repositioning of the particles is often done randomly, however, it could also be done according to the movement vector or other sensor-based values. If present, floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
+
+\subsection{Particle Filter: Observation Phase}
+In the observation phase an associated weight $w^{i}_{t}$ is recalculated for every particle, since the weight does not anymore correspond to the current position. For each anchor node, we have an obtained distance measurement $d^{j}_{t}$, which itself consists various errors. Statistically it can be described as: 
+\begin{equation}
+d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{d^{j}, t},
+\label{eqn:distances}
+\end{equation}
+where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions (obstacles) and $\epsilon_{d^{j}, t},$ is a measured random error.\\
+\noindent\hspace*{5mm}%
+The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. Then, the probabilities are determined as:
+\begin{equation}
+p(Zd_{t} | X^{i}_{t}) = p(d_{t}^{j} | X^{i}_{t})
+\label{eqn:probability_distance}
+\end{equation}
+and
+\begin{equation}
+p(Mv_{t} | X^{i}_{t}) = p(M_{x,t} | X^{i}_{t}) * p(M_{y,t} | X^{i}_{t}).
+\label{eqn:probability_movement}
+\end{equation}
+In addition, the zone probability is:
+\begin{equation}
+p(y_t | X^{i}_{t}) = p_{tot}(y_{t} | z^{i}_{t}),
+\label{eqn:probability_zone}
+\end{equation}
+where $y_t$ is the observed fingerprint at time $t$ and $z^{i}_{t}$ the current zone of particle $X^{i}$.
+In order to avoid confusion between different likelihoods used in this work, hereafter we refer to $p(d_{t} | X^{i}_{t})$ as the ranging likelihood, $p(M_{t} | X^{i}_{t})$ for the motion likelihood, $p(y_t | X^{i}_{t})$ for the zone likelihood and $p(Z_{t} | X^{i}_{t})$ as the overall likelihood.
+
+The associated weight $w^{i}_{t}$ of each particle is given by ranging as well as by motion information. A particle at the current position $(x_{t},y_{t})$ with low probability to observe $d_{t}^{j}$ in its position will be assigned a small weight. Additionally a particle that moved in x-direction by $x_{t}^{i}-x_{t-1}^{i}$ with low probability to observe the movement $M_{x,t}$ will also be assigned a small weight. Analogue for the movement in y-direction.
+That leads to the fact that particles with large weights will have a stronger effect to the determination of the state of the system.
+We assume that all these likelihoods - the ranges to each AN as well as the movement in direction x, y - are statistically independent from each other. Therefore, the overall likelihood is defined as:
+\begin{equation}
+p(Z_{t} | X^{i}_{t}) = \prod_{j=1}^{N} p(\hat{d}_{j,t}|X_{t}^{i}) * p(\hat{M}_{x,t} | X^{i}_{t}) * p(\hat{M}_{y,t} | X^{i}_{t}) * p(y_t | X^{i}_{t}),
+\label{eqn:probability_overall}
+\end{equation}
+where $\hat{d}_{j,t}$ is the measured distance to the AN j at time t and $\hat{M}_{x,t}$ is the measured motion in x-direction in timeinterval t, respectively $\hat{M}_{y,t}$ in y-direction and $y_t$ is the measured RSS fingerprint.
+
+The individual likelihood for the range observation can then be expressed as:
+\begin{equation}
+p(\hat{d}_{j,t} | X^{i}_{t}) = \frac{1}{\sqrt{2\pi \sigma_{j}^{2}}} * exp(\frac{-[\sqrt{(x^{i}_{t}-x_{j})^{2}+(y^{i}_{t}-y_{j})^{2}} - \hat{d}_{j,t}]^{2}}{2\sigma_{j}^{2}}),
+\label{eqn:probability_individual_distance}
+\end{equation}
+where $(x_{j},y_{j})$ are the known coordinates of the $j$-th AN.
+Whereas the individual likelihood of the motion observation in x-direction (analogue for y-direction) is expressed as follows:
+
+\begin{equation}
+p(\hat{M}_{x,t} | X^{i}_{t}) = \frac{1}{2\pi \sigma_{Mx}^{2}} * exp(\frac{-[(x^{i}_{t}-x^{i}_{t-1}) - \hat{M}_{x,t}]^{2}}{2\sigma_{Mx}^{2}})
+\label{eqn:probability_individual_movement}
+\end{equation}
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 6
+%----------------------------------------------------------------------------------------
+
+
+\section{Ultra Wideband Radio Technology}
+Ultra wide-band (UWB) is a radio technology in use for military and industrial communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/frequency_spectrum}
@@ -157,13 +235,6 @@ UWB opperates with less energy compared to other communication like Wi-Fi. Howev
 A single pulse is kept as short as possible, such that more than 100 Million, sometimes even continuous streams with more than 1 Billion pulses per second are generated. As single pulses can be registered and identified by the receiver, UWB devices are able to determine very exact ToFs such that distance estimations can be done to high resolution.
 
 
-%----------------------------------------------------------------------------------------
-%	SECTION 3
-%----------------------------------------------------------------------------------------
 
-\section{Particle filter and room recognition}
 
-In the last years the CDS of UniBe has made big effort in developing an indoor positioning system. In various works, many variants of particle filter based localization have been presented and tested. In one of the latest works, the authors proposed a robust real-time indoor tracking system based on smartphones \cite{Carrera}, which extended some previous works \cite{Carrera3}. These works were mainly based on Wi-Fi RSSI measurements fusing with IMU data. Since there are no documentations about the particle filter approach based on UWB ranging, we will address this gap.\\
-In addition, the CDS also presented enhanced machine learning techniques for room recognition based on Wi-Fi and magnetic field energy fingerprints \cite{Carrera2}.
-
-As our work is an extension of the particle filter in combination with a simplified version of the room recognition algorithm, the principles of these works are explained in detail in chapter \ref{Chapter4}.
+For simplicity reasons, normally ranging systems are designed such that the TAG gets the final message of the TWR communication, as the TWR is done with several ANs. In this case the requested information - the distances to every AN - is already on one device and can be further processed. However, the TWR has not necessarily to be inizialized by the TAG - the receiver and the sender can easily be exchanged. When for example the computational power of the TAG is limited or the application runs on a separate server, we can imagine some benefits to trigger the TWR in the ANs and forward the collected data directly to the server.
