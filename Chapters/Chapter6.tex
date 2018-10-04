@@ -1,15 +1,60 @@
 % Chapter Template
 
-\chapter{Experiments evaluation} % Main chapter title
+\chapter{Performance Evaluation} % Main chapter title
 
 \label{Chapter6} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we present the results of our experiments in detail. In two sections we compare the estimated positions of the three tested algorithms at the given checkpoints. Firstly the results of experiments with wide spread anchors are indicated and commented, secondly the results with nearer anchor positions are shown and discussed.
+In this section we present the setup of our two experiment scenarios and we present the positioning results of our experiments in detail.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Indoor positioning results with low density of anchor nodes}
+\section{Experiment Setup}
+We tested our implementation in two complex indoor scenarios with trajectories through numerous of rooms on one floor in a real building of the University of Bern. The first scenario used an area of $715m^2$ and the second scenario $358m^2$. We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously. The exact position is indicated in the floor plan of figure \ref{fig:anchor_position} for the first scenario and indicated in figure \ref{fig:trajectory5_withAnchors} for the second scenario. In both scenarios the target was hold in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given trajectory path, as soon as he passed a predefined checkpoint the current position estimation was registered.\\
+\noindent\hspace*{5mm}%
+We defined four different trajectories for the first scenario. Each with five to nine checkpoints. Trajectory 1 is indicated in figure \ref{fig:trajectory1}, the other three trajectories can be seen in appendix \ref{AppendixA}. For the second scenario we used a fifth trajectory that covered almost the whole area, it is shown in \ref{fig:trajectory5_withAnchors}.\\
+\noindent\hspace*{5mm}%
+We repeated the experiments five times, so we analized 145 checking points in scenario 1 and 40 checking points in scenario 2. The localization error was determined by the euclidian distance between the systems position estimation and the real position of the checking point. 
+
+
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/anchor_position}
+\decoRule
+\caption[Anchor node positions]{Distributed anchor nodes on the floor map (with distance reference of 10m).}
+\label{fig:anchor_position}
+\end{figure}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1}
+\decoRule
+\caption[Trajectory 1]{Trajectory 1 of the four defined trajectories with the position checkpoints.}
+\label{fig:trajectory1}
+\end{figure}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/trajectory5_withAnchors}
+\decoRule
+\caption[Trajectory 5]{Trajectory 5 with improved anchor positions.}
+\label{fig:trajectory5_withAnchors}
+\end{figure}
+
+Zone definition in Testbed.
+The zone definition can be seen in figure \ref{fig:zone_definition}, wheras for the smaller scenario (only for trajectory 5) only data in the passed rooms was collected. These were the rooms 1, 2, 3, 5, 6 and 7.  For the wider scenario obviously all indicated rooms were fingerprinted.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/zone_definition}
+\decoRule
+\caption[Zone definition]{Zone definition and transitions between zones}
+\label{fig:zone_definition}
+\end{figure}
+
+
+\section{Experiment Results}
 In the following the results of our algorithms with a wide distance between anchor nodes are shown. Within this setup we tested trajectory 1 to 4. Each trajectory was tested five times, the results are shown as arithmetic means of these five probes. The anchor node positions for these four tested trajectories are indicated in figure \ref{fig:anchor_position}.
 
 In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was 1.53 meter for $PF_{full}$, 1.47 meter for $PF_{UWBonly}$ and 1.69 meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than 1.5 meter, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of 1.22m for $PF_{full}$, 0.68m for $PF_{UWBonly}$ and 1.14m for Sequitur, which are significantly lower than the arithmetic means.
