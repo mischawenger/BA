@@ -38,7 +38,7 @@ Range based localization systems are depending on an infrastructure in the area 
 \item \textbf{Anchor Nodes (AN)} that are placed on carefully chosen points in the building, to encounter the best coverage of the whole area.
 \end{itemize}
 
-The key idea of range based positioning is to measure the distance between TAG and ANs. With the use of these distances, the exact position of the TAG can be evaluated using multilateration or similar mathematical models. Several different approaches are possible to determine the distance to an anchor node, they can be classified into the two groups. In the one hand there are algorithms using propagation models, which rely on the reduction in power density of electromagnetic waves propagating through space. In the other hand, algorithms make use of known propagation velocities for radio signals  by measuring the time of flight of transmitted waves. 
+The key idea of range based positioning is to measure the distance between TAG and ANs. With the use of these distances, the exact position of the TAG can be evaluated using multilateration or similar mathematical models. Several different approaches are possible to determine the distance to an anchor node, they can be classified into two groups. In the one hand there are algorithms using propagation models, which rely on the reduction in power density of electromagnetic waves propagating through space. In the other hand, algorithms make use of known propagation velocities for radio signals  by measuring the time of flight of transmitted waves. 
 
 %-----------------------------------
 %	SUBSECTION 3.1
@@ -59,7 +59,7 @@ PL = PL_{0} +10 \gamma log_{10} (\frac{d}{d_{0}}) + X_{g}
 \label{eqn:LDPL}
 \end{equation}
 
-with $\gamma$ as the path loss exponent, $PL_{0}$ a path loss measurement at reference distance $d_0$ and $X_{g}$ a zero-mean Gaussian noise. This generic model can be applied to many different enviroments. It can even be simplified by defining useful reference distances, like done in \cite{Kurt}.\\
+with $\gamma$ as the path loss exponent, $PL_{0}$ a path loss measurement at reference distance $d_0$ and $X_{g}$ a zero-mean Gaussian noise. This generic model can be applied to many different environments. It can even be simplified by defining useful reference distances, like done in \cite{Kurt}.\\
 \noindent\hspace*{5mm}%
 LDPL has shown to be rather inaccurate for indoor environments, which led to a path loss model based on Non-Linear Regression (NLR) as used in \cite{ZanLi}. In this approach, the distance to RSS relationship is modelled with the equation:
 \begin{equation}
@@ -73,7 +73,7 @@ $d_{i}$ is the distance between the $i$-th AN and the TAG, $RSS_{i}$ the measure
 %	SUBSECTION 3.2
 %-----------------------------------
 \subsection{Time of Flight Based Models}
-A totally different technique to get distance estimations are time of flight based models. The key idea is, that we know the travelling velocity of radio waves, which is approximately the speed of light (\SI{2.99792458e8}{\meter\per\second}). When measuring the time between sending and receiving a radio signal, we can easily convert this time of flight (ToF) to a distance estimation. Time of flights are determined by gathering round trip times (RTT) in radio signal communication. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the two presented RTT-measuring techniques, the key characteristics are either a quick responding time or extremely well synchronized sender and receiver.\\
+A totally different technique to get distance estimations are time of flight based models. Their key idea is, that we know the travelling velocity of radio waves, which is approximately the speed of light (\SI{2.99792458e8}{\meter\per\second}). When measuring the time between sending and receiving a radio signal, we can easily convert this time of flight (ToF) to a distance estimation. Time of flights are determined by gathering round trip times (RTT) in radio signal communication. For accurate RTT results the hardware of transmitter and receiver, as well as the operating firmware are very important. For the two presented RTT-measuring techniques, the key characteristics are either a quick responding time or extremely well synchronized sender and receiver.\\
 \noindent\hspace*{5mm}%
 Two way ranging (TWR) is one of these methods to retrieve an accurate round trip time. An illustration of the TWR process can be seen in figure \ref{fig:two_way_ranging}. When operating in TWR mode, the TAG sends a message to the ANs and registers the exact time of sending. As soon as the message arrives at its destination, the firmware of the AN instantly captures another timestamp. In an acknowledgement (ACK) message, the timestamp of reception and a timestamp of sending the response is transmitted. When this message arrives at the TAG, again a timestamp is registered. With equation \ref{eqn:TWR}, the time of flight can now be evaluated \cite{SewioTWR}.
 
@@ -81,11 +81,11 @@ Two way ranging (TWR) is one of these methods to retrieve an accurate round trip
 \centering
 \includegraphics[width=0.5\textwidth]{Figures/two_way_ranging}
 \decoRule
-\caption[Two way ranging]{Illustration of TWR and SDS-TWR communication}
+\caption[Two Way Ranging]{Illustration of TWR and SDS-TWR communication}
 \label{fig:two_way_ranging}
 \end{figure}
 
-To achieve higher accuracy, the communication can be extended with a final message containing the timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) \cite{Wikipedia} and is indicated as optional in Figure \ref{fig:two_way_ranging}.\\
+To achieve higher accuracy, the communication can be extended with a final message containing two additional timestamps of the requester. This is called symmetrical double-sided two-way ranging (SDS-TWR) \cite{Wikipedia} and is indicated as optional in Figure \ref{fig:two_way_ranging}.\\
 \\
 Evaluation of time of flight for TWR:\\
 \begin{equation}
@@ -102,15 +102,17 @@ ToF = [(T_{RA}-T_{SP})-(T_{SA}-T_{RP}) + (T_{RF}-T_{SA})-(T_{SF}-T_{RA}) ]/ 4
 with the following timestamps, also indicated in figure \ref{fig:two_way_ranging}: $T_{SP}$ as time of poll-sending, $T_{RP}$ as time of poll-reception, $T_{SA}$ as time of ACK-sending, $T_{RA}$ as time of ACK-reception, $T_{SF}$ as time of Final-sending and $T_{RF}$ as time of Final-reception.\\
 \noindent\hspace*{5mm}%
 A second approach for RTT determination is called time difference of arrival (TDOA). While TWR does not need further synchronization between the devices, TDOA requires a very precise synchronization of the anchor nodes. This is normally done by specifying a master node per three to five anchors. For bigger scenarios often multiple dedicated masters will send clock synchronizations every once in a while, such that every AN gets at least one sync package. It occurs as well that an anchor holds two differently synchronized times.
-To evaluate the time of flight, a TAG in range will broadcast a blink message. This blink message will initialize the ranging of the TAG. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID, it can perform the position and therefore the distance estimation based on the time of arrival of the initial blink message at each AN.
+To evaluate the time of flight, a TAG in range will broadcast a blink message. This blink message will initialize the ranging process. Every AN that receives this blink, will capture a timestamp of the time of arrival (or when holding more than one synctime, capture multiple timestamps). These timestamps are forwarded to the server together with a synch ID and a blink transmitter identity. When a server received at least three timestamps with the same synch ID, it can perform the position and therefore the distance estimation based on the time of arrival of the initial blink message at each AN.
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.7\textwidth]{Figures/time_difference_of_arrival}
 \decoRule
-\caption[Time difference of arrival]{Typical Setup for Time Difference of Arrival communication}
+\caption[Time Difference of Arrival]{Typical Setup for Time Difference of Arrival communication}
 \label{fig:time_difference_of_arrival}
 \end{figure}
-A huge benefit of TDOA is the fact, that the TAG only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}. For TWR the overhead grows enourmous with every anchor and every TAG that is added. For TDOA hundrets of TAGs can be tracked, with only proportional overhead growth and much lower energy consumption for the TAG.\\
+A huge benefit of TDOA is the fact, that the TAG only needs to send one blink message per timeinterval and will not have to communicate with every AN separately, as in TWR. This can be seen in figure \ref{fig:time_difference_of_arrival}.\\
+\noindent\hspace*{5mm}%
+For TWR the overhead grows enourmous with every anchor and every TAG that is added. For TDOA hundrets of TAGs can be tracked, with only proportional overhead growth and much lower energy consumption for the TAG.\\
 Number of messages sent in one iteration:\\
 TWR:  $3 * n_{t} * n_{an}$\\
 TDOA:  $n_{t}$\\
@@ -145,12 +147,12 @@ Indoor positioning is often reduced to two dimensions, such that the movement ve
 \end{equation}
 with $\hat{\theta}_{t}$ as the actual heading orientation,  $\theta_{bs,t}$ as a sensor bias introduced by uncalibrated sensor readings, $\theta_{be,t}$ as an environmental angular bias due to magnetic field disturbances and $\epsilon_{\theta, t}$ as a measured random error. The heading direction can be calculated by using the geomagnetic field of the earth. The formula $\theta = atan(\frac{mag_{x}}{mag_{y}})$ can be used to obtain the heading direction, where $mag_{x}$ and $mag_{y}$ are the magnetic field sensor readings in X direction, respectively in Y direction.\\
 \noindent\hspace*{5mm}%
-Whereas the heading direction is obtained by measuring absolute values of magnetic field energy, the accelerometer data is a relative quantity, that is used for stride length determination. Dealing with relative values, measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time. To address this, a absolute quantity is needed to correct long term errors. Velocities from previous time slots can be used for this. As we can not assume the acceleration to be constant during a whole time slot, the movement length approximation can be defined as: 
+Whereas the heading direction is obtained by measuring absolute values of magnetic field energy, the accelerometer data is a relative quantity, that is used for stride length determination. Dealing with relative values, measured errors propagate over time, so it is almost impossible to use relative quantities (e.g. acceleration) to calculate absolute quantities (e.g. distance) over a longer period of time. To address this, an absolute quantity is needed to correct long term errors. Velocities from previous time slots can be used for this. As we can not assume the acceleration to be constant during a whole time slot, the movement length approximation can be defined as: 
 \begin{equation}
 \ell_{t} = \hat{\ell}_{t-1} + \sum_{i=0}^{N}([(\hat{a}_{i} + a_{bs,i} +\epsilon_{a, i}) * \Delta t_{i} ]*(N-i)) *\Delta t + \epsilon_{\ell, t},
 \label{eqn:stride_length}
 \end{equation}
-where $\hat{\ell}_{t-1}$ is the actual movement length of time period t-1, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period $\Delta t$, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
+where $\hat{\ell}_{t-1}$ is the actual movement length of time period $t-1$, $\hat{a}_{i}$ is the actual middle acceleration during the $i$-th of N time slots in time period $\Delta t$, $a_{bs,i}$ is an other sensor bias due to uncalibrated sensor readings and $\epsilon_{a, i}$ as well as $\epsilon_{\ell, t}$ are measured random errors in acceleration and distance respectively.
 
 
 %----------------------------------------------------------------------------------------
@@ -166,7 +168,7 @@ In the prediction phase, every particle is repositioned. At time $t$, each parti
 X_{t} = [x_{t}, y_{t}, x_{t-1}, y_{t-1}],
 \label{eqn:particles}
 \end{equation}
-where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time t and $(x_{t-1}, y_{t-1})$ at time t-1 respectively. The repositioning of the particles is often done randomly, however, it could also be done according to the movement vector or other sensor-based values. If present, floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
+where $(x_{t}, y_{t})$ corresponds to the Cartesian coordinates of the particle at time $t$ and $(x_{t-1}, y_{t-1})$ at time $t-1$ respectively. The repositioning of the particles is often done randomly, however, it could also be done according to the movement vector or other sensor-based values. If present, floorplan restrictions are applied in this phase, whereas movements through walls are not permitted, they lead to another prediction iteration for that particle.
 
 \subsection{Particle Filter: Observation Phase}
 In the observation phase the associated particle weight $w^{i}_{t}$ is recalculated for every particle, since the weight does not anymore correspond to the current position. For each anchor node, we have an obtained distance measurement $d^{j}_{t}$, which itself consists various errors. Statistically it can be described as: 
@@ -174,7 +176,7 @@ In the observation phase the associated particle weight $w^{i}_{t}$ is recalcula
 d^{j}_{t} = \hat{d}^{j}_{t} + d^{j}_{be, t} + \epsilon_{d^{j}, t},
 \label{eqn:distances}
 \end{equation}
-where $\hat{d}^{j}_{t}$ is the actual distance to node j, $d^{j}_{be, t}$ is an environmental bias due to local conditions and $\epsilon_{d^{j}, t},$ is a measured random error.\\
+where $\hat{d}^{j}_{t}$ is the actual distance to node $j$, $d^{j}_{be, t}$ is an environmental bias due to local conditions and $\epsilon_{d^{j}, t},$ is a measured random error.\\
 \noindent\hspace*{5mm}%
 The weight is updated corresponding to the likelihood of the range observations conditioned on each particle $p(Zd_{t} | X^{i}_{t})$ at time t, respectively the likelihood of the motion observation conditioned on each particle $p(Mv_{t} | X^{i}_{t})$ at time t. With the defined observation vector $Zd_{t} = [d_{t}^{j}], j = 1...N$, at time $t$, where $N$ is the number of
 ANs.
@@ -229,12 +231,12 @@ The resampling phase is an essential component of a particle filter implementati
 
 
 \section{Ultra Wideband Radio Technology}
-Ultra wide-band (UWB) is a radio technology in use for military and industrial communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As showed in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
+Ultra wide-band (UWB) is a radio technology in use for military and industrial communication, positioning and collecting sensor data. Unlike other communication technologies, UWB occupies a wide area of frequencies instead of just covering a small frequency spectrum. As shown in figure \ref{fig:frequency_spectrum}, UWB spans over a spectrum of more than 500 megahertz (MHz) that lies within the range of 3.1 gigahertz (GHz) and 13.6 GHz.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/frequency_spectrum}
 \decoRule
-\caption[UWB frequency spectrum]{Comparison of Wi-Fi (802.11) and UWB frequencies.}
+\caption[UWB Frequency Spectrum]{Comparison of Wi-Fi (802.11) and UWB frequencies.}
 \label{fig:frequency_spectrum}
 \end{figure}
 UWB opperates with less energy compared to other communication like Wi-Fi. However, the main difference between UWB and conventional radio transmissions is the underlying modulation technique. UWB transmits data by generating short radio energy at specific times instead of varying frequency and phase of sinus waves. In addition to the pulse position, the pulses can carry information either by their polarity, their amplitude or by using orthogonal pulses.
@@ -243,16 +245,16 @@ A single pulse is kept as short as possible, such that more than 100 Million, so
 The pulse rate highly influences the transmission rate of an UWB communication. The pulse frequency varies between 1 million pulses per second to over 1 billion pulses. Devices often support different operation modes, such that the number of pulses can be configured. However, with a higher pulse rate, the transmitting distances decreases, such that a trade-off between datarate and communication distance occurs. In table \ref{tab:pulse_rate_range} the approximate correlation between pulse rate, bit rate and range is shown \cite{ITU}. In a cluttered environment, especially for non line of sight communications, the possible communication distance decreases very fast. This has to be concerned for indoor applications, as line of sight is very rare in an indoor scenario.
 
 \begin{table}
-\caption{Relationship between pulse rates and communication distance}
+\caption{Relationship of Pulse Rates and Communication Distance}
 \label{tab:pulse_rate_range}
 \centering
 \begin{tabular}{c c c}
 \toprule
 \textbf{Pulse rate}[pulse/s] & \textbf{Bit rate}[Mbit/s] & \textbf{Range}[m]\\
 \midrule
-1'000'000 & ~40 & ~100\\
-500'000'000 & ~100 & ~10\\
-1'000'000'000 & ~500 & 4-10\\
+1'000'000 & \textasciitilde40 & \textasciitilde100\\
+500'000'000 & \textasciitilde100 & \textasciitilde10\\
+1'000'000'000 & \textasciitilde500 & 4-10\\
 \bottomrule\\
 \end{tabular}
 \end{table}

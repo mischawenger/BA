@@ -26,14 +26,14 @@ The client is the target device that is localized. It is equipped with different
 \noindent\hspace*{5mm}%
 Ultra wideband anchor nodes are distributed over the area of interest to cover it homogenously. One anchor node is specified as a sink AN, it is connected to the localization server with a wired ethernet connection. The sink AN ensures the communication via UWB to the other ANs and the client device. It receives IMU and RSS data from the client and forwards it to the server. When triggered from the sink AN, the other anchor nodes perform two-way ranging to the TAG and forward the result via sink AN to the server.\\
 \noindent\hspace*{5mm}%
-WiFi access points ar as well spread over the area of interest. They fulfill only one purpose, they emit Wi-Fi radio signals that are detected by the client in order to measure the received signal strength. 
+WiFi access points are as well spread over the area of interest. They fulfill only one purpose, they emit Wi-Fi radio signals that are detected by the client in order to measure the received signal strength. 
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
 \section{Localization Algorithm}
-The particle filter localization algorithm consists of several tasks relying on different data inputs. An overview of the particle filter and its fused information is illustrated on figure \ref{fig:localization_algorithm}. The four used data types were IMU sensor data, floorplan information, range estimations and RSS fingerprints.\\
+The particle filter localization algorithm consists of several tasks relying on different data inputs. An overview of the particle filter and its fused information is illustrated on figure \ref{fig:localization_algorithm}. The four used data types are IMU sensor data, floorplan information, range estimations and RSS fingerprints.\\
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/localization_algorithm}
