@@ -22,7 +22,7 @@ Some positioning systems improve the accuracy by using both techniques, absolute
 \noindent\hspace*{5mm}%
 Positioning systems can either be client-based or server-based. Most of the positioning systems - especially for smartphones - are client-based, such that the position estimation is done on the target device itself. In a server-based tracking system, the target device sends all recorded data to an external server. The server processes the data and transmits the target position to the client. \\
 \noindent\hspace*{5mm}%
-An accurate indoor positioning system encounters challenging problems. The noise in low-cost IMUs, as well as the environmental conditions affecting radio-signals will introduce errors in the tracking process. Moreover, many positioning systems are client-based, they run directly on the target device with limited computational power and limited energy source, what adds another difficulty.
+An accurate indoor positioning system encounters challenging problems. The noise in low-cost IMUs, as well as the environmental conditions affecting radio-signals will introduce errors in the tracking process. Moreover, many positioning systems are client-based, they run directly on the target device with limited computational power and limited energy source, which adds another difficulty.
 
 
 %----------------------------------------------------------------------------------------
@@ -33,14 +33,14 @@ An accurate indoor positioning system encounters challenging problems. The noise
 
 In this thesis we present a real-time indoor tracking system for continous positioning and tracking. Our server-based approach provides high accuracy by combining radio, IMU and floorplan information in an enhanced particle filter. We fused ultra wideband radio ranging information with IMU motion detection and with room recognition using ultra wideband and WiFi fingerprinting. \\
 \noindent\hspace*{5mm}%
-We prototyped our approach on Raspberry Pi devices with an external server.
+We prototyped our approach on Raspberry Pi devices as anchors and as client. The localization algorithms were implemented in an external, centralized server.
 Evaluation results show that our system can keep up with commercial tracking systems. It can achieve an average positioning error of 0.49$m$ and a standard deviation of 0.24$m$.
 
 Our main contributions are:
 \begin{itemize}
-\item We implemented a centralized, server-based real-time localization system
-\item We fused UWB ranging information, IMU sensor data, floorplan constraints as well as WiFi and UWB room recognition fingerprinting in a particle filter. 
-\item We created an extensive test scenario, where we placed several anchor nodes in a real building and collected data on complex indoor trajectories. 
+\item We implemented a centralized, server-based real-time indoor localization system
+\item We fused UWB ranging information, IMU sensor data, floorplan constraints as well as WiFi and UWB room recognition fingerprinting in a particle filter to provide high localization performance. 
+\item We evaluted our server-based system in real complex indoor scenario, where we placed several anchor nodes in a real building and collected data on several indoor trajectories. 
 \end{itemize}
 
 

@@ -7,16 +7,12 @@ Accurate indoor localization has been examined for a long time. Many different s
 
 In this section we present some related work, grouped by the different types of localization systems.
 
-
-%These are the main parts of this section:\\
-%First a short overview of range based localization with the main principles of RSSI, TWR and TDOA as well as the concept of triangulation/trilateration. Second we present background information about ultra wideband (UWB) and finally information about the particle filter is given.
-
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Client-based and Server-based Architecture}
-Localization systems can either run on a seperate server or on the client device itself. A server-based localization system can be interesting, as it does not require a specific target device hardware, which makes it fairly scalable. Coordination of the different system components and data processing can be done on the server, such as in \cite{Delmastro}.
+Localization algorithms can either run on a centralized server or on the client device itself. A server-based localization system can be interesting, as it does not require a specific target device hardware, which makes it fairly scalable. Coordination of the different system components and data processing can be done on the server, such as in \cite{Delmastro}.
 In \cite{Carrera} the system runs on a commodity smartphone, with the benefit of eliminating further communication to an external entity. Such client-based localization systems can often be deployed without any additional hardware, when for example WLAN access points are already available. The authors of \cite{Guoguo} use a hybrid of server and client-based architecture - ranges are calculated on the client device and network control as well as the database are managed on a server. 
 
 %----------------------------------------------------------------------------------------
@@ -40,5 +36,5 @@ PDR relies on inertial measurement unit (IMU) readings to find the new position.
 %----------------------------------------------------------------------------------------
 %	SECTION 5
 %----------------------------------------------------------------------------------------
-\section{Combined Localization}
+\section{Hybrid Localization Approaches}
 The different characteristics of different types of localization methods makes it obvious, that combined localization systems could achieve higher accuracy. In combined approaches, especially relative and absolute measurements are fused to have the advantages of both methods. The authors of \cite{Nagpal} used a fingerprinting-based solution in combination with a digital compass. \cite{Carrera} is a particle filter approach that fuses PDR and radio-based ranging, as well as floorplan information into the localization process. Errors in the PDR system are mitigrated by the ranging estimations and vice-versa. This makes these approaches highly interesting in the research.

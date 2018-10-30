@@ -1,15 +1,15 @@
 % Chapter Template
 
-\chapter{Particle Filter Implementation} % Main chapter title
+\chapter{Localization System Implementation} % Main chapter title
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we explain the hardware components of our system architecture in detail, then we introduce the implementation of the different localization algorithm components and we describe the underlying UWB communication.
+In this section we explain the hardware and software components of our system architecture in detail, then we introduce the implementation of the different localization algorithm components and we describe the underlying UWB communication.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Localization Architecture Components}
+\section{Localization Components Hardware}
 The four different hardware components - server, client, ANs and APs - that were used in our implementation can be seen in figure \ref{fig:system_components}.\\
 \noindent\hspace*{5mm}%
 Our proposed algorithm was running on a commodity laptop, which was used as our server, connected via ethernet to a sink anchor node. The laptop was a low to mid-end commercial notebook with fairly limited computational power.\\
@@ -63,8 +63,8 @@ Ultra WideBand Extention & \textbf{Ultra WideBand:} IEEE 802.15.4a\\
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Localization Algorithm Components}
-The localization algorithm was configured with a minimal update frequency of 0.7 seconds. However, in some cases the update frequency was higher, when it took longer to fetch data from the data sources. The position estimation was done based on 100 particles.\\
+\section{Localization Components Software}
+The localization algorithm was configured with a minimal update frequency of 0.7 seconds. This means, that the system triggered all input sources and performed all three particle filter phases, such that every 0.7 seconds a position estimation was provided. However, in some cases the update time was longer, when it took more time to fetch data from the data sources. The position estimation was done based on 100 particles.\\
 \noindent\hspace*{5mm}%
 The motion vector was calculated by using the velocity of the device in the last system update. This velocity was turned to the measured heading direction and adapted by the obtained acceleration.  As the sample rate of the accelerometer sensor was 10 Hz, so for each system state update we had seven or more descrete acceleration measurements, we stored these measurements in the client device until the server requested the movement vector. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration.To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption of 0.98 and one with a low adaption of 0.03, and only took their difference into account. This means, we calculated the difference between $a_{t}^1$ and $a_{t}^2$, which were calculated as in \ref{eqn:a1} and \ref{eqn:a2}:
 \begin{equation}
