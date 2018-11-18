@@ -4,21 +4,21 @@
 
 \label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In the past few years a new market of mobile gadgets and connected devices, summed up as Internet of Things (IoT), has evolved. In 2017, more than 20 Billion devices were connected to the internet. Forecasts predict already more than 70 Billion in 2025 \cite{Statista}. This increase in mobile computing has also increased the demand of accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning.
-In the following we will shortly present our motivation for this work, our contribution and an overview of the remainder of this document.
+In the past few years a new market of mobile gadgets and connected devices, summed up as Internet of Things (IoT), has evolved. In 2017, more than 20 Billion devices were connected to the internet. Forecasts predict already more than 70 Billion in 2025 \cite{Statista}. This increase in mobile computing has also increased the demand for accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning.
+In the following, we will shortly present our motivation for this work, our contribution and an overview of the remainder of this document.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Motivation}
-Location-based applications can be applied in many different indoor contexts, such as entertainment, health, logistic etc. Due to the environmental conditions indoors, with heavy walls armoured with steel and other interferences, additional signal loss is encountered which makes it hard to detect and decode GPS - the established outdoor global positioning system (GPS) - signals \cite{GPSforIndoor}. This means that we are forced to use alternative technologies that provide higher accurracy indoors. Although there are many different approaches to do indoor positioning, it can still be considered as an open challenging problem, which made it an attractive and active research field.\\
+Location-based applications can be applied in many different indoor contexts, such as entertainment, health, logistic etc. Due to the environmental conditions indoors, with heavy walls armoured with steel and other interferences, an additional signal loss is encountered which makes it hard to detect and decode GPS - the established outdoor global positioning system (GPS) - signals \cite{GPSforIndoor}. This means that we are forced to use alternative technologies that provide higher accuracy indoors. Although there are many different approaches to do indoor positioning, it can still be considered as an open challenging problem, which made it an attractive and active research field.\\
 \noindent\hspace*{5mm}%
-Multilateration positioning using radio signals is one of the most widely used indoor localization approach. Radio-based multilateration positioning uses the emitted radio signal power from several transmitters to estimate the position of a target. Most often, WiFi signals are used because they are already omnipresent in indoor environments. However, the radio signal strength is severly affected by environmental conditions, such as furniture, heavy walls etc.\\
+Multilateration positioning using radio signals is one of the most widely used indoor localization approach. Radio-based multilateration positioning uses the emitted radio signal power from several transmitters to estimate the position of a target. Most often, WiFi signals are used because they are already omnipresent in indoor environments. However, the radio signal strength is severely affected by environmental conditions, such as furniture, heavy walls etc.\\
 \noindent\hspace*{5mm}%
-Many devices have various embedded inertial sensors - such as most modern smartphones - or can be equipped with additional sensors. These sensors, e.g. accelerometer, gyroscope and magnetic field sensors, are used to register relative movements of the target. However, relative measurements accumulate errors over time, what leads to extensive long term errors.\\
+Many devices have various embedded inertial sensors - such as most modern smartphones - or can be equipped with additional sensors. These sensors, e.g. accelerometer, gyroscope and magnetic field sensors, are used to register relative movements of the target. However, relative measurements accumulate errors over time, what leads to extensive long-term errors.\\
 \noindent\hspace*{5mm}%
-Some positioning systems improve the accuracy by using both techniques, absolute radio-based tracking and relative - inertial measurement unit (IMU) based - tracking. By combining these two approaches, it is possible to minimize the positioning errors, as the absolute measures can eliminate long term accumulated errors of the relative system. \\
+Some positioning systems improve the accuracy by using both techniques, absolute radio-based tracking and relative - inertial measurement unit (IMU) based - tracking. By combining these two approaches, it is possible to minimize the positioning errors, as the absolute measures can eliminate long-term accumulated errors of the relative system. \\
 \noindent\hspace*{5mm}%
 Positioning systems can either be client-based or server-based. Most of the positioning systems - especially for smartphones - are client-based, such that the position estimation is done on the target device itself. In a server-based tracking system, the target device sends all recorded data to an external server. The server processes the data and transmits the target position to the client. \\
 \noindent\hspace*{5mm}%
@@ -31,16 +31,16 @@ An accurate indoor positioning system encounters challenging problems. The noise
 
 \section{Contributions}
 
-In this thesis we present a real-time indoor tracking system for continous positioning and tracking. Our server-based approach provides high accuracy by combining radio, IMU and floorplan information in an enhanced particle filter. We fused ultra wideband radio ranging information with IMU motion detection and with room recognition using ultra wideband and WiFi fingerprinting. \\
+In this thesis, we present a real-time indoor tracking system for continuous positioning and tracking. Our server-based approach provides high accuracy by combining radio, IMU and floorplan information in an enhanced particle filter. We fused ultra wideband radio ranging information with IMU motion detection and with room recognition using ultra wideband and WiFi fingerprinting. \\
 \noindent\hspace*{5mm}%
 We prototyped our approach on Raspberry Pi devices as anchors and as client. The localization algorithms were implemented in an external, centralized server.
 Evaluation results show that our system can keep up with commercial tracking systems. It can achieve an average positioning error of 0.49$m$ and a standard deviation of 0.24$m$.
 
 Our main contributions are:
 \begin{itemize}
-\item We implemented a centralized, server-based real-time indoor localization system
+\item We implemented a centralized, server-based real-time indoor localization system.
 \item We fused UWB ranging information, IMU sensor data, floorplan constraints as well as WiFi and UWB room recognition fingerprinting in a particle filter to provide high localization performance. 
-\item We evaluted our server-based system in real complex indoor scenario, where we placed several anchor nodes in a real building and collected data on several indoor trajectories. 
+\item We evaluated our server-based system in a real complex indoor scenario, where we placed several anchor nodes in a real building and collected data on several indoor trajectories. 
 \end{itemize}
 
 
@@ -51,5 +51,5 @@ Our main contributions are:
 
 \section{Overview}
 
-Our work compounds of five remaining chapters:
+Our work compounds of six remaining chapters:
 Chapter 2 provides related work. Chapter 3 presents the theoretical background and chapter 4 highlights our system architecture. In chapter 5 we explain our implementation. The experiment setup and evaluation of our experiments can be found in section 6. Finally the last part concludes the work, where our findings are summarized.

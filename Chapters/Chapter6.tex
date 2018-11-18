@@ -3,35 +3,35 @@
 \chapter{Performance Evaluation} % Main chapter title
 
 \label{Chapter6} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we explain the setup of our two experiment scenarios and we present the positioning results of our experiments in detail.
+In this section, we explain the setup of our two experiment scenarios and we present the positioning results of our experiments in detail.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Experiment Setup}
-We tested our implementation in two complex indoor scenarios with trajectories through numerous of rooms on one floor in a real building of the University of Bern. The first scenario used an area of $715m^2$ and the second scenario $358m^2$. We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously.
+We tested our implementation in two complex indoor scenarios with trajectories through numerous rooms on one floor in a real building of the University of Bern. The first scenario used an area of $715m^2$ and the second scenario $358m^2$. We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously.
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/trajectory1_withAnchors}
 \decoRule
 \caption[Anchor Node Positions of Scenario 1]{Trajectory 1 and distributed ANs in scenario 1 on the floor map (with distance reference of 10m).}
 \label{fig:trajectory1_withAnchors}
-\end{figure}The exact position is indicated in the floor plan of figure \ref{fig:trajectory1_withAnchors} for the first scenario and indicated in figure \ref{fig:trajectory5_withAnchors} for the second scenario. In both scenarios the target was hold in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given trajectory path, as soon as he passed a predefined checkpoint the current position estimation was registered.\\
+\end{figure}The exact position is indicated in the floor plan of figure \ref{fig:trajectory1_withAnchors} for the first scenario and indicated in figure \ref{fig:trajectory5_withAnchors} for the second scenario. In both scenarios, the target was held in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given trajectory path, as soon as he passed a predefined checkpoint the current position estimation was registered.\\
 \noindent\hspace*{5mm}%
-We defined four different trajectories for the first scenario. Each with five to nine checkpoints. Trajectory 1 is indicated in figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in appendix \ref{AppendixA}.
+We defined four different trajectories for the first scenario. Each with five to nine checkpoints. Trajectory 1 is indicated in figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in Appendix \ref{AppendixA}.
 For the second scenario we used a fifth trajectory that covered almost the whole area, it is shown in figure \ref{fig:trajectory5_withAnchors}.\\
 \noindent\hspace*{5mm}%
-We repeated the experiments five times, so we analized 145 checking points in scenario 1 and 40 checking points in scenario 2.\begin{figure}[th]
+We repeated the experiments five times, so we analyzed 145 checking points in scenario 1 and 40 checking points in scenario 2.\begin{figure}[th]
 \centering
 \includegraphics[width=0.5\textwidth]{Figures/trajectory5_withAnchors}
 \decoRule
 \caption[Trajectory 5]{Trajectory 5 with improved anchor positions.}
 \label{fig:trajectory5_withAnchors}
 \end{figure}
-The localization error was determined by the euclidian distance between the systems position estimation and the real position of the checking point.\\
+The localization error was determined by the Euclidian distance between the systems position estimation and the real position of the checking point.\\
 \noindent\hspace*{5mm}%
-For the zone indication we defined 14 zones, which corresponded to 13 different rooms, where only one room (i.e. the corridor) was split in two zones. The room definitions can be seen in figure \ref{fig:zone_definition}. For scenario 1 we collected data in all zones, whereas for the smaller scenario we only collected data in the rooms 1, 2, 3, 5, 6 and 7, as only these were in the area of interest. The received signal strength of all five UWB ANs as well as of eight Wi-Fi access points was taken into account. In order to reduce errors introduced by changing environmental conditions, we used relative RSS rather than raw RSS values. For obtaining relative RSS, we defined a pivot AN and access point and fed the machine learning algorithms with RSS difference to these given pivot RSS. In our scenarios the fourth AN and the neighboring WiFi access point were acting as pivot (see figures \ref{fig:trajectory1_withAnchors} and \ref{fig:trajectory5_withAnchors} for exact position). In the offline phase of the fingerprinting, we collected around 700 fingerprint measures per room. Half of them were collected randomly passing the room and half of them were collected while systematically walking through the whole area of the room.
+For the zone indication, we defined 14 zones, which corresponded to 13 different rooms, where only one room (the corridor) was split into two zones. The room definitions can be seen in figure \ref{fig:zone_definition}. For scenario 1 we collected data in all zones, whereas for the smaller scenario we only collected data in the rooms 1, 2, 3, 5, 6 and 7, as only these were in the area of interest. The received signal strength of all five UWB ANs as well as of eight Wi-Fi access points was taken into account. In order to reduce errors introduced by changing environmental conditions, we used relative RSS rather than raw RSS values. For obtaining relative RSS, we defined a pivot AN and access point and fed the machine learning algorithms with RSS difference to these given pivot RSS. In our scenarios, the fourth AN and the neighboring WiFi access point were acting as a pivot (see figures \ref{fig:trajectory1_withAnchors} and \ref{fig:trajectory5_withAnchors} for the exact position). In the offline phase of the fingerprinting, we collected around 700 fingerprint measures per room. Half of them were collected randomly passing the room and half of them were collected while systematically walking through the whole area of the room.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/zone_definition}
@@ -41,9 +41,9 @@ For the zone indication we defined 14 zones, which corresponded to 13 different 
 \end{figure}
 
 \section{Experiment Results}
-Experiments were first conducted in scenario 1, then we covered a smaller area with a higher density of anchor nodes and conducted the experiments in scenario 2. As a reference we compared our localization approach to a commercial localization system proposed by UNISET Company, called Sequitur InGPS Lite. In the following we compare our particle filter results to the Sequitur system results.
+Experiments were first conducted in scenario 1, then we covered a smaller area with a higher density of anchor nodes and conducted the experiments in scenario 2. As a reference, we compared our localization approach to a commercial localization system proposed by UNISET Company, called Sequitur InGPS Lite. In the following, we compare our particle filter results to the Sequitur system results.
 \subsection{Localization Performance in Scenario 1}
-In the following the results of our algorithms with a wide distance between anchor nodes (scenario 1) are shown. The results are shown as arithmetic means of the five probes we registered. In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was $1.62$ meter for the particle filter and $1.75$ meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than $1.5m$, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of $1.12m$ for PF and $1.13m$ for Sequitur, which are significantly lower than the arithmetic means. The measurements for trajectory two looked rather similar but with a higher error. The arithmetic mean error for the PF was $2.39m$ and for Sequitur $2.35m$. The median errors were again a lot more accurate with $1.59m$ for PF and $1.16m$ for Sequitur.
+In the following, the results of our algorithms with a wide distance between anchor nodes (scenario 1) are shown. The results are shown as arithmetic means of the five probes we registered. In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was $1.62$ meter for the particle filter and $1.75$ meter for Sequiturs commercial system. Looking at figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than $1.5m$, however, there are some checkpoints with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of $1.12m$ for PF and $1.13m$ for Sequitur, which are significantly lower than the arithmetic means. The measurements for trajectory two looked rather similar but with a higher error. The arithmetic mean error for the PF was $2.39m$ and for Sequitur $2.35m$. The median errors were again a lot more accurate with $1.59m$ for PF and $1.16m$ for Sequitur.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/trajectory1_2_results}
@@ -58,9 +58,9 @@ The results for trajectory 3 and 4 were rather similar, however, the peaks obser
 \decoRule
 \caption[Localization Results of Trajectory 3 and 4]{Graphs of measured distance errors at each checkpoint in trajectory 3, respectively trajectory 4.}
 \label{fig:trajectory3and4_results}
-\end{figure}In the last of these four trajectories no big outliers were stated. Nonetheless the average errors of $1.79m$ and $1.55m$, as well as the median errors $1.24m$ and $1.26m$ for the PF and Sequitur, were still not as accurate as intended.\\
+\end{figure}In the last of these four trajectories, no big outliers were stated. Nonetheless the average errors of $1.79m$ and $1.55m$, as well as the median errors $1.24m$ and $1.26m$ for the PF and Sequitur, were still not as accurate as intended.\\
 \noindent\hspace*{5mm}%
-Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are very big differences between different trajectories. The particle filter and the Sequitur system have similar accuracies, for some trajectories one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming subsection  \ref{Section2} about result comments. 
+Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are very big differences between different trajectories. The particle filter and the Sequitur system have similar accuracies, for some trajectories, one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming subsection  \ref{Section2} about result analysis. 
 
 \begin{table}
 \caption{The Arithmetic Mean of Errors in Trajectory 1 to 4 (in meter).}
@@ -87,13 +87,13 @@ Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are
 \subsection{Localization Performance in Scenario 2}
 For trajectory 5 the density of anchor nodes was increased. We used 5 ANs for an area of 358$m^2$, which corresponds to an area of 72$m^2$ per anchor node (compared to 143$m^2$ per AN in scenario 1). The exact setup was indicated above in figure \ref{fig:trajectory5_withAnchors}. Equally as before the results are shown as arithmetic means of the five test repetitions.\\
 \noindent\hspace*{5mm}%
-The results in this setup were way better than in the setup with lower density of ANs. With an average error of $0.49m$ for the PF and $0.48m$ for Sequitur, this setup outperformed the other trajectories with both algorithms. Even the median errors - with $0.44m$ and $0.48m$ -  were not much different, which means that there are no huge differences over the different checkpoints. This can also be seen in figure \ref{fig:trajectory5_results}, where most of the errors are smaller than $0.80m$.
+The results in this setup were way better than in the setup with a lower density of ANs. With an average error of $0.49m$ for the PF and $0.48m$ for Sequitur, this setup outperformed the other trajectories with both algorithms. Even the median errors - with $0.44m$ and $0.48m$ -  were not much different, which means that there are no huge differences over the different checkpoints. This can also be seen in figure \ref{fig:trajectory5_results}, where most of the errors are smaller than $0.80m$.
 
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/trajectory5_results}
 \decoRule
-\caption[Positioning Results Trajectory 5]{Graphs of measured distance errors at each checkpoint in trajectory 5.}
+\caption[Positioning Results Trajectory 5]{Graph of measured distance errors at each checkpoint in trajectory 5.}
 \label{fig:trajectory5_results}
 \end{figure}
 
@@ -114,7 +114,7 @@ The results in this setup were way better than in the setup with lower density o
 \end{table}
 In table \ref{tab:arithmetic_errors_trajectory5}, the mean errors of the low density AN scenario 1 and the high density AN scenario 2 are compared. The results improved significantly with a denser anchor node positioning. 
 \begin{table}
-\caption{Table of Results for Trajectory 5.}
+\caption{Comparison of Scen 1 and 2}
 \label{tab:results_trajectory5}
 \centering
 \begin{tabular}{l l l l}
@@ -158,7 +158,7 @@ The test results in the experiment setup with wide anchor node distances were no
 \end{itemize}
 A cluttered environment will heavily distort UWB communication and thus affect the RTT used for UWB ranging. As in our testing environment servers with iron racks, desks with computer screens as well as a lot of different equipment was present, this effect should not be neglected.\\
 \noindent\hspace*{5mm}%
-The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However even small ranging errors can lead to wrong position estimations outside the bounding box. 
+The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However, even small ranging errors can lead to wrong position estimations outside the bounding box. 
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/trajectory1_boundingBox}
@@ -166,20 +166,20 @@ The AN positions naturally form a bounding box around the environment. The bound
 \caption[Bounding Box and Checkpoints for Trajectory 1 ]{Indicated bounding box of the anchor node positions for trajectory 1.}
 \label{fig:trajectory1_boundingBox}
 \end{figure}
-In our experiment especially the results on checkpoint 5 in trajectory 1 and 2 stand out. The average measured errors of $3.09m$ for PF and $5.70m$ for Sequitur during the first trajectory as well as $6.46m$ and $7.45m$ during the second trajectory are way higher than for other checkpoints. The fact that both algorithms had troubles estimating this position, leads to the conclusion that the experiment setup was the main reason for the big errors at this checkpoint. Moreover, not only lies this point outside the bounding box, but it was also far away from the nearest ANs without a direct line of sight.\\
+In our experiment, especially the results on checkpoint 5 in trajectory 1 and 2 stand out. The average measured errors of $3.09m$ for PF and $5.70m$ for Sequitur during the first trajectory as well as $6.46m$ and $7.45m$ during the second trajectory are way higher than for other checkpoints. The fact that both algorithms had troubles estimating this position, leads to the conclusion that the experimental setup was the main reason for the big errors at this checkpoint. Moreover, not only lies this point outside the bounding box, but it was also far away from the nearest ANs without a direct line of sight.\\
 \noindent\hspace*{5mm}%
-Both algorithms depend on a good established UWB connection, as all the ANs ranging estimations are only transmitted via UWB. Especially in the particle filter many UWB meassages are transmitted, because fingerprinting and IMU data are additionally requested and exchanged. For certain checkpoints the distance to the farest anchor node was even more than $35m$ in scenario 1, which was too much for a stable UWB connection within our environment. Particularly, the particle filter had troubles receiving enough usable data, as it produced more overhead than the Sequitur system. This led to a high package loss, such that only one or two range measurements per estimation step were taken into account - instead of the possible five - leading to a higher error. \\
+Both algorithms depend on a well-established UWB connection, as all the ANs ranging estimations are only transmitted via UWB. Especially in the particle filter, many UWB messages are transmitted, because fingerprinting and IMU data are additionally requested and exchanged. For certain checkpoints, the distance to the farthest anchor node was even more than $35m$ in scenario 1, which was too much for a stable UWB connection within our environment. Particularly, the particle filter had troubles receiving enough usable data, as it produced more overhead than the Sequitur system. This led to a high package loss, such that only one or two range measurements per estimation step were taken into account - instead of the possible five - leading to a higher error. \\
 \noindent\hspace*{5mm}%
 These surprisingly big inaccuracies of both systems prompted the change in our setup, in order to establish better communication between the nodes with less package loss to enforce more data flowing into the particle filter. This was the main reason why we extended our experiments and evaluated the location accuracy in scenario 2.\\
 \noindent\hspace*{5mm}%
 With the more dense spread of the ANs, the estimations improved a lot. Having a look at our two assumptions above, we can state the following:
 
 \begin{itemize}
-\item Checkpoints outside of AN bounding boxes had quite good accuracy, contradicting this effect.
+\item Checkpoints outside of AN bounding boxes had quite a good accuracy, contradicting this effect.
 \item The communication was better, what improved the accuracy a lot and confirmed our assumption.
 \end{itemize}
 
-In the new setup we purposely added checkpoints at the edge or outside the bounding box, as seen in figure \ref{fig:trajectory5_boundingBox}. Especially checkpoint 5 and 8 are not lying within the bounding box, however they still had a quite good accuracy. For checkpoint 5, the average estimation errors were $0.30m$ and $0.14m$, for checkpoint 8 the errors were $0.43m$ and $0.25m$ for PF, respectively Sequitur.
+In the new setup, we purposely added checkpoints at the edge or outside of the bounding box, as seen in figure \ref{fig:trajectory5_boundingBox}. Especially checkpoint 5 and 8 are not lying within the bounding box, however, they still had a quite good accuracy. For checkpoint 5, the average estimation errors were $0.30m$ and $0.14m$, for checkpoint 8 the errors were $0.43m$ and $0.25m$ for PF, respectively Sequitur.
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.8\textwidth]{Figures/trajectory5_boundingBox}
@@ -189,4 +189,4 @@ In the new setup we purposely added checkpoints at the edge or outside the bound
 \end{figure}
 It made no difference for the tag being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.\\
 \noindent\hspace*{5mm}%
-A bigger influence on the estimation error had the UWB connection. With a better established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the particle filter the communication is one of the key performance values, because the data is requested serially. This only allows a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality, such that some evaluating steps had to be performed with less data. Obviously the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, what is not possible when a part of the data is not present.
+A bigger influence on the estimation error had the UWB connection. With a better-established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the particle filter, the communication is one of the key performance values, because the data is requested serially. This only allows a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality, such that some evaluating steps had to be performed with fewer data. Obviously, the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, what is not possible when a part of the data is not present.
