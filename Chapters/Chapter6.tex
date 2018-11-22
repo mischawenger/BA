@@ -22,16 +22,16 @@ We tested our implementation in two complex indoor scenarios with trajectories t
 We defined four different trajectories for the first scenario. Each with five to nine checkpoints. Trajectory 1 is indicated in figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in Appendix \ref{AppendixA}.
 For the second scenario we used a fifth trajectory that covered almost the whole area, it is shown in figure \ref{fig:trajectory5_withAnchors}.\\
 \noindent\hspace*{5mm}%
-We repeated the experiments five times, so we analyzed 145 checking points in scenario 1 and 40 checking points in scenario 2.\begin{figure}[th]
+We repeated the experiment five times, so we analyzed 145 checkpoints in scenario 1 and 40 checkpoints in scenario 2.\begin{figure}[th]
 \centering
 \includegraphics[width=0.5\textwidth]{Figures/trajectory5_withAnchors}
 \decoRule
 \caption[Trajectory 5]{Trajectory 5 with improved anchor positions.}
 \label{fig:trajectory5_withAnchors}
 \end{figure}
-The localization error was determined by the Euclidian distance between the systems position estimation and the real position of the checking point.\\
+The localization error was determined by the Euclidian distance between the systems position estimation and the real position of the checkpoint.\\
 \noindent\hspace*{5mm}%
-For the zone indication, we defined 14 zones, which corresponded to 13 different rooms, where only one room (the corridor) was split into two zones. The room definitions can be seen in figure \ref{fig:zone_definition}. For scenario 1 we collected data in all zones, whereas for the smaller scenario we only collected data in the rooms 1, 2, 3, 5, 6 and 7, as only these were in the area of interest. The received signal strength of all five UWB ANs as well as of eight Wi-Fi access points was taken into account. In order to reduce errors introduced by changing environmental conditions, we used relative RSS rather than raw RSS values. For obtaining relative RSS, we defined a pivot AN and access point and fed the machine learning algorithms with RSS difference to these given pivot RSS. In our scenarios, the fourth AN and the neighboring WiFi access point were acting as a pivot (see figures \ref{fig:trajectory1_withAnchors} and \ref{fig:trajectory5_withAnchors} for the exact position). In the offline phase of the fingerprinting, we collected around 700 fingerprint measures per room. Half of them were collected randomly passing the room and half of them were collected while systematically walking through the whole area of the room.
+For the zone indication, we defined 14 zones, which corresponded to 13 different rooms, where only one room (the corridor) was split into two zones. The room definitions can be seen in figure \ref{fig:zone_definition}. For scenario 1 we collected data in all zones, whereas for the smaller scenario we only collected data in the rooms 1, 2, 3, 5, 6 and 7, as only these were in the area of interest. The received signal strength of all five UWB ANs as well as of eight Wi-Fi access points was taken into account. In order to reduce errors introduced by changing environmental conditions, we used relative RSS rather than raw RSS values. For obtaining relative RSS, we defined a pivot AN and access point and fed the machine learning algorithms with RSS difference to these given pivot RSS. In our scenarios, the fourth AN and the neighboring WiFi access point (number 8) were acting as a pivot (see figures \ref{fig:trajectory1_withAnchors} and \ref{fig:wifi_accessAppendix} for the exact position). In the offline phase of the fingerprinting, we collected around 700 fingerprint measures per room. Half of them were collected randomly passing the room and half of them were collected while systematically walking through the whole area of the room.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/zone_definition}
@@ -114,7 +114,7 @@ The results in this setup were way better than in the setup with a lower density
 \end{table}
 In table \ref{tab:arithmetic_errors_trajectory5}, the mean errors of the low density AN scenario 1 and the high density AN scenario 2 are compared. The results improved significantly with a denser anchor node positioning. 
 \begin{table}
-\caption{Comparison of Scen 1 and 2}
+\caption{Comparison of Scenario 1 and 2}
 \label{tab:results_trajectory5}
 \centering
 \begin{tabular}{l l l l}
@@ -187,6 +187,6 @@ In the new setup, we purposely added checkpoints at the edge or outside of the b
 \caption[Trajectory 5 with Bounding Box]{Indicated bounding box of the anchor node positions for trajectory 5.}
 \label{fig:trajectory5_boundingBox}
 \end{figure}
-It made no difference for the tag being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.\\
+It made no difference for the TAG being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.\\
 \noindent\hspace*{5mm}%
-A bigger influence on the estimation error had the UWB connection. With a better-established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the particle filter, the communication is one of the key performance values, because the data is requested serially. This only allows a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality, such that some evaluating steps had to be performed with fewer data. Obviously, the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, what is not possible when a part of the data is not present.
+A bigger influence on the estimation error had the UWB connection. With a better-established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what caused obviously a more precise performance. For the particle filter, the communication is one of the key performance values, because the data is requested serially. This only allows a limited amount of retransmitting and the communication timeouts have to be kept short. The resulting increased package loss affects the data quality, such that some evaluating steps had to be performed with fewer data. Obviously, the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, which is not possible when a part of the data is not present.

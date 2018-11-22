@@ -20,7 +20,7 @@ Our proposed localization system consists of various components, such as a local
 \end{figure}
 
 \noindent\hspace*{5mm}%
-On the localization server, most of the computational workload is handled. The localization algorithm runs on the server, it requests periodically input data from the other system elements and processes the data as soon as it arrives. The server updates the system state (e.g. particle positions, velocity..) and performs the position estimation in every timestep. Additionally, a graphical illustration of the real-time position on the floormap is available on the server side. \\
+On the localization server, most of the computational workload is handled. The localization algorithm runs on the server, it periodically requests input data from the other system elements and processes the data as soon as it arrives. The server updates the system state (e.g. particle positions, velocity..) and performs the position estimation in every timestep. Additionally, a graphical illustration of the real-time position on the floormap is available on the server side. \\
 \noindent\hspace*{5mm}%
 The client is the target device that is localized. It is equipped with different IMU sensors, at least with a 3D accelerometer and a 3D magnetometer. With the sensor readings, the client performs a computation of the heading direction and the change in velocity. With the equipped WiFi module and the UWB transmitter, it collects RSS data of all WiFi access points and UWB anchor nodes in range. The heading direction, velocity change and RSS fingerprint are transmitted from the client to the localization server.\\
 \noindent\hspace*{5mm}%
@@ -53,4 +53,4 @@ The zone detection is fed with UWB and WiFi received signal strength data. Obser
 \noindent\hspace*{5mm}%  
 In the particle filter, the different inputs are fused. The prediction phase takes only the floorplan constraints into account, whereas for the observation phase the other three inputs - range estimation, zone likelihood and movement vector - are used to determine the weight of a certain particle.\\
 \noindent\hspace*{5mm}%
-Given the position and the weight of each particle, the system calculates the weighted sum over the particle positions to obtain the localization estimation. The construction of the weight for each particle ensures that more likely positions are stronger taken into account to determine the location than particles with positions that are more unlikely.
+Given the position and the weight of each particle, the system calculates the weighted sum over the particle positions to obtain the localization estimation. The construction of the weight for each particle ensures that more likely positions have a bigger impact on the position estimation than more unlikely positions.
