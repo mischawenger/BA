@@ -1,61 +1,83 @@
 % Chapter Template
 
-\chapter{Localization System Implementation} % Main chapter title
+\chapter{Performance Evaluation} % Main chapter title
 
 \label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-In this section we explain the hardware and software components of our system architecture in detail. Then we introduce the implementation of the different localization algorithm components and we describe the underlying UWB communication.
+In this section, we explain the setup of our two experiment scenarios and we present the positioning results of our experiments in detail.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Localization Components Hardware}
-The four different hardware components - server, client, ANs and APs - that were important in our implementation are already shown in Figure \ref{fig:system_components} of the last chapter. In the following we explain which explicit hardware we used for our experiments.\\
-\noindent\hspace*{5mm}%
-Our proposed algorithm was running on a commodity laptop, which was used as our server, connected via Ethernet to a sink anchor node. The laptop was a low to mid-end commercial notebook with fairly limited computational power.\\
-\noindent\hspace*{5mm}%
-The target device was a Raspberry Pi Model B \cite{Raspberry} with a 1.2 GHz 64-bit CPU running the operating system Raspian. On the 40 pin GPIO, it was equipped with a Sequitur InGPS Lite Tag Chip from UNISET to enable UWB communication as well as acceleration and magnetic field measurements.\\
-\noindent\hspace*{5mm}%
-The sink node and the other anchor nodes were also Raspberry Pi Model B with the same specifications. However, the ANs were not equipped with a TAG Chip, but with a Sequitur InGPS Lite Anchor Chip, exclusively enabling UWB communication.\\
-\noindent\hspace*{5mm}%
-For the WiFi access points, we used several commercial commodity access points from D-Link (D-635 and DAP-2553).\\
-\noindent\hspace*{5mm}%
-The detailed specification of each component is summarized in Table \ref{tab:hardware_specification}.
-\begin{table}
-\caption{Hardware Components}
-\label{tab:hardware_specification}
+\section{Experiment Setup}
+We tested our implementation in two complex indoor scenarios with trajectories through numerous rooms on one floor in a real building of the University of Bern, at Neubrückstrasse 10 in
+3012 Bern. The first scenario used an area of $715m^2$ and the second scenario $358m^2$. We distributed the UWB anchor nodes over several rooms to cover the area of interest homogenously.
+\begin{figure}[th]
 \centering
-\begin{tabular}{| c | c |}
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1_withAnchors}
+\decoRule
+\caption[Anchor Node Positions of Scenario 1]{Trajectory 1 and distributed ANs in scenario 1 on the floor map (with distance reference of 10m).}
+\label{fig:trajectory1_withAnchors}
+\end{figure}The exact position is indicated in the floor plan of Figure \ref{fig:trajectory1_withAnchors} for the first scenario and indicated in Figure \ref{fig:trajectory5_withAnchors} for the second scenario. In both scenarios, the target was held in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given trajectory path. As soon as he passed a predefined checkpoint the current position estimation was registered.\\
+\noindent\hspace*{5mm}%
+We defined four different trajectories for the first scenario. Each trajectory consisted of five to nine checkpoints. Trajectory 1 is indicated in Figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in Appendix \ref{AppendixA}.
+For the second scenario we used a fifth trajectory that covered almost the whole area. It is shown in Figure \ref{fig:trajectory5_withAnchors}.\\
+\noindent\hspace*{5mm}%
+We repeated the experiment five times, so we analyzed 145 checkpoints in scenario 1 and 40 checkpoints in scenario 2.\begin{figure}[th]
+\centering
+\includegraphics[width=0.5\textwidth]{Figures/trajectory5_withAnchors}
+\decoRule
+\caption[Trajectory 5]{Trajectory 5 with improved anchor positions.}
+\label{fig:trajectory5_withAnchors}
+\end{figure}
+The localization error was determined by the Euclidian distance between the systems position estimation and the real position of the checkpoint.\\
+\noindent\hspace*{5mm}%
+For the zone detection in our algorithm, we defined 14 zones, which corresponded to 13 different rooms, where only one room (the corridor) was split into two zones. The room definitions can be seen in Figure \ref{fig:zone_definition}. For scenario 1 we collected data in all zones, whereas for the smaller scenario we only collected data in rooms 1, 2, 3, 5, 6 and 7, as only these were in the area of interest. The received signal strength values of all five UWB ANs as well as of eight Wi-Fi access points were taken into account. In order to reduce errors introduced by changing environmental conditions, we used relative RSS rather than raw RSS values. This means, we defined a pivot AN and access point and fed the machine learning algorithms with RSS difference to these given pivot RSS values and not the directly measured RSS values. In our scenarios, the AN 4 and the neighboring WiFi access point 8 were acting as a pivot (see Figure \ref{fig:trajectory1_withAnchors} and Figure \ref{fig:wifi_accessAppendix} for the exact positions). In the offline phase, we collected around 700 fingerprint measures per room. Half of them were collected randomly passing the room and half of them were collected while systematically walking through the whole area of the room.
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/zone_definition}
+\decoRule
+\caption[Zone Definition]{Zone definition and transitions between zones}
+\label{fig:zone_definition}
+\end{figure}
+
+\section{Experiment Results}
+Experiments were first conducted in scenario 1, then we covered a smaller area with a higher density of anchor nodes and conducted the experiments in scenario 2. As a reference, we compared our localization approach to a commercial localization system proposed by UNISET Company, called Sequitur InGPS Lite. In the following, we compare our particle filter results to the Sequitur system results.
+\subsection{Localization Performance in Scenario 1}
+In the following, the results of our algorithms with a wide distance between anchor nodes (scenario 1) are shown. The results are shown as arithmetic means of the five probes we registered. In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was $1.62$m for the particle filter and $1.75$m for Sequitur's commercial system. Looking at Figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than $1.5m$, however, there are some checkpoints (e.g. checkpoint 5 in trajectory 1) with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of $1.12m$ for PF and $1.13m$ for Sequitur. The median errors are significantly lower than the arithmetic mean errors. The measurements for trajectory two looked rather similar but with a higher error. The arithmetic mean error for the PF was $2.39m$ and for Sequitur $2.35m$. The median errors were again a lot more accurate with $1.59m$ for PF and $1.16m$ for Sequitur.
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectory1_2_results}
+\decoRule
+\caption[Localization Results of Trajectory 1 and 2]{Measured distance errors at each checkpoint in trajectory 1 and 2.}
+\label{fig:trajectory1and2_results}
+\end{figure}
+The results for trajectory 3 and 4 were rather similar, however, the peaks observed in Figure \ref{fig:trajectory3and4_results} were not as extreme as for the first two trajectories. As above, the average errors in the third trajectory of $1.23m$ (PF) and $1.94m$ (Sequitur) were also considerably higher than the medians of $0.95m$ and $0.80m$.
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectory3_4_results}
+\decoRule
+\caption[Localization Results of Trajectory 3 and 4]{Measured distance errors at each checkpoint in trajectory 3 and 4.}
+\label{fig:trajectory3and4_results}
+\end{figure}In the last of these four trajectories, no big outliers were stated. Nonetheless, the average errors of $1.79m$ and $1.55m$, as well as the median errors $1.24m$ and $1.26m$ for the PF and Sequitur, were still not as accurate as intended.\\
+\noindent\hspace*{5mm}%
+Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are very big differences between different trajectories. The particle filter and the Sequitur system have similar accuracies, for some trajectories, one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming subsection  \ref{Section2} about result analysis. 
+
+\begin{table}
+\caption{Arithmetic Mean of Errors in Trajectories 1 to 4 (meter).}
+\label{tab:arithmetic_errors}
+\centering
+\begin{tabular}{l l l}
 \toprule
-\textbf{Device} & \textbf{Model}\\
+\textbf{Trajectory} & \textbf{PF} & \textbf{Sequitur}\\
 \midrule
-& \textbf{Model:} HP EliteBook\\
-Server & \textbf{CPU:} 2.30 GHz Intel Core i5-5300U\\
-& \textbf{Architecture:} 64-bit\\
-& \textbf{OS:} Windows 10 Enterprise\\
-& \textbf{RAM:} 8 GB\\
+\textbf{T1} & 1.72 & 1.75\\
+\textbf{T2} & 2.39 & 2.35\\
+\textbf{T3} & 1.23 & 1.94\\
+\textbf{T4} & 1.79 & 1.55\\
 \midrule
-& \textbf{Model:} Raspberry Pi Model B\\
-Target & \textbf{CPU:} Quad Core 1.2GHz\\
-& \textbf{Architecture:} 64-bit\\
-& \textbf{OS:} Raspbian 4.14\\
-& \textbf{RAM:} 1 GB\\
-& \textbf{WLAN:} WiFi b/g/n\\
-& \textbf{Extension:} Sequitur Pi (InGPS Lite Tag)\\
-\midrule
-& \textbf{Model:} Raspberry Pi Model B\\
-Anchors & \textbf{CPU:} Quad Core 1.2GHz\\
-& \textbf{Architecture:} 64-bit\\
-& \textbf{OS:} Raspbian 4.14\\
-& \textbf{RAM:} 1 GB\\
-& \textbf{WLAN:} WiFi b/g/n (not used)\\
-& \textbf{Extension:} Sequitur Pi (InGPS Lite Anchor)\\
-\midrule
-& \textbf{Model:} Sequitur Pi (InGPS Lite)\\
-Ultra WideBand Extention & \textbf{Ultra WideBand:} IEEE 802.15.4a\\
-& \textbf{IMU (tag only):} 3D-Accelerometer, 3D-Magnetometer\\
-& \textbf{Firmware:} Sequitur InGPS Lite Anchor/Tag (from UNISET)\\
-\bottomrule
+\textbf{Total 1-4}  & \textbf{1.73} & \textbf{1.93}\\
+\bottomrule\\
 \end{tabular}
 \end{table}
 
@@ -63,61 +85,109 @@ Ultra WideBand Extention & \textbf{Ultra WideBand:} IEEE 802.15.4a\\
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Localization Components Software}
-The localization algorithm was configured with a minimal update period of 0.7 seconds. This means, that the system triggered all input sources and performed all three particle filter phases, such that every 0.7 seconds a position estimation was provided. However, in some cases, the update time was longer, when it took more time to fetch data from the data sources. The position estimation was done based on 100 particles.\\
+\subsection{Localization Performance in Scenario 2}
+For trajectory 5 the density of anchor nodes was increased. We used 5 ANs for an area of 358$m^2$, which corresponds to an area of 72$m^2$ per anchor node (compared to 143$m^2$ per AN in scenario 1). The exact setup was indicated above in Figure \ref{fig:trajectory5_withAnchors}. Equally as before the results are shown as arithmetic means of the five test repetitions.\\
 \noindent\hspace*{5mm}%
-The motion vector was calculated by using the velocity of the device in the last system update. This velocity was turned to the measured heading direction and adapted by the obtained acceleration.  As the sample rate of the accelerometer sensor was 10 Hz, for each system state update we had seven or more discrete acceleration measurements, we stored these measurements in the client device until the server requested the movement vector. As the acceleration sensor - depending on pitch and roll of the device - had a huge non-zero mean noise, we decided to not use the accelerometer data directly, but to use the change in acceleration. The advantage of this implementation was, that errors of acceleration measurements due to pitch, roll and tilt of the device were only registered in a small period of time and not constantly. In the other hand it had the downside that constant acceleration was not detected correctly, however a constant acceleration is occuring less often than a tilted device when tracking a pedestrian. To gather the change in acceleration we fed the sensor data into two low pass filters with different parameters, one with a high adaption of 0.98 and one with a low adaption of 0.03, and only took their difference into account. This means we calculated the difference between $a_{t}^1$ and $a_{t}^2$, which were calculated as in \ref{eqn:a1} and \ref{eqn:a2}:
-\begin{equation}
-a_{t}^{1} = \hat{a}_{t}*0.03 + a_{t-1}^{1} * 0.97
-\label{eqn:a1}
-\end{equation}
-and
-\begin{equation}
-a_{t}^{2} = \hat{a}_{t}*0.98 + a_{t-1}^{2} * 0.02
-\label{eqn:a2}
-\end{equation}
-with $\hat{a}_{t}$ as the measured acceleration in timeslot $t$, $a_{t-1}^{1}$ and $a_{t-1}^{2}$ the low pass filtered acceleration results in timeslot $t-1$ of the first and the second low pass filter respectively.\\
-\noindent\hspace*{5mm}%
-We read the floorplan information from an image of the floorplan. The image data was then stored in a matrix with values 0, if the position was not allowed, and any other value bigger than 0, when the position was an allowed position. For checking if a position was reachable, we started at the old position and checked if all values on the direct path between the old and the new position were bigger than 0. To get from the direct path to the discrete matrix positions, we used the commonly known algorithm called Bresenham's line algorithm \cite{bresenham}.\\
-\noindent\hspace*{5mm}%
-For gathering ranging information, the Sequitur InGPS Lite firmware provided a two-way ranging method. The range estimation of two nodes was triggered by the application programming interface (API) command $CLIENT\_GET\_RANGE\ (50)$. In our application, we sent the command to the anchor in order to minimize the communication of the TAG. The flow of actions related to this API is an even more simplified version of the message exchange indicated in Figure \ref{fig:two_way_ranging}. In our case, the request message performed by the server started the TWR conversation via UWB between AN and TAG. The AN sent only one ranging request to the TAG, which immediately responded. This simplified version of TWR is illustrated in Figure \ref{fig:simple_TWR}. By observing the difference between the time instants related to the transmission of the request packet and the reception of the response packet, the AN directly determined the RTT and thus the range.  Finally, an answer message with the range was reported from the AN to the server and no messages were reported from the TAG to the server.\\
-\noindent\hspace*{5mm}%
-The zone indication fused Wi-Fi and UWB RSS in an enhanced ensemble learning model, which means that not only one machine learning algorithm was used, but a combination of several different machine learning algorithms. In our zone indication, a set of independent individual machine learning algorithms were fed with the same fingerprint data. Every machine learning algorithms performed a zone prediction and assigned a likelihood to every zone. The likelihood represented the probability of observing the given RSS fingerprint while being in this zone. We assumed that for every machine learning algorithm these probabilities were statistically independent, thus the probabilities returned by our ensemble learning algorithm were just the multiplied results of the single machine learning algorithms.\\
-We used these three completely different ML algorithms: Decision Tree Learning with gini impurity \cite{WikiGini}, K nearest neighbor (KNN) classification \cite{KNN} and a soft voting classifier using gini, KNN and gaussian naive bayes \cite{SKLearn, GaussianNB} algorithms. We selected these three algorithms out of half a dozen machine learning algorithms, because those three had the best classification results in the test data. For the testing data, the three machine learning algorithms had a correct prediction rate of 80 to 99 percent. 
+The results in this setup were by far better than in the setup with a lower density of ANs. With an average error of $0.49m$ for the PF and $0.48m$ for Sequitur, this setup outperformed the other trajectories with both algorithms. Even the median errors - with $0.44m$ and $0.48m$ -  were not much different, which means that there are no huge differences over the different checkpoints. This can also be seen in Figure \ref{fig:trajectory5_results}, where most of the errors are smaller than $0.80m$.
 
 \begin{figure}[th]
 \centering
-\includegraphics[width=0.6\textwidth]{Figures/simple_TWR}
+\includegraphics[width=0.8\textwidth]{Figures/trajectory5_results}
 \decoRule
-\caption[Minimal Two Way Ranging]{Minimal implementation of two way ranging.}
-\label{fig:simple_TWR}
+\caption[Positioning Results Trajectory 5]{Graph of measured distance errors at each checkpoint in trajectory 5.}
+\label{fig:trajectory5_results}
 \end{figure}
 
+\begin{table}
+\caption{The Arithmetic Mean of Errors in Trajectory 5 (meter).}
+\label{tab:arithmetic_errors_trajectory5}
+\centering
+\begin{tabular}{l l l}
+\toprule
+\textbf{Trajectory} & \textbf{PF} & \textbf{Sequitur}\\
+\midrule
+\textbf{Total 1-4} & 1.73 & 1.93\\
+\textbf{T5} & 0.49 & 0.48\\
+\midrule
+\textbf{Difference}  & \textbf{-1.24} & \textbf{-1.45}\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+In Table \ref{tab:arithmetic_errors_trajectory5}, the mean errors of the low density AN scenario 1 and the high density AN scenario 2 are compared. The results improved significantly with a denser anchor node positioning. 
+\begin{table}
+\caption{Comparison of Scenario 1 and 2}
+\label{tab:results_trajectory5}
+\centering
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Algorithm} & \textbf{Mean error}[m] & \textbf{SD}[m] & \textbf{90\% Acc.}\\
+\midrule
+\textbf{PF (Scen 1)} & 1.729 & 1.451 & 3.393\\
+\textbf{Sequitur (Scen 1)} & 1.928 & 2.337 & 5.544\\
+\midrule
+\textbf{PF (Scen 2)} & 0.491 & 0.239 & 0.875\\
+\textbf{Sequitur (Scen 2)} & 0.484 & 0.271 & 0.829\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+The standard deviation (SD) for scenario 2 was rather small with $0.24m$ for the PF and $0.27m$ for the Sequitur system, whereas the 90\% accuracy was $0.87m$ and $0.82m$. 
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/cdf_all}
+\decoRule
+\caption[CDF Scenario 1 and 2]{The cummulative distribution function of the errors.}
+\label{fig:cdf_all}
+\end{figure}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/cdf_scenario2}
+\decoRule
+\caption[CDF Scenario 2]{Zoomed cummulative distribution for scenario 2.}
+\label{fig:cdf_scenario2}
+\end{figure}
 %----------------------------------------------------------------------------------------
 %	SECTION 3
 %----------------------------------------------------------------------------------------
 
-\section{Ultra Wideband Communication}
-The radio module of the Sequitur Pi board was not only used  to evaluate the ToF but also to transmit data to the server via the sink anchor node, in order to avoid the need for additional communication hardware. As UNISET is a commercial company, they do not provide full information of the implemented transmission techniques. Nonetheless, in the following, we mention the known parts and the configuration parameters.\\
+\subsection{Result Analysis}
+\label{Section2}
+The test results in the experiment setup with wide anchor node distances were not very accurate. To find the reasons for that, we have to carefully have a look at the underlying implementation and the single checkpoint circumstances. We identified two main causes for bad results. These were:
+\begin{itemize}
+\item Some checkpoints were lying outside of AN bounding boxes.
+\item UWB connection failed many times due to too wide distances from the TAG to the ANs
+\end{itemize}
+A cluttered environment will heavily distort UWB communication and thus affect the RTT used for UWB ranging. As in our testing environment servers with iron racks, desks with computer screens as well as a lot of different equipment was present. This effect should not be neglected.\\
 \noindent\hspace*{5mm}%
-Sequitur InGPS Lite enables single-hop wireless communication with the UWB interface between neighboring nodes of the same network. The radio module supports different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in table \ref{tab:spectral_occupation}.\\
-\begin{table}
-\caption{Spectral Occupation of Predefined Channels.}
-\label{tab:spectral_occupation}
+The AN positions naturally form a bounding box around the environment. The bounding box is the area spanned by straight connections between anchor nodes, as indicated in Figure \ref{fig:trajectory1_boundingBox}. Trilateration, also with small distance errors, works well within the bounding box. However, even small ranging errors can lead to wrong position estimations outside the bounding box. 
+\begin{figure}[th]
 \centering
-\begin{tabular}{c c c}
-\toprule
-\textbf{Channel Number} & \textbf{Central Frequency}[MHz] & \textbf{Bandwidth}[MHz]\\
-\midrule
-1 & 3494.4 & 500\\
-2 & 3993.6 & 500\\
-3 & 4492.8 & 500\\
-4 & 3993.6 & 1300\\
-5 & 6489.6 & 500\\
-7 & 6489.6 & 1100\\
-\bottomrule\\
-\end{tabular}
-\end{table}
-The data rate can be changed to three preset values of 110 kbps, 850 kbps and 6.8 Mbps. All nodes have to operate in the same radio mode and frequency band to communicate correctly. In general, a lower data rate allows larger operating distances between the nodes. The transmission power of the radio module could be selected between 1 and 63, whereas 63 is the highest value. Every number increases the transmitting power by 0.5 dB. The default pulse repetition frequency (PRF) is assumed to be 64 MHz for all the channels. The underlying modulation techniques are not indicated in the specifications \cite{Usermanual, Beginnersguide}.\\
+\includegraphics[width=0.8\textwidth]{Figures/trajectory1_boundingBox}
+\decoRule
+\caption[Bounding Box and Checkpoints for Trajectory 1 ]{Indicated bounding box of the anchor node positions for trajectory 1.}
+\label{fig:trajectory1_boundingBox}
+\end{figure}
+In our experiment, especially the results on checkpoint 5 in trajectory 1 and 2 stand out. The average measured errors of $3.09m$ for PF and $5.70m$ for Sequitur for the first trajectory as well as $6.46m$ and $7.45m$ for the second trajectory are way higher than for other checkpoints. The fact that both algorithms had troubles estimating the position of checkpoint 5 in trajectory 1, leads to the conclusion that the experimental setup was the main reason for the big errors at this checkpoint. Moreover, besides lying outside the bounding box, this position was also far away from the nearest ANs without a direct line of sight.\\
 \noindent\hspace*{5mm}%
-In our implementation the UWB transmitters of all UWB devices operated in radio mode 2 with a data rate of 850 kbps, were configured to use channel 4 with a central frequency of 3993.6 MHz and an occupied spectrum of 1300 MHz. The transmission power was set to a maximum of 63 and the PRF to the default value of 64 MHz. Before starting the experiments, a 15-meter calibration with 1000 measurements per device was made as described in the beginner's guide \cite{Beginnersguide}.
+Both algorithms depend on a well-established UWB connection, as all the ANs ranging estimations were transmitted using UWB messages. Especially in the particle filter, many UWB messages are transmitted, because fingerprinting and IMU data are additionally requested and exchanged. For certain checkpoints, the distance to the farthest anchor node was even more than $35m$ in scenario 1, which was too much for a stable UWB connection within our environment. Particularly, the particle filter had troubles receiving enough usable data, as it produced more overhead than the Sequitur system, because the particle filter transmitted IMU sensor data in addition to UWB ranging information. This led to a high packet loss, such that only one or two range measurements per estimation step were taken into account - instead of the possible five - leading to a higher error. \\
+\noindent\hspace*{5mm}%
+These surprisingly big inaccuracies of both systems prompted the change in our setup, in order to establish better communication between the nodes with less packet loss to enforce more data flowing into the particle filter. This was the main reason why we extended our experiments and evaluated the location accuracy in scenario 2.\\
+\noindent\hspace*{5mm}%
+With the more dense spread of the ANs, the estimations improved a lot. Having a look at our two assumptions above, we can state the following:
+
+\begin{itemize}
+\item Checkpoints outside of AN bounding boxes had quite a good accuracy, what contradicts our assumption.
+\item The communication was better, what improved the accuracy a lot and confirmed our assumption.
+\end{itemize}
+
+In the new setup, we intentionally added checkpoints at the edge or outside of the bounding box, as seen in Figure \ref{fig:trajectory5_boundingBox}. Especially checkpoint 5 and 8 are not lying within the bounding box, however, they still had a quite good accuracy. For checkpoint 5, the average estimation errors were $0.30m$ and $0.14m$, for checkpoint 8 the errors were $0.43m$ and $0.25m$ for PF, respectively Sequitur.
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.8\textwidth]{Figures/trajectory5_boundingBox}
+\decoRule
+\caption[Trajectory 5 with Bounding Box]{Indicated bounding box of the anchor node positions for trajectory 5.}
+\label{fig:trajectory5_boundingBox}
+\end{figure}
+It did not make a difference for the TAG being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.\\
+\noindent\hspace*{5mm}%
+A bigger influence on the estimation error had the UWB connection. With a better-established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what led to a better accuracy. For the particle filter, the communication is one of the key performance values, because the data is requested serially. This only allows a limited number of retransmissions and the communication timeouts have to be kept short. The resulting increase in packet loss affects the data quality, such that some evaluating steps had to be performed with fewer data. Obviously, the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, which is not possible when a part of the data is not present.
