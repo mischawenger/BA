@@ -42,9 +42,19 @@ For the zone detection in our algorithm, we defined 14 zones, which corresponded
 \end{figure}
 
 \section{Experiment Results}
-Experiments were first conducted in scenario 1, then we covered a smaller area with a higher density of anchor nodes and conducted the experiments in scenario 2. As a reference, we compared our localization approach to a commercial localization system proposed by UNISET Company, called Sequitur InGPS Lite. In the following, we compare our particle filter results to the Sequitur system results.
+Experiments were first conducted in scenario 1, then we covered a smaller area with a higher density of anchor nodes and conducted the experiments in scenario 2. As a reference, we compared our localization approach to a commercial localization system proposed by UNISET, called Sequitur InGPS Lite. In the following, we compare our particle filter results to the Sequitur system results.
 \subsection{Localization Performance in Scenario 1}
-In the following, the results of our algorithms with a wide distance between anchor nodes (scenario 1) are shown. The results are shown as arithmetic means of the five probes we registered. In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was $1.62$m for the particle filter and $1.75$m for Sequitur's commercial system. Looking at Figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than $1.5m$, however, there are some checkpoints (e.g. checkpoint 5 in trajectory 1) with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of $1.12m$ for PF and $1.13m$ for Sequitur. The median errors are significantly lower than the arithmetic mean errors. The measurements for trajectory two looked rather similar but with a higher error. The arithmetic mean error for the PF was $2.39m$ and for Sequitur $2.35m$. The median errors were again a lot more accurate with $1.59m$ for PF and $1.16m$ for Sequitur.
+In the following, the results of our algorithms with a wide distance between anchor nodes are shown. We called this setup scenario 1. Scenario 1 consisted of the wide anchor node positioning indicated in Figure \ref{fig:trajectory1_withAnchors}. In scenario 1 we tested four different trajectories, the trajectories 1-4. Trajectory 1 is indicated in Figure \ref{fig:trajectory1_withAnchors}, the trajectories 2, 3 and 4 are shown in Figure \ref{fig:trajectories2to4}.
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{Figures/trajectories2to4}
+\decoRule
+\caption[Trajectories 2-4]{Checkpoint position in Trajectories 2, 3 and 4}
+\label{fig:trajectories2to4}
+\end{figure}
+The results are shown as arithmetic means of the five probes we registered.\\
+\noindent\hspace*{5mm}%
+In the first trajectory, the arithmetic mean (hereafter often called average) distance error over all checkpoints was $1.62$m for the particle filter and $1.75$m for Sequitur's commercial system. Looking at Figure \ref{fig:trajectory1and2_results}, we see that the errors are often smaller than $1.5m$, however, there are some checkpoints (e.g. checkpoint 5 in trajectory 1) with very low accuracy. This is also emphasized by comparing the arithmetic mean error to the median error of $1.12m$ for PF and $1.13m$ for Sequitur. The median errors are significantly lower than the arithmetic mean errors. The measurements for trajectory two looked rather similar but with a higher error. The arithmetic mean error for the PF was $2.39m$ and for Sequitur $2.35m$. The median errors were again a lot more accurate with $1.59m$ for PF and $1.16m$ for Sequitur.
 \begin{figure}[th]
 \centering
 \includegraphics[width=1.0\textwidth]{Figures/trajectory1_2_results}
@@ -86,7 +96,7 @@ Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are
 %----------------------------------------------------------------------------------------
 
 \subsection{Localization Performance in Scenario 2}
-For trajectory 5 the density of anchor nodes was increased. We used 5 ANs for an area of 358$m^2$, which corresponds to an area of 72$m^2$ per anchor node (compared to 143$m^2$ per AN in scenario 1). The exact setup was indicated above in Figure \ref{fig:trajectory5_withAnchors}. Equally as before the results are shown as arithmetic means of the five test repetitions.\\
+For scenario 2 the density of anchor nodes was increased. We used 5 ANs for an area of 358$m^2$, which corresponds to an area of 72$m^2$ per anchor node (compared to 143$m^2$ per AN in scenario 1). In scenario 2 we tested trajectory 5, which covered already the whole area. The exact setup in scenario 2 and the checkpoints of trajectory 5 was indicated above in Figure \ref{fig:trajectory5_withAnchors}. Equally as before the results are shown as arithmetic means of the five test repetitions.\\
 \noindent\hspace*{5mm}%
 The results in this setup were by far better than in the setup with a lower density of ANs. With an average error of $0.49m$ for the PF and $0.48m$ for Sequitur, this setup outperformed the other trajectories with both algorithms. Even the median errors - with $0.44m$ and $0.48m$ -  were not much different, which means that there are no huge differences over the different checkpoints. This can also be seen in Figure \ref{fig:trajectory5_results}, where most of the errors are smaller than $0.80m$.
 
@@ -188,6 +198,7 @@ In the new setup, we intentionally added checkpoints at the edge or outside of t
 \caption[Trajectory 5 with Bounding Box]{Indicated bounding box of the anchor node positions for trajectory 5.}
 \label{fig:trajectory5_boundingBox}
 \end{figure}
-It did not make a difference for the TAG being outside the bounding box or not. We conclude that with good ranging data it is not very important to stay within the bounding box, however, wrong ranging data leads to bigger errors outside the bounding box.\\
+It did not make a difference for the TAG being outside the bounding box or not. We conclude that it is not very important to stay within the bounding box, especially when good ranging data is available. However, when the measured ranges to the ANs contain big errors, the system is able to compensate those errors better when the TAG is within the bounding box. \\
 \noindent\hspace*{5mm}%
-A bigger influence on the estimation error had the UWB connection. With a better-established connection - in our case with nearer ANs - more UWB messages arrived at the receiver. In each estimation step, more data was fed into the positioning algorithms what led to a better accuracy. For the particle filter, the communication is one of the key performance values, because the data is requested serially. This only allows a limited number of retransmissions and the communication timeouts have to be kept short. The resulting increase in packet loss affects the data quality, such that some evaluating steps had to be performed with fewer data. Obviously, the lack of data led to bad results, as the particle filter improves its estimation by fusing many different measurements, which is not possible when a part of the data is not present.
+The UWB connection had a bigger influence on the estimation error than the bounding box. With a better-established connection - in our case with nearer ANs - we had a lower packet loss. The result was, that in each estimation step, more data was available for the positioning algorithms. This led to a better accuracy.\\
+For the particle filter, the communication to the ANs is very important, because the data is requested serially. Serial communication only allows a limited number of retransmissions and the communication timeouts have to be kept short. Packet loss affects the data quality, such that some evaluating steps had to be performed with fewer measurement values. Obviously, the lack of measurement values led to bad results, as the particle filter improves its estimation by fusing many different measurements, which is not possible when a part of the data is not present.
