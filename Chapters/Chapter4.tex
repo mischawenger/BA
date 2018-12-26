@@ -82,14 +82,14 @@ We read the floorplan information from an image of the floorplan. The image data
 \noindent\hspace*{5mm}%
 For gathering ranging information, the Sequitur InGPS Lite firmware provided a two-way ranging method. The range estimation of two nodes was triggered by the application programming interface (API) command $CLIENT\_GET\_RANGE\ (50)$. In our application, we sent the command to the anchor in order to minimize the communication of the TAG. The flow of actions related to this API is an even more simplified version of the message exchange indicated in Figure \ref{fig:two_way_ranging}. In our case, the request message performed by the server started the TWR conversation via UWB between AN and TAG. The AN sent only one ranging request to the TAG, which immediately responded. This simplified version of TWR is illustrated in Figure \ref{fig:simple_TWR}. By observing the difference between the time instants related to the transmission of the request packet and the reception of the response packet, the AN directly determined the RTT and thus the range.  Finally, an answer message with the range was reported from the AN to the server and no messages were reported from the TAG to the server.\\
 \noindent\hspace*{5mm}%
-The zone indication fused Wi-Fi and UWB RSS in an enhanced ensemble learning model, which means that not only one machine learning algorithm was used, but a combination of several different machine learning algorithms. In our zone indication, a set of independent individual machine learning algorithms were fed with the same fingerprint data. Every machine learning algorithms performed a zone prediction and assigned a likelihood to every zone. The likelihood represented the probability of observing the given RSS fingerprint while being in this zone. We assumed that for every machine learning algorithm these probabilities were statistically independent, thus the probabilities returned by our ensemble learning algorithm were just the multiplied results of the single machine learning algorithms.\\
+The zone indication fused Wi-Fi and UWB RSS in an enhanced ensemble learning model, which means that not only one machine learning algorithm was used, but a combination of several different machine learning algorithms. In our zone indication, a set of independent individual machine learning algorithms were fed with the same fingerprint data. Every machine learning algorithm performed a zone prediction and assigned a likelihood to every zone. The likelihood represented the probability of observing the given RSS fingerprint while being in this zone. We assumed that for every machine learning algorithm these probabilities were statistically independent, thus the probabilities returned by our ensemble learning algorithm were just the multiplied results of the single machine learning algorithms.\\
 We used these three completely different ML algorithms: Decision Tree Learning with gini impurity \cite{WikiGini}, K nearest neighbor (KNN) classification \cite{KNN} and a soft voting classifier using gini, KNN and gaussian naive bayes \cite{SKLearn, GaussianNB} algorithms. We selected these three algorithms out of half a dozen machine learning algorithms, because those three had the best classification results in the test data. For the testing data, the three machine learning algorithms had a correct prediction rate of 80 to 99 percent. 
 
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.6\textwidth]{Figures/simple_TWR}
 \decoRule
-\caption[Minimal Two Way Ranging]{Minimal implementation of two way ranging.}
+\caption[Minimal Two Way Ranging]{Minimal implementation of Two Way Ranging.}
 \label{fig:simple_TWR}
 \end{figure}
 
@@ -100,7 +100,7 @@ We used these three completely different ML algorithms: Decision Tree Learning w
 \section{Ultra Wideband Communication}
 The radio module of the Sequitur Pi board was not only used  to evaluate the ToF but also to transmit data to the server via the sink anchor node, in order to avoid the need for additional communication hardware. As UNISET is a commercial company, they do not provide full information of the implemented transmission techniques. Nonetheless, in the following, we mention the known parts and the configuration parameters.\\
 \noindent\hspace*{5mm}%
-Sequitur InGPS Lite enables single-hop wireless communication with the UWB interface between neighboring nodes of the same network. The radio module supports different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in table \ref{tab:spectral_occupation}.\\
+Sequitur InGPS Lite enables single-hop wireless communication with the UWB interface between neighboring nodes of the same network. The radio module supports different user-selectable frequency bands between 3.5 GHz and 6.5 GHz. There are six different operation modes to change the spectral occupation, listed in Table \ref{tab:spectral_occupation}.\\
 \begin{table}
 \caption{Spectral Occupation of Predefined Channels.}
 \label{tab:spectral_occupation}

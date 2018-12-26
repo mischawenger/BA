@@ -4,7 +4,7 @@
 
 \label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In the past few years a new market of mobile gadgets and connected devices, summed up as Internet of Things (IoT), has evolved. In 2017, more than 20 billion devices were connected to the internet. Forecasts predict already more than 70 billion in 2025 \cite{Statista}. This increase in mobile computing has also increased the demand for accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning.
+In the past few years a new market of mobile gadgets and connected devices, summed up as Internet of Things (IoT), has evolved. In 2017, more than 20 billion devices were connected to the internet. Forecasts predict more than 70 billion in 2025 \cite{Statista}. This increase in mobile computing has also increased the demand for accurate real-time positioning systems, which led to an active research mainly in indoor positioning system technologies, as there are established solutions for outdoor positioning.
 In the following, we will shortly present our motivation for this work, our contribution and an overview of the remainder of this document.
 
 %----------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ Location-based applications can be applied in many different indoor contexts, su
 \noindent\hspace*{5mm}%
 Multilateration positioning using radio signals is one of the most widely used indoor localization approach. Radio-based multilateration positioning uses the emitted radio signal power from several transmitters to estimate the position of a target. Most often, WiFi signals are used because they are already omnipresent in indoor environments. However, the radio signal strength is severely affected by environmental conditions, such as furniture, heavy walls etc.\\
 \noindent\hspace*{5mm}%
-Many devices have various embedded inertial sensors - such as most modern smartphones - or can be equipped with additional sensors. These sensors, e.g. accelerometer, gyroscope and magnetic field sensors, are used to register relative movements of the target. However, relative measurements accumulate errors over time, what leads to extensive long-term errors.\\
+Many devices have various embedded inertial sensors - such as most modern smartphones - or can be equipped with additional sensors. These sensors, e.g. accelerometer, gyroscope and magnetic field sensors, are used to register relative movements of the target. However, relative measurements accumulate errors over time, which leads to extensive long-term errors.\\
 \noindent\hspace*{5mm}%
 Some positioning systems improve the accuracy by using both techniques, absolute radio-based tracking and relative - inertial measurement unit (IMU) based - tracking. By combining these two approaches, it is possible to minimize the positioning errors, as the absolute measures can eliminate long-term accumulated errors of the relative system. \\
 \noindent\hspace*{5mm}%
@@ -51,5 +51,5 @@ Our main contributions are:
 
 \section{Overview}
 
-Our work compounds of five remaining chapters:
-Chapter 2 provides related work and presents the theoretical background. Chapter 3 highlights our system architecture. In chapter 4 we explain our implementation. The experiment setup and evaluation of our experiments can be found in section 5. Finally, the last part concludes the work, where our findings are summarized.
+Our work compounds of the following chapters:
+Chapter 2 provides related work and presents the theoretical background. Chapter 3 highlights our system architecture. In chapter 4 we explain our implementation. The experiment setup and evaluation of our experiments can be found in section 5. Finally, chapter 6 concludes the work, where our findings are summarized.

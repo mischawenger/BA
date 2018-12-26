@@ -28,11 +28,14 @@ Ultra-wideband anchor nodes are distributed over the area of interest to cover i
 \noindent\hspace*{5mm}%
 Also the WiFi access points are spread over the area of interest. They fulfill only one purpose: They emit Wi-Fi radio signals that are detected by the client in order to measure the received signal strength.\\
 \noindent\hspace*{5mm}%
-The flow of messages in this architecture is indicated with arrows numbered from 1 to 4 in Figure \ref{fig:system_components}.\\
-1: The ANs perform the two way ranging by sending a request to the client.\\
-2: The ANs forward the range measurement to the localization server.\\
-3: The client communicates with the ANs and the WiFi access points to measure the signal strength.\\
-4: The obtained RSS values are merged into a message together with measured sensor data. This message is then transmitted to the server.
+The flow of messages in this architecture is indicated with arrows numbered from 1 to 4 in Figure \ref{fig:system_components}. The explanation of the numbers is:\\
+\begin{enumerate}
+\item The ANs perform the Two Way Ranging by sending a request to the client. 
+\item The ANs forward the range measurement to the localization server.
+\item The client communicates with the ANs and the WiFi access points to measure the signal strength.
+\item The obtained RSS values are merged into a message together with measured sensor data. This message is transmitted back to the server.
+\end{enumerate}
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2

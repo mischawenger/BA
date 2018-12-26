@@ -20,7 +20,7 @@ We tested our implementation in two complex indoor scenarios with trajectories t
 \label{fig:trajectory1_withAnchors}
 \end{figure}The exact position is indicated in the floor plan of Figure \ref{fig:trajectory1_withAnchors} for the first scenario and indicated in Figure \ref{fig:trajectory5_withAnchors} for the second scenario. In both scenarios, the target was held in the hand of a pedestrian at the starting point of the trajectories, when the experiments started. The pedestrian walked along the given trajectory path. As soon as he passed a predefined checkpoint the current position estimation was registered.\\
 \noindent\hspace*{5mm}%
-We defined four different trajectories for the first scenario. Each trajectory consisted of five to nine checkpoints. Trajectory 1 is indicated in Figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in Appendix \ref{AppendixA}.
+We defined four different trajectories for the first scenario. Each trajectory consisted of five to nine checkpoints. Trajectory 1 is indicated in Figure \ref{fig:trajectory1_withAnchors}, the other three trajectories can be seen in Figure \ref{fig:trajectories2to4}.
 For the second scenario we used a fifth trajectory that covered almost the whole area. It is shown in Figure \ref{fig:trajectory5_withAnchors}.\\
 \noindent\hspace*{5mm}%
 We repeated the experiment five times, so we analyzed 145 checkpoints in scenario 1 and 40 checkpoints in scenario 2.\begin{figure}[th]
@@ -71,7 +71,7 @@ The results for trajectory 3 and 4 were rather similar, however, the peaks obser
 \label{fig:trajectory3and4_results}
 \end{figure}In the last of these four trajectories, no big outliers were stated. Nonetheless, the average errors of $1.79m$ and $1.55m$, as well as the median errors $1.24m$ and $1.26m$ for the PF and Sequitur, were still not as accurate as intended.\\
 \noindent\hspace*{5mm}%
-Having a closer look at table \ref{tab:arithmetic_errors}, we see that there are very big differences between different trajectories. The particle filter and the Sequitur system have similar accuracies, for some trajectories, one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming subsection  \ref{Section2} about result analysis. 
+Having a closer look at Table \ref{tab:arithmetic_errors}, we see that there are very big differences between different trajectories. The particle filter and the Sequitur system have similar accuracies, for some trajectories, one of the algorithms is better, for other trajectories the other performs better. Possible reasons for these volatile results are discussed in the upcoming subsection  \ref{Section2} about result analysis. 
 
 \begin{table}
 \caption{Arithmetic Mean of Errors in Trajectories 1 to 4 (meter).}
